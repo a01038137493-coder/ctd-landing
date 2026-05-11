@@ -359,6 +359,22 @@
     }
     .mc-card:hover .mc-stat-arrow { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
 
+    /* ─── MC CARD + IMAGE ─── */
+    .mc-card--img { padding-bottom: 0; overflow: hidden; }
+    .mc-img-wrap {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .mc-img-wrap img {
+      width: 75%;
+      display: block;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.12));
+      transition: transform .3s ease;
+    }
+    .mc-card--img:hover .mc-img-wrap img { transform: translateY(-6px); }
+
     /* ─── SOK CARDS (Features section) ─── */
     .sok-section { background: #111; padding: 110px 60px; }
     .sok-section .tag { color: #ff9a40; }
@@ -544,29 +560,34 @@
     </div>
     <div class="mc-grid">
 
-      <div class="mc-card fu">
+      <div class="mc-card mc-card--img fu">
         <div class="mc-tag">핵심 장점 01</div>
         <div class="mc-stat">100%</div>
         <div class="mc-title">기출 기반<br>문항 선별</div>
         <div class="mc-divider"></div>
         <p class="mc-desc">평가원·교육청 기출 흐름을 기준으로 학생이 반드시 학습해야 할 문항을 선별했습니다.</p>
+        <div class="mc-img-wrap">
+          <img src="image/f1.png" alt="기출 문항 선별" />
+        </div>
       </div>
 
-      <div class="mc-card fu">
+      <div class="mc-card mc-card--img fu">
         <div class="mc-tag">핵심 장점 02</div>
         <div class="mc-title">해설<br>중심<br>학습</div>
         <div class="mc-divider"></div>
         <p class="mc-desc">정답 확인에서 끝나지 않고, 문장 해석·정답 근거·풀이 사고 과정을 함께 정리했습니다.</p>
+        <div class="mc-img-wrap">
+          <img src="image/f2.png" alt="해설 중심 학습" />
+        </div>
       </div>
 
-      <div class="mc-card fu">
+      <div class="mc-card mc-card--img fu">
         <div class="mc-tag">핵심 장점 03</div>
         <div class="mc-title">과제·자습<br>운영</div>
-        <div class="mc-stat-list">
-          <div class="mc-stat-item">주간 숙제 배포<span class="mc-stat-arrow">↗</span></div>
-          <div class="mc-stat-item">자습실 관리 콘텐츠<span class="mc-stat-arrow">↗</span></div>
-          <div class="mc-stat-item">방학 특강 보조교재<span class="mc-stat-arrow">↗</span></div>
-          <div class="mc-stat-item">파이널 기출 루틴<span class="mc-stat-arrow">↗</span></div>
+        <div class="mc-divider"></div>
+        <p class="mc-desc">수업 후 숙제, 주간 테스트, 자습 관리, 방학 특강 자료로 바로 활용할 수 있습니다.</p>
+        <div class="mc-img-wrap">
+          <img src="image/f3.png" alt="과제 자습 운영" />
         </div>
       </div>
 

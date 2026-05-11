@@ -131,38 +131,15 @@
     .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
     /* book mockup */
-    .book-wrap { position: relative; display: flex; justify-content: center; }
-    .book-main {
-      width: 240px; height: 320px;
-      background: linear-gradient(145deg, #7a3000 0%, #FF7A00 100%);
-      border-radius: 14px; padding: 28px;
-      box-shadow: 24px 24px 60px rgba(0,0,0,.18), -8px -8px 30px rgba(255,255,255,.05);
-      display: flex; flex-direction: column; justify-content: flex-end;
-      position: relative; z-index: 3;
+    .book-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
+    .book-img {
+      width: 340px;
+      border-radius: 8px;
+      display: block;
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,.18));
     }
-    .book-behind {
-      position: absolute;
-      width: 240px; height: 320px;
-      border-radius: 14px;
-      top: 12px; left: -14px;
-      background: #1a1a1a;
-      z-index: 2;
-      transform: rotate(-4deg);
-    }
-    .book-behind2 {
-      position: absolute;
-      width: 240px; height: 320px;
-      border-radius: 14px;
-      top: 8px; left: 14px;
-      background: #333;
-      z-index: 1;
-      transform: rotate(3deg);
-    }
-    .book-label { font-size: 10px; color: rgba(255,255,255,.6); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-    .book-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.25; letter-spacing: -1px; }
-
     .book-float {
-      position: absolute; right: -20px; top: 24px; z-index: 10;
+      position: absolute; right: -10px; top: 20px; z-index: 10;
       background: var(--white); border-radius: 12px; padding: 14px 18px;
       box-shadow: 0 8px 28px rgba(0,0,0,.12);
       font-size: 13px; font-weight: 700; white-space: nowrap;
@@ -371,12 +348,7 @@
       </div>
     </div>
     <div class="book-wrap">
-      <div class="book-behind2"></div>
-      <div class="book-behind"></div>
-      <div class="book-main">
-        <div class="book-label">WEEKLY ISSUE</div>
-        <div class="book-title">Connect<br>the dots</div>
-      </div>
+      <img src="image/c6b37b89941f2.webp" alt="Connect the dots 교재" class="book-img" />
       <div class="book-float">
         실물 샘플 제공
         <span>도입 상담 시 무료 발송</span>

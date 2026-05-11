@@ -298,24 +298,89 @@
     .footer-links a { font-size: 12px; color: rgba(255,255,255,.25); text-decoration: none; }
     .footer-links a:hover { color: rgba(255,255,255,.6); }
 
-    /* ─── FEAT CARDS (dark) ─── */
-    .feat-card {
+    /* ─── MC CARDS ─── */
+    .mc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+      align-items: start;
+    }
+    .mc-card {
       background: var(--white);
       border: 1px solid var(--gray-200);
-      border-radius: 16px;
-      padding: 36px 30px;
+      border-radius: 20px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
-    .feat-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-    .feat-num {
-      font-size: 13px; font-weight: 700; color: var(--orange);
-      letter-spacing: 1px; flex-shrink: 0;
+    .mc-card--accent {
+      background: var(--orange);
+      border-color: var(--orange);
+      padding: 48px 32px;
     }
-    .feat-line { flex: 1; height: 1px; background: var(--gray-200); }
-    .feat-card h3 {
-      font-size: 26px; font-weight: 900; color: var(--black);
-      letter-spacing: -.8px; line-height: 1.25; margin-bottom: 14px;
+    .mc-tag {
+      font-size: 12px; font-weight: 700; color: var(--orange);
+      letter-spacing: 1px; margin-bottom: 20px;
     }
-    .feat-card p { font-size: 14px; color: var(--gray-500); line-height: 1.85; }
+    .mc-card--accent .mc-tag { color: rgba(255,255,255,.7); }
+
+    .mc-stat {
+      font-size: 72px; font-weight: 900; letter-spacing: -3px;
+      color: var(--black); line-height: 1; margin-bottom: 8px;
+    }
+    .mc-card--accent .mc-stat { color: var(--white); }
+
+    .mc-title {
+      font-size: 40px; font-weight: 900; letter-spacing: -1.5px;
+      line-height: 1.15; color: var(--black); margin-bottom: 24px;
+    }
+    .mc-card--accent .mc-title { color: var(--white); font-size: 46px; }
+
+    .mc-divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
+    .mc-card--accent .mc-divider { background: rgba(255,255,255,.25); }
+
+    .mc-desc {
+      font-size: 14px; color: var(--gray-500); line-height: 1.8; margin-bottom: 28px;
+    }
+    .mc-card--accent .mc-desc { color: rgba(255,255,255,.75); }
+
+    .mc-btn-row { display: flex; gap: 10px; margin-top: auto; padding-top: 8px; }
+    .mc-btn-circle {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--black); color: var(--white);
+      font-size: 18px; text-decoration: none;
+      transition: background .2s;
+    }
+    .mc-btn-circle:hover { background: var(--orange); }
+    .mc-btn-circle--outline {
+      background: transparent;
+      border: 1.5px solid var(--gray-200);
+      color: var(--black);
+    }
+    .mc-btn-circle--outline:hover { border-color: var(--black); background: transparent; }
+    .mc-card--accent .mc-btn-circle { background: var(--white); color: var(--orange); }
+    .mc-card--accent .mc-btn-circle:hover { background: rgba(255,255,255,.85); }
+
+    .mc-stat-list { display: flex; flex-direction: column; gap: 0; }
+    .mc-stat-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 15px; font-weight: 700; color: var(--black);
+      letter-spacing: -.3px;
+    }
+    .mc-stat-item:first-child { border-top: 1px solid var(--gray-200); }
+    .mc-stat-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--gray-500); flex-shrink: 0;
+      transition: all .2s;
+    }
+    .mc-stat-item:hover .mc-stat-arrow { background: var(--black); color: var(--white); border-color: var(--black); }
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 960px) {
@@ -325,7 +390,7 @@
       .hero { padding: 110px 24px 72px; }
       .hero .container { grid-template-columns: 1fr; gap: 48px; }
       .book-wrap { display: none; }
-      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .grid-3, .grid-2, .mc-grid { grid-template-columns: 1fr; }
       .price-grid { grid-template-columns: 1fr; max-width: 100%; }
       .sample-inner { grid-template-columns: 1fr; gap: 36px; }
       .process-row { flex-direction: column; gap: 10px; padding: 28px 24px; }
@@ -404,22 +469,52 @@
   <div class="container">
     <div class="tag">Problem</div>
     <h2 class="big">원장님이 매주 겪는<br><span class="hl">콘텐츠 운영 문제</span></h2>
-    <div class="grid-3">
-      <div class="feat-card fu">
-        <div class="feat-top"><span class="feat-num">01</span><div class="feat-line"></div></div>
-        <h3>숙제 자료<br>제작 부담</h3>
-        <p>매주 수업 진도에 맞는 과제를 새로 구성하는 데 시간이 많이 듭니다.</p>
+    <div class="mc-grid">
+
+      <!-- 카드 1 -->
+      <div class="mc-card fu">
+        <div class="mc-tag">운영 문제 01</div>
+        <div class="mc-stat">매주</div>
+        <div class="mc-title">숙제 자료<br>제작 부담</div>
+        <div class="mc-divider"></div>
+        <p class="mc-desc">수업 진도에 맞는 과제를 매주 새로 구성하는 데 시간이 많이 듭니다.</p>
+        <div class="mc-btn-row">
+          <a href="#cta" class="mc-btn-circle">↗</a>
+          <a href="#sample" class="mc-btn-circle mc-btn-circle--outline">→</a>
+        </div>
       </div>
-      <div class="feat-card fu">
-        <div class="feat-top"><span class="feat-num">02</span><div class="feat-line"></div></div>
-        <h3>자습 콘텐츠<br>부족</h3>
-        <p>자습실을 운영해도 학생이 혼자 풀고 복습할 자료가 안정적으로 필요합니다.</p>
+
+      <!-- 카드 2 (강조) -->
+      <div class="mc-card mc-card--accent fu">
+        <div class="mc-tag">운영 문제 02</div>
+        <div class="mc-title">자습<br>콘텐츠<br>부족</div>
+        <div class="mc-divider"></div>
+        <p class="mc-desc">자습실을 운영해도 학생이 혼자 풀고 복습할 안정적인 자료가 없습니다.</p>
+        <div class="mc-btn-row">
+          <a href="#cta" class="mc-btn-circle">↗</a>
+        </div>
       </div>
-      <div class="feat-card fu">
-        <div class="feat-top"><span class="feat-num">03</span><div class="feat-line"></div></div>
-        <h3>학부모 설득<br>자료 부족</h3>
-        <p>수업 외에 어떤 학습 관리가 이루어지는지 보여줄 콘텐츠가 필요합니다.</p>
+
+      <!-- 카드 3 (스탯) -->
+      <div class="mc-card fu">
+        <div class="mc-tag">운영 문제 03</div>
+        <div class="mc-title">학부모<br>설득 자료<br>부족</div>
+        <div class="mc-stat-list">
+          <div class="mc-stat-item">
+            수업 외 관리 근거 없음
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+          <div class="mc-stat-item">
+            학부모 상담 준비 부담
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+          <div class="mc-stat-item">
+            학원 신뢰도 확보 어려움
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -443,31 +538,56 @@
       <div class="tag">Core Features</div>
       <h2 class="big">단순 문제집이 아니라,<br><span class="hl">학원에서 바로 활용 가능한</span><br>과제 콘텐츠입니다</h2>
     </div>
-    <div class="grid-3">
-      <div class="feat-card fu">
-        <div class="feat-top">
-          <span class="feat-num">01</span>
-          <div class="feat-line"></div>
+    <div class="mc-grid">
+
+      <!-- 카드 1 -->
+      <div class="mc-card fu">
+        <div class="mc-tag">핵심 장점 01</div>
+        <div class="mc-stat">100%</div>
+        <div class="mc-title">기출 기반<br>문항 선별</div>
+        <div class="mc-divider"></div>
+        <p class="mc-desc">평가원·교육청 기출 흐름을 기준으로 학생이 반드시 학습해야 할 문항을 선별했습니다.</p>
+        <div class="mc-btn-row">
+          <a href="#cta" class="mc-btn-circle">↗</a>
+          <a href="#sample" class="mc-btn-circle mc-btn-circle--outline">→</a>
         </div>
-        <h3>기출 기반<br>문항 선별</h3>
-        <p>평가원·교육청 기출 흐름을 기준으로 학생이 반복 학습해야 할 문항을 선별했습니다.</p>
       </div>
-      <div class="feat-card fu">
-        <div class="feat-top">
-          <span class="feat-num">02</span>
-          <div class="feat-line"></div>
+
+      <!-- 카드 2 (강조) -->
+      <div class="mc-card mc-card--accent fu">
+        <div class="mc-tag">핵심 장점 02</div>
+        <div class="mc-title">해설<br>중심<br>학습</div>
+        <div class="mc-divider"></div>
+        <p class="mc-desc">정답 확인에서 끝나지 않고, 문장 해석·정답 근거·풀이 사고 과정을 함께 정리했습니다.</p>
+        <div class="mc-btn-row">
+          <a href="#cta" class="mc-btn-circle">↗</a>
         </div>
-        <h3>해설 중심<br>학습</h3>
-        <p>정답 확인에서 끝나지 않고, 문장 해석·정답 근거·풀이 사고 과정을 함께 정리했습니다.</p>
       </div>
-      <div class="feat-card fu">
-        <div class="feat-top">
-          <span class="feat-num">03</span>
-          <div class="feat-line"></div>
+
+      <!-- 카드 3 (스탯) -->
+      <div class="mc-card fu">
+        <div class="mc-tag">핵심 장점 03</div>
+        <div class="mc-title">과제·자습<br>운영</div>
+        <div class="mc-stat-list">
+          <div class="mc-stat-item">
+            주간 숙제 배포
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+          <div class="mc-stat-item">
+            자습실 관리 콘텐츠
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+          <div class="mc-stat-item">
+            방학 특강 보조교재
+            <span class="mc-stat-arrow">↗</span>
+          </div>
+          <div class="mc-stat-item">
+            파이널 기출 루틴
+            <span class="mc-stat-arrow">↗</span>
+          </div>
         </div>
-        <h3>과제·자습<br>운영</h3>
-        <p>수업 후 숙제, 주간 테스트, 자습 관리, 방학 특강 자료로 바로 활용할 수 있습니다.</p>
       </div>
+
     </div>
   </div>
 </section>

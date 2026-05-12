@@ -278,6 +278,26 @@
       .split-cards { grid-template-columns: 1fr; }
     }
 
+    /* ── VIDEO SECTION ── */
+    .video-sec { background: #fff; padding: 100px 80px; }
+    .video-sec-inner { max-width: 1100px; margin: 0 auto; }
+    .video-heading { font-size: clamp(28px, 4vw, 56px); font-weight: 900; letter-spacing: -2px; line-height: 1.25; text-align: center; color: #111; margin-bottom: 56px; }
+    .video-heading span { color: var(--orange); }
+    .video-banner { background: #DCDCDC; border-radius: 20px; position: relative; min-height: 480px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 60px 56px; }
+    .video-banner-left { position: absolute; left: 56px; bottom: 56px; }
+    .video-banner-left p { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; color: #fff; line-height: 1.4; letter-spacing: -.5px; }
+    .video-banner-right { position: absolute; right: 56px; bottom: 56px; text-align: right; }
+    .video-banner-right p { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.8; }
+    .video-banner-right p + p { margin-top: 14px; }
+    .video-banner-right em { color: var(--orange); font-style: normal; font-weight: 700; }
+    .video-placeholder { width: 420px; height: 300px; background: rgba(0,0,0,.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,.25); font-size: 13px; font-weight: 600; }
+    @media (max-width: 760px) {
+      .video-sec { padding: 72px 24px; }
+      .video-banner { min-height: 360px; padding: 40px 24px; }
+      .video-banner-left, .video-banner-right { position: static; }
+      .video-placeholder { width: 100%; height: 200px; }
+    }
+
     /* ── FEATURE LIST ── */
     .feat-list { background: #0D0D0D; padding: 0 80px; }
     .feat-list-inner { max-width: 1200px; margin: 0 auto; }
@@ -376,6 +396,23 @@
         <li><span class="pitch-dot"></span>조교·집필진이 답변하는 초고속 학습 관리</li>
       </ul>
       <a href="#" class="pitch-cta">멤버십 시작하기 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO SECTION -->
+<section class="video-sec">
+  <div class="video-sec-inner">
+    <h2 class="video-heading">어려운 문항은,<br><span>영상으로 해결</span>합니다.</h2>
+    <div class="video-banner">
+      <div class="video-placeholder">태블릿 이미지</div>
+      <div class="video-banner-left">
+        <p>모든 문항을 똑같이<br>공부할 필요는 없습니다.</p>
+      </div>
+      <div class="video-banner-right">
+        <p>이해되는 문항은<br>커닥 해설지로 빠르게.</p>
+        <p>해설지로 막히는 고난이도 문항은,<br><em>핵심만 담은 하이라이트 영상해설</em>로.</p>
+      </div>
     </div>
   </div>
 </section>

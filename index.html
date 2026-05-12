@@ -198,30 +198,36 @@
     .footer-col a:hover { color: #fff; }
     .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; }
 
-    /* ── MEMBERSHIP PITCH ── */
-    .pitch { background: #F2C4A8; padding: 120px 40px; text-align: center; }
-    .pitch-tag { display: inline-block; border: 1px solid rgba(0,0,0,.25); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 100px; color: rgba(0,0,0,.7); margin-bottom: 44px; letter-spacing: .3px; }
-    .pitch-heading { font-size: clamp(40px, 6.5vw, 96px); font-weight: 900; letter-spacing: -3px; line-height: 1.08; color: var(--black); margin-bottom: 52px; }
-    .pitch-heading span { color: var(--orange); }
-    .pitch-list { list-style: none; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-    .pitch-list li { font-size: 17px; color: rgba(0,0,0,.55); font-weight: 500; }
-
-    /* ── FEATURE GRID ── */
-    .fgrid { display: grid; grid-template-columns: repeat(4, 1fr); }
-    .fgrid-item { display: flex; flex-direction: column; }
-    .fgrid-photo { aspect-ratio: 3/4; background: #222; overflow: hidden; }
-    .fgrid-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .fgrid-info { background: #2A2A2A; padding: 40px 28px; flex: 1; border-right: 1px solid rgba(255,255,255,.06); }
-    .fgrid-item:last-child .fgrid-info { border-right: none; }
-    .fgrid-num { font-size: 52px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 24px; letter-spacing: -2px; }
-    .fgrid-title { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.4; }
-    .fgrid-desc { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.75; }
+    /* ── PRICING ── */
+    .pricing { background: #fff; padding: 120px 80px; }
+    .pricing-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+    .pricing-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 28px; }
+    .pricing-amount { font-size: clamp(64px, 9vw, 128px); font-weight: 900; letter-spacing: -5px; color: #111; line-height: .95; }
+    .pricing-amount em { font-style: normal; font-size: .32em; font-weight: 600; color: #999; letter-spacing: -1px; vertical-align: middle; margin-left: 4px; }
+    .pricing-sub { font-size: 20px; font-weight: 700; color: #111; margin-top: 28px; letter-spacing: -.5px; line-height: 1.5; }
+    .pricing-features { list-style: none; margin-bottom: 40px; }
+    .pricing-features li { display: flex; align-items: center; gap: 14px; padding: 18px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px; font-weight: 500; color: #333; }
+    .pricing-features li:first-child { border-top: 1px solid #f0f0f0; }
+    .pricing-dot { width: 7px; height: 7px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .pricing-cta { display: inline-flex; align-items: center; gap: 10px; background: #111; color: #fff; padding: 18px 40px; border-radius: 6px; font-size: 15px; font-weight: 800; text-decoration: none; letter-spacing: -.2px; transition: background .2s; }
+    .pricing-cta:hover { background: var(--orange); }
     @media (max-width: 960px) {
-      .fgrid { grid-template-columns: 1fr 1fr; }
+      .pricing { padding: 80px 24px; }
+      .pricing-inner { grid-template-columns: 1fr; gap: 56px; }
     }
-    @media (max-width: 560px) {
-      .fgrid { grid-template-columns: 1fr; }
-      .pitch { padding: 80px 24px; }
+
+    /* ── FEATURE LIST ── */
+    .feat-list { background: #0D0D0D; padding: 0 80px; }
+    .feat-list-inner { max-width: 1200px; margin: 0 auto; }
+    .feat-item { display: grid; grid-template-columns: 72px 1fr 1.6fr; gap: 60px; align-items: center; padding: 60px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .feat-item:last-child { border-bottom: none; }
+    .feat-num { font-size: 12px; font-weight: 700; color: var(--orange); letter-spacing: 2.5px; }
+    .feat-title { font-size: clamp(18px, 2vw, 26px); font-weight: 800; color: #fff; letter-spacing: -.6px; line-height: 1.35; }
+    .feat-desc { font-size: 15px; color: rgba(255,255,255,.38); line-height: 1.8; font-weight: 400; }
+    @media (max-width: 960px) {
+      .feat-list { padding: 0 24px; }
+      .feat-item { grid-template-columns: 48px 1fr; gap: 24px; }
+      .feat-desc { grid-column: 2; margin-top: -8px; }
     }
 
     /* ── FADE ── */
@@ -290,50 +296,48 @@
   </div>
 </section>
 
-<!-- MEMBERSHIP PITCH -->
-<section class="pitch">
-  <span class="pitch-tag">수능영어 멤버십, 2027 수능 대비 오픈</span>
-  <h2 class="pitch-heading">15900원으로 두는,<br>내 옆의 <span>수능영어 과외선생</span></h2>
-  <ul class="pitch-list">
-    <li>매주 제공되는 수능 영어 기출 주간지</li>
-    <li>핵심 문항 하이라이트 해설 강의</li>
-    <li>약점을 채우는 멤버십 콘텐츠</li>
-    <li>조교·집필진이 답변하는 초고속 학습 관리</li>
-  </ul>
+<!-- PRICING -->
+<section class="pricing">
+  <div class="pricing-inner">
+    <div>
+      <p class="pricing-eyebrow">Membership</p>
+      <div class="pricing-amount">15,900<em>원/월</em></div>
+      <p class="pricing-sub">과외선생 한 명을<br>내 손안에.</p>
+    </div>
+    <div>
+      <ul class="pricing-features">
+        <li><span class="pricing-dot"></span>매주 제공되는 수능 영어 기출 주간지</li>
+        <li><span class="pricing-dot"></span>핵심 문항 하이라이트 해설 강의</li>
+        <li><span class="pricing-dot"></span>약점을 채우는 멤버십 콘텐츠</li>
+        <li><span class="pricing-dot"></span>조교·집필진 1:1 질의응답</li>
+      </ul>
+      <a href="#" class="pricing-cta">멤버십 시작하기 →</a>
+    </div>
+  </div>
 </section>
 
-<!-- FEATURE GRID -->
-<div class="fgrid">
-  <div class="fgrid-item">
-    <div class="fgrid-photo"></div>
-    <div class="fgrid-info">
-      <div class="fgrid-num">01</div>
-      <div class="fgrid-title">매주 학습하는 기출 주간지</div>
-      <div class="fgrid-desc">핵심만 선별한 커닥 주간지</div>
+<!-- FEATURE LIST -->
+<div class="feat-list">
+  <div class="feat-list-inner">
+    <div class="feat-item">
+      <span class="feat-num">01</span>
+      <div class="feat-title">매주 학습하는<br>기출 주간지</div>
+      <div class="feat-desc">핵심만 선별한 커닥 주간지. 매주 실물로 배송되어 손에 잡히는 학습이 가능합니다.</div>
     </div>
-  </div>
-  <div class="fgrid-item">
-    <div class="fgrid-photo"></div>
-    <div class="fgrid-info">
-      <div class="fgrid-num">02</div>
-      <div class="fgrid-title">핵심 문항 하이라이트 강의</div>
-      <div class="fgrid-desc">혼자 넘기기 어려운 문항만 정확하게</div>
+    <div class="feat-item">
+      <span class="feat-num">02</span>
+      <div class="feat-title">핵심 문항<br>하이라이트 강의</div>
+      <div class="feat-desc">혼자 넘기기 어려운 문항만 정확하게. 집필진이 직접 해설하는 영상 강의를 무제한 시청할 수 있습니다.</div>
     </div>
-  </div>
-  <div class="fgrid-item">
-    <div class="fgrid-photo"></div>
-    <div class="fgrid-info">
-      <div class="fgrid-num">03</div>
-      <div class="fgrid-title">고퀄리티 핵심 콘텐츠</div>
-      <div class="fgrid-desc">구문·어휘·해석 과제·하프 모의고사까지</div>
+    <div class="feat-item">
+      <span class="feat-num">03</span>
+      <div class="feat-title">고퀄리티<br>핵심 콘텐츠</div>
+      <div class="feat-desc">구문·어휘·해석 과제부터 하프 모의고사까지. 수능영어의 모든 약점을 한 번에 잡습니다.</div>
     </div>
-  </div>
-  <div class="fgrid-item">
-    <div class="fgrid-photo"></div>
-    <div class="fgrid-info">
-      <div class="fgrid-num">04</div>
-      <div class="fgrid-title">초고속 학습 관리</div>
-      <div class="fgrid-desc">조교·집필진이 함께하는 1:1 질의응답</div>
+    <div class="feat-item">
+      <span class="feat-num">04</span>
+      <div class="feat-title">초고속<br>학습 관리</div>
+      <div class="feat-desc">조교·집필진이 함께하는 1:1 질의응답. 막히는 문제는 빠르게, 학습 흐름은 끊기지 않게.</div>
     </div>
   </div>
 </div>

@@ -111,6 +111,7 @@
     .hero {
       padding: 148px 60px 100px;
       display: flex; align-items: center;
+      overflow: hidden;
     }
     .hero .container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
 
@@ -133,7 +134,8 @@
     /* book mockup */
     .book-wrap { display: flex; justify-content: flex-end; align-items: center; transform: translateX(400px); }
     .book-img {
-      width: 200%;
+      width: 900px;
+      min-width: 900px;
       max-width: none;
       display: block;
       filter: drop-shadow(0 32px 60px rgba(0,0,0,.22));

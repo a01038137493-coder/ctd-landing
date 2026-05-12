@@ -390,13 +390,19 @@
       justify-content: center;
       align-items: flex-end;
     }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
     .mc-img-wrap img {
       width: 75%;
       display: block;
       filter: drop-shadow(0 8px 20px rgba(0,0,0,.12));
-      transition: transform .3s ease;
+      animation: float 3s ease-in-out infinite;
     }
-    .mc-card--img:hover .mc-img-wrap img { transform: translateY(-6px); }
+    .mc-img-wrap img:nth-child(1) { animation-delay: 0s; }
+    .mc-card:nth-child(2) .mc-img-wrap img { animation-delay: .4s; }
+    .mc-card:nth-child(3) .mc-img-wrap img { animation-delay: .8s; }
 
     /* ─── SOK CARDS (Features section) ─── */
     .sok-section { background: #111; padding: 110px 60px; }

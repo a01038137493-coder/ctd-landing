@@ -61,19 +61,6 @@
       content: ''; position: absolute; inset: 0;
       background: rgba(0,0,0,.45);
     }
-    @keyframes heroReveal {
-      0%   { opacity: 0; filter: blur(48px); letter-spacing: 32px; transform: translate(-50%, -50%) scale(1.08); }
-      30%  { opacity: 1; }
-      100% { opacity: 1; filter: blur(0px); letter-spacing: -4px; transform: translate(-50%, -50%) scale(1); }
-    }
-    @keyframes taglineReveal {
-      0%   { opacity: 0; transform: translateY(16px); filter: blur(8px); }
-      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
-    @keyframes scrollReveal {
-      0%   { opacity: 0; }
-      100% { opacity: 1; }
-    }
     .hero-bg-text {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -82,10 +69,9 @@
       white-space: nowrap; pointer-events: none;
       z-index: 2; letter-spacing: -4px; line-height: 1;
       width: 100%; text-align: center;
-      animation: heroReveal 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    .hero-tagline { animation: taglineReveal 1s ease forwards; animation-delay: 2.4s; opacity: 0; }
-    .hero-scroll-hint { animation: scrollReveal 1s ease forwards; animation-delay: 3s; opacity: 0; }
+    .hero-tagline { opacity: 1; }
+    .hero-scroll-hint { opacity: 1; }
     .hero-book {
       position: relative; z-index: 2;
       width: clamp(260px, 28vw, 420px);
@@ -392,16 +378,6 @@
   const heroTagline = document.querySelector('.hero-tagline');
   const heroScroll = document.querySelector('.hero-scroll-hint');
   const hero = document.querySelector('.hero');
-
-  // CSS animation이 JS inline style보다 cascade 우선순위가 높아서
-  // animationend 후 animation을 none으로 취소하고 JS가 제어권을 가져감
-  heroText.addEventListener('animationend', () => {
-    heroText.style.animation = 'none';
-    heroText.style.transform = 'translate(-50%, -50%)';
-    heroText.style.opacity = '1';
-    heroText.style.filter = 'blur(0px)';
-    heroText.style.letterSpacing = '-4px';
-  });
 
   function onScroll() {
     const scrollY = window.scrollY;

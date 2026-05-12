@@ -241,6 +241,19 @@
       .pricing-inner { grid-template-columns: 1fr; gap: 56px; }
     }
 
+    /* ── FGRID ── */
+    .fgrid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .fgrid-col { position: relative; min-height: 420px; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 32px 44px; background: #3A3A3A; background-size: cover; background-position: center; border-right: 1px solid rgba(255,255,255,.06); overflow: hidden; }
+    .fgrid-col:last-child { border-right: none; }
+    .fgrid-col::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,.52); }
+    .fgrid-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+    .fgrid-num { font-size: 56px; font-weight: 900; color: #fff; letter-spacing: -2px; line-height: 1; }
+    .fgrid-bottom {}
+    .fgrid-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.45; }
+    .fgrid-desc { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.7; }
+    @media (max-width: 960px) { .fgrid { grid-template-columns: 1fr 1fr; } .fgrid-col { border-bottom: 1px solid rgba(255,255,255,.06); } }
+    @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } }
+
     /* ── FEATURE LIST ── */
     .feat-list { background: #0D0D0D; padding: 0 80px; }
     .feat-list-inner { max-width: 1200px; margin: 0 auto; }
@@ -342,6 +355,46 @@
     </div>
   </div>
 </section>
+
+<!-- FGRID -->
+<div class="fgrid">
+  <div class="fgrid-col" style="background-color:#383838;">
+    <div class="fgrid-content">
+      <div class="fgrid-num">O1</div>
+      <div class="fgrid-bottom">
+        <div class="fgrid-title">매주 학습하는<br>기출 주간지</div>
+        <div class="fgrid-desc">핵심만 선별한 커닥 주간지</div>
+      </div>
+    </div>
+  </div>
+  <div class="fgrid-col" style="background-color:#2E2E2E;">
+    <div class="fgrid-content">
+      <div class="fgrid-num">O2</div>
+      <div class="fgrid-bottom">
+        <div class="fgrid-title">핵심 문항<br>하이라이트 강의</div>
+        <div class="fgrid-desc">혼자 넘기기 어려운 문항만 정확하게</div>
+      </div>
+    </div>
+  </div>
+  <div class="fgrid-col" style="background-color:#323232;">
+    <div class="fgrid-content">
+      <div class="fgrid-num">O3</div>
+      <div class="fgrid-bottom">
+        <div class="fgrid-title">고퀄리티<br>핵심 콘텐츠</div>
+        <div class="fgrid-desc">구문·어휘·해석 과제·하프 모의고사까지</div>
+      </div>
+    </div>
+  </div>
+  <div class="fgrid-col" style="background-color:#282828;">
+    <div class="fgrid-content">
+      <div class="fgrid-num">O4</div>
+      <div class="fgrid-bottom">
+        <div class="fgrid-title">초고속<br>학습 관리</div>
+        <div class="fgrid-desc">조교·집필진이 함께하는 1:1 질의응답</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>

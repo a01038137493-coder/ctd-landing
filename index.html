@@ -256,6 +256,24 @@
     @media (max-width: 960px) { .fgrid { grid-template-columns: 1fr 1fr; } .fgrid-col { border-bottom: 1px solid rgba(255,255,255,.06); } }
     @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } }
 
+    /* ── PRODUCTS ── */
+    .products-sec { background: #0D0D0D; padding: 100px 80px; }
+    .products-sec-inner { max-width: 1300px; margin: 0 auto; }
+    .products-heading { font-size: clamp(24px, 3.5vw, 48px); font-weight: 900; letter-spacing: -2px; color: #fff; margin-bottom: 72px; line-height: 1.25; }
+    .products-heading em { font-style: normal; color: var(--orange); }
+    .products-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .product-item { background: #1A1A1A; border-radius: 12px; overflow: hidden; position: relative; cursor: default; }
+    .product-cover { aspect-ratio: 3/4; background: #222; overflow: hidden; position: relative; }
+    .product-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+    .product-item:hover .product-cover img { transform: scale(1.04); }
+    .product-cover-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.15); font-size: 12px; font-weight: 600; }
+    .product-info { padding: 20px 20px 24px; }
+    .product-num { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--orange); margin-bottom: 8px; }
+    .product-name { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; line-height: 1.35; margin-bottom: 8px; }
+    .product-desc { font-size: 12px; color: rgba(255,255,255,.38); line-height: 1.7; }
+    @media (max-width: 960px) { .products-sec { padding: 72px 24px; } .products-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+
     /* ── SPLIT SECTION ── */
     .split-sec { background: #fff; padding: 100px 80px; }
     .split-sec-inner { max-width: 1100px; margin: 0 auto; }
@@ -398,6 +416,55 @@
         <li><span class="pitch-dot"></span>조교·집필진이 답변하는 초고속 학습 관리</li>
       </ul>
       <a href="#" class="pitch-cta">멤버십 시작하기 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-sec">
+  <div class="products-sec-inner">
+    <h2 class="products-heading">수능영어, 이제<br><em>따로 공부할 필요 없습니다.</em></h2>
+    <div class="products-grid">
+      <div class="product-item">
+        <div class="product-cover"><img src="image/product01.jpg" alt="Trigger" /></div>
+        <div class="product-info">
+          <div class="product-num">01</div>
+          <div class="product-name">Trigger</div>
+          <div class="product-desc">수능기출 어휘/구문 독학서</div>
+        </div>
+      </div>
+      <div class="product-item">
+        <div class="product-cover"><div class="product-cover-empty">표지 준비중</div></div>
+        <div class="product-info">
+          <div class="product-num">02</div>
+          <div class="product-name">IP</div>
+          <div class="product-desc">실전 해석 감각을 만드는 과제</div>
+        </div>
+      </div>
+      <div class="product-item">
+        <div class="product-cover"><div class="product-cover-empty">표지 준비중</div></div>
+        <div class="product-info">
+          <div class="product-num">03</div>
+          <div class="product-name">IP GRAMMAR</div>
+          <div class="product-desc">어법 29번을 확실한 득점으로</div>
+        </div>
+      </div>
+      <div class="product-item">
+        <div class="product-cover"><div class="product-cover-empty">표지 준비중</div></div>
+        <div class="product-info">
+          <div class="product-num">04</div>
+          <div class="product-name">RC</div>
+          <div class="product-desc">바쁜 와중에도, 수능영어 하프모고</div>
+        </div>
+      </div>
+      <div class="product-item">
+        <div class="product-cover"><div class="product-cover-empty">표지 준비중</div></div>
+        <div class="product-info">
+          <div class="product-num">05</div>
+          <div class="product-name">실전모의고사</div>
+          <div class="product-desc">실전 감각을 완성하는 마무리 훈련</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

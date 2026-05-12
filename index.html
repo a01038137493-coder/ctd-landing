@@ -203,13 +203,25 @@
     .site-banner img { width: 100%; height: auto; display: block; }
 
     /* ── PITCH ── */
-    .pitch { background: #F2C4A8; padding: 120px 40px; text-align: center; }
-    .pitch-tag { display: inline-block; border: 1px solid rgba(0,0,0,.25); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 100px; color: rgba(0,0,0,.7); margin-bottom: 44px; letter-spacing: .3px; }
-    .pitch-heading { font-size: clamp(40px, 6.5vw, 96px); font-weight: 900; letter-spacing: -3px; line-height: 1.08; color: var(--black); margin-bottom: 52px; }
-    .pitch-heading span { color: var(--orange); }
-    .pitch-list { list-style: none; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-    .pitch-list li { font-size: 17px; color: rgba(0,0,0,.55); font-weight: 500; }
-    @media (max-width: 560px) { .pitch { padding: 80px 24px; } }
+    .pitch { background: #0D0D0D; padding: 100px 80px; }
+    .pitch-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1px 1fr; gap: 80px; align-items: center; }
+    .pitch-divider { background: rgba(255,255,255,.1); align-self: stretch; }
+    .pitch-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 24px; }
+    .pitch-price { font-size: clamp(56px, 8vw, 108px); font-weight: 900; color: #fff; letter-spacing: -4px; line-height: 1; }
+    .pitch-price sup { font-size: .35em; font-weight: 600; color: rgba(255,255,255,.35); letter-spacing: 0; vertical-align: super; }
+    .pitch-tagline { font-size: 17px; font-weight: 500; color: rgba(255,255,255,.4); margin-top: 24px; line-height: 1.6; }
+    .pitch-sub-title { font-size: clamp(22px, 2.5vw, 32px); font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1.35; margin-bottom: 36px; }
+    .pitch-list { list-style: none; margin-bottom: 44px; }
+    .pitch-list li { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 15px; color: rgba(255,255,255,.55); }
+    .pitch-list li:first-child { border-top: 1px solid rgba(255,255,255,.07); }
+    .pitch-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .pitch-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--orange); color: #fff; padding: 16px 36px; border-radius: 6px; font-size: 15px; font-weight: 800; text-decoration: none; transition: opacity .2s; }
+    .pitch-cta:hover { opacity: .85; }
+    @media (max-width: 960px) {
+      .pitch { padding: 72px 24px; }
+      .pitch-inner { grid-template-columns: 1fr; gap: 52px; }
+      .pitch-divider { display: none; }
+    }
 
     /* ── PRICING ── */
     .pricing { background: #fff; padding: 120px 80px; }
@@ -311,14 +323,24 @@
 
 <!-- PITCH -->
 <section class="pitch">
-  <span class="pitch-tag">수능영어 멤버십, 2027 수능 대비 오픈</span>
-  <h2 class="pitch-heading">15900원으로 두는,<br>내 옆의 <span>수능영어 과외선생</span></h2>
-  <ul class="pitch-list">
-    <li>매주 제공되는 수능 영어 기출 주간지</li>
-    <li>핵심 문항 하이라이트 해설 강의</li>
-    <li>약점을 채우는 멤버십 콘텐츠</li>
-    <li>조교·집필진이 답변하는 초고속 학습 관리</li>
-  </ul>
+  <div class="pitch-inner">
+    <div>
+      <p class="pitch-label">Membership</p>
+      <div class="pitch-price">15,900<sup>원/월</sup></div>
+      <p class="pitch-tagline">과외보다 강하게,<br>구독보다 합리하게.</p>
+    </div>
+    <div class="pitch-divider"></div>
+    <div>
+      <h2 class="pitch-sub-title">내 옆의<br>수능영어 과외선생</h2>
+      <ul class="pitch-list">
+        <li><span class="pitch-dot"></span>매주 제공되는 수능 영어 기출 주간지</li>
+        <li><span class="pitch-dot"></span>핵심 문항 하이라이트 해설 강의</li>
+        <li><span class="pitch-dot"></span>약점을 채우는 멤버십 콘텐츠</li>
+        <li><span class="pitch-dot"></span>조교·집필진이 답변하는 초고속 학습 관리</li>
+      </ul>
+      <a href="#" class="pitch-cta">멤버십 시작하기 →</a>
+    </div>
+  </div>
 </section>
 
 <!-- FOOTER -->

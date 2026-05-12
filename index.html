@@ -112,7 +112,7 @@
       padding: 148px 60px 100px;
       display: flex; align-items: center;
     }
-    .hero .container { display: grid; grid-template-columns: 1fr 1.6fr; gap: 40px; align-items: center; }
+    .hero .container { position: relative; }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -131,9 +131,9 @@
     .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
     /* book mockup */
-    .book-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
+    .book-wrap { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); width: 520px; pointer-events: none; }
     .book-img {
-      width: 110%;
+      width: 100%;
       max-width: none;
       display: block;
       filter: drop-shadow(0 32px 60px rgba(0,0,0,.22));

@@ -951,7 +951,13 @@
   <div class="footer-logo"><img src="logo png vertical.png" alt="Connect the dots" /></div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const _supabase = supabase.createClient(
+    'https://qfcgbiecvklkojjrxswe.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmY2diaWVjdmtsa29qanJ4c3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Nzg0OTcsImV4cCI6MjA5NDE1NDQ5N30.tfWkkVcNpaAC0ZpKhn97e93ly1u7IO-vWPQ9T60s78M'
+  );
+
   // nav scroll
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10));
@@ -974,11 +980,33 @@
   }
 
   // Contact form
-  function submitInquiry(e) {
+  async function submitInquiry(e) {
     e.preventDefault();
+    const form = e.target;
+    const [name, academy, phone] = form.querySelectorAll('input');
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = '전송 중...';
+
+    const { error } = await _supabase.from('inquiries').insert({
+      name: name.value.trim(),
+      academy: academy.value.trim(),
+      phone: phone.value.trim()
+    });
+
+    btn.disabled = false;
+    btn.textContent = '샘플 받아보기 →';
+
     const toast = document.getElementById('ctaToast');
+    if (error) {
+      toast.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+      toast.style.background = '#e53e3e';
+    } else {
+      toast.textContent = '감사합니다! 빠르게 연락드리겠습니다 😊';
+      toast.style.background = '';
+    }
     toast.style.display = 'block';
-    e.target.reset();
+    form.reset();
     setTimeout(() => toast.style.display = 'none', 4000);
   }
 

@@ -112,7 +112,7 @@
       padding: 148px 60px 100px;
       display: flex; align-items: center;
     }
-    .hero .container { display: grid; grid-template-columns: 1.4fr 1fr; gap: 60px; align-items: center; }
+    .hero .container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -133,8 +133,8 @@
     /* book mockup */
     .book-wrap { display: flex; justify-content: center; align-items: center; }
     .book-img {
-      width: 100%;
-      max-width: 560px;
+      width: 115%;
+      max-width: none;
       display: block;
       filter: drop-shadow(0 32px 60px rgba(0,0,0,.22));
       animation: float 3.5s ease-in-out infinite;
@@ -557,9 +557,6 @@
 <!-- ━━━ 1. HERO ━━━ -->
 <section class="hero">
   <div class="container">
-    <div class="book-wrap">
-      <img src="image/책만_final.png" alt="Connect the dots 교재" class="book-img" />
-    </div>
     <div>
       <div class="hero-badge">고등부 영어학원 전용 콘텐츠</div>
       <h1>영어 콘텐츠<br>준비부담은 줄이고,<br>학원 밖 학습루틴은<br><span class="hl">더 선명하게</span> 만드세요</h1>
@@ -571,6 +568,9 @@
         <a href="tel:01031182266" class="btn-main">샘플 다운로드</a>
         <a href="tel:01031182266" class="btn-line">학원 공급가 문의하기</a>
       </div>
+    </div>
+    <div class="book-wrap">
+      <img src="image/책만_final.png" alt="Connect the dots 교재" class="book-img" />
     </div>
   </div>
 </section>
@@ -607,7 +607,7 @@
 <section class="problem-section">
   <div class="container">
     <div class="tag">Problem</div>
-    <h2 class="big">원장님이 매주 겪는<br><span class="hl">콘텐츠 운영 문제</span></h2>
+    <h2 class="big" style="position:relative; display:inline-block;">원장님이 매주 겪는<br><span class="hl">콘텐츠 운영 문제</span><span style="color:var(--orange); font-size:1.1em; display:inline-block; transform:rotate(-10deg); margin-left:10px; vertical-align:middle; line-height:1;">!</span></h2>
     <div class="mc-grid">
 
       <!-- 카드 1 -->
@@ -856,7 +856,7 @@
 <section id="faq" class="faq-section">
   <div class="container" style="text-align:center;">
     <div class="tag">FAQ</div>
-    <h2 class="big" style="position:relative; display:inline-block;">자주 묻는 질문<span style="color:var(--orange); font-size:0.85em; display:inline-block; transform:rotate(15deg); margin-left:8px; vertical-align:middle; line-height:1;">?</span></h2>
+    <h2 class="big" style="position:relative; display:inline-block;">자주 묻는 질문<span style="color:var(--orange); font-size:1.1em; display:inline-block; transform:rotate(15deg); margin-left:10px; vertical-align:middle; line-height:1;">?</span></h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">

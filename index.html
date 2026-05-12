@@ -232,12 +232,12 @@
 
     /* ─── 7. SAMPLE ─── */
     .sample-section { background: var(--bg); }
-    .sample-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; margin-top: 52px; }
+    .sample-inner { display: grid; grid-template-columns: 3fr 2fr; gap: 60px; align-items: start; margin-top: 52px; }
     .video-box {
       background: var(--black); border-radius: 16px; overflow: hidden;
-      aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,.3); font-size: 14px; position: relative;
+      aspect-ratio: 16/9; position: relative;
     }
+    .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
     .video-placeholder-text { text-align: center; }
     .video-placeholder-text svg { display: block; margin: 0 auto 10px; opacity: .4; }
     .sample-info h3 { font-size: 22px; font-weight: 900; letter-spacing: -.6px; margin-bottom: 16px; }
@@ -661,10 +661,7 @@
     <div class="sample-inner">
       <div>
         <div class="video-box fu">
-          <div class="video-placeholder-text">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-            해설 영상 샘플
-          </div>
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID?rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
       </div>
       <div class="sample-info fu">

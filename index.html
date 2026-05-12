@@ -50,10 +50,14 @@
     /* ── HERO ── */
     .hero {
       position: relative; min-height: 100vh;
-      background: #888;
+      background: url('image/정면책사진.jpg') center center / cover no-repeat;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
     }
     .hero-bg-text {
       position: absolute; top: 50%; left: 50%;
@@ -61,7 +65,7 @@
       font-size: clamp(80px, 12vw, 180px);
       font-weight: 900; color: #fff;
       white-space: nowrap; pointer-events: none;
-      z-index: 1; letter-spacing: -4px; line-height: 1;
+      z-index: 2; letter-spacing: -4px; line-height: 1;
       width: 100%; text-align: center;
     }
     .hero-book {

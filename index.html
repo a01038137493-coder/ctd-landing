@@ -147,7 +147,7 @@
     .book-float span { display: block; font-size: 11px; font-weight: 400; color: var(--gray-500); margin-top: 3px; }
 
     /* ─── 2. PRICING ─── */
-    .pricing-section { background: var(--black); color: var(--white); padding: 0; }
+    .pricing-section { background: var(--black); color: var(--white); padding: 0; width: 100%; }
     .pricing-section .tag { color: #ff9a40; }
     .pricing-section h2.big { color: var(--white); }
 
@@ -156,6 +156,7 @@
     .price-band {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      width: 100%;
     }
     .price-col {
       padding: 60px;
@@ -798,7 +799,7 @@
 <section id="faq" class="faq-section">
   <div class="container" style="text-align:center;">
     <div class="tag">FAQ</div>
-    <h2 class="big">자주 묻는 질문</h2>
+    <h2 class="big" style="position:relative; display:inline-block;">자주 묻는 질문<span style="color:var(--orange); font-size:0.85em; display:inline-block; transform:rotate(15deg); margin-left:8px; vertical-align:middle; line-height:1;">?</span></h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">

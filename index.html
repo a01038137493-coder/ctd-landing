@@ -256,6 +256,28 @@
     @media (max-width: 960px) { .fgrid { grid-template-columns: 1fr 1fr; } .fgrid-col { border-bottom: 1px solid rgba(255,255,255,.06); } }
     @media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } }
 
+    /* ── SPLIT SECTION ── */
+    .split-sec { background: #fff; padding: 100px 80px; }
+    .split-sec-inner { max-width: 1100px; margin: 0 auto; }
+    .split-heading { font-size: clamp(28px, 4vw, 56px); font-weight: 900; letter-spacing: -2px; line-height: 1.2; text-align: center; color: #111; margin-bottom: 56px; }
+    .split-icon { display: flex; justify-content: center; margin-bottom: 56px; }
+    .split-icon svg { width: 56px; height: 56px; }
+    .split-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .split-card { border-radius: 16px; padding: 44px 40px; }
+    .split-card.light { border: 1.5px solid #E0E0E0; background: #fff; }
+    .split-card.dark { background: #111; }
+    .split-card-num { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #999; margin-bottom: 8px; }
+    .split-card.dark .split-card-num { color: rgba(255,255,255,.4); }
+    .split-card-title { font-size: 26px; font-weight: 900; letter-spacing: -1px; color: #111; margin-bottom: 28px; }
+    .split-card.dark .split-card-title { color: #fff; text-align: right; }
+    .split-card-body { font-size: 15px; color: #555; line-height: 1.9; }
+    .split-card-body p + p { margin-top: 20px; }
+    .split-card.dark .split-card-body { color: rgba(255,255,255,.6); }
+    @media (max-width: 760px) {
+      .split-sec { padding: 72px 24px; }
+      .split-cards { grid-template-columns: 1fr; }
+    }
+
     /* ── FEATURE LIST ── */
     .feat-list { background: #0D0D0D; padding: 0 80px; }
     .feat-list-inner { max-width: 1200px; margin: 0 auto; }
@@ -354,6 +376,42 @@
         <li><span class="pitch-dot"></span>조교·집필진이 답변하는 초고속 학습 관리</li>
       </ul>
       <a href="#" class="pitch-cta">멤버십 시작하기 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT SECTION -->
+<section class="split-sec">
+  <div class="split-sec-inner">
+    <h2 class="split-heading">절대평가 수능영어,<br>핵심은 '필요한 만큼, 효율적으로'</h2>
+    <div class="split-icon">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="28" y1="4" x2="28" y2="24" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+        <line x1="28" y1="24" x2="10" y2="44" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+        <line x1="28" y1="24" x2="46" y2="44" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="4,38 10,44 16,38" stroke="#111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <polyline points="40,38 46,44 52,38" stroke="#111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="split-cards">
+      <div class="split-card light">
+        <div class="split-card-num">01</div>
+        <div class="split-card-title">필요한 만큼</div>
+        <div class="split-card-body">
+          <p>2020학년도부터 2026학년도까지,<br>절대평가 수능영어에서 최근 기조에 꼭 필요한,<br>반드시 풀어야 할 핵심 기출만 선별했습니다.</p>
+          <p>시중 기출문제집 대비 풀어야 할 문항의 수는<br>50% 이상 줄이고, 다루는 연도는 더 넓게.</p>
+          <p>1타 강사들과 함께 일한 전문가의 안목으로<br>수능영어의 핵심만 추출했습니다.</p>
+        </div>
+      </div>
+      <div class="split-card dark">
+        <div class="split-card-num">02</div>
+        <div class="split-card-title">효율적으로</div>
+        <div class="split-card-body">
+          <p>왜 정답인지만 확인하고 끝난다면,<br>기출을 제대로 활용한 것이 아닙니다.</p>
+          <p>커닥은 모든 문항을 과외식 해설로 구성해<br>매 문장마다 필요한 사고방식을 제시합니다.</p>
+          <p>구문, 어휘, 독해 포인트와 연습문제까지 함께 담아<br>한 번의 학습으로 더 많이 남도록 설계했습니다.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

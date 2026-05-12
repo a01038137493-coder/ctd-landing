@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Connect the dots — 수능영어 멤버십</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -61,22 +61,31 @@
       content: ''; position: absolute; inset: 0;
       background: rgba(0,0,0,.45);
     }
-    @keyframes boldGrow {
-      0%   { font-variation-settings: 'wght' 100; opacity: 0; letter-spacing: 10px; }
-      20%  { opacity: 1; }
-      100% { font-variation-settings: 'wght' 900; opacity: 1; letter-spacing: -4px; }
+    @keyframes heroReveal {
+      0%   { opacity: 0; filter: blur(48px); letter-spacing: 32px; transform: translate(-50%, -50%) scale(1.08); }
+      30%  { opacity: 1; }
+      100% { opacity: 1; filter: blur(0px); letter-spacing: -4px; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes taglineReveal {
+      0%   { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes scrollReveal {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
     }
     .hero-bg-text {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-size: clamp(80px, 12vw, 180px);
-      font-variation-settings: 'wght' 900;
-      color: #fff;
+      font-weight: 900; color: #fff;
       white-space: nowrap; pointer-events: none;
       z-index: 2; letter-spacing: -4px; line-height: 1;
       width: 100%; text-align: center;
-      animation: boldGrow 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+      animation: heroReveal 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+    .hero-tagline { animation: taglineReveal 1s ease forwards; animation-delay: 2.4s; opacity: 0; }
+    .hero-scroll-hint { animation: scrollReveal 1s ease forwards; animation-delay: 3s; opacity: 0; }
     .hero-book {
       position: relative; z-index: 2;
       width: clamp(260px, 28vw, 420px);

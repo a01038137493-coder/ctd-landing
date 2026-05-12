@@ -383,9 +383,36 @@
     if (menu.style.display === 'flex') {
       menu.style.display = '';
     } else {
-      menu.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:#fff;padding:16px 20px;gap:4px;border-bottom:1px solid #E8E8E8;z-index:199;height:auto;';
+      menu.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:#111;padding:16px 20px;gap:4px;border-bottom:1px solid rgba(255,255,255,.1);z-index:199;height:auto;';
     }
   }
+
+  // Scroll parallax
+  const heroText = document.querySelector('.hero-bg-text');
+  const heroTagline = document.querySelector('.hero-tagline');
+  const heroScroll = document.querySelector('.hero-scroll-hint');
+  const hero = document.querySelector('.hero');
+
+  function onScroll() {
+    const scrollY = window.scrollY;
+    const heroH = hero.offsetHeight;
+    const p = Math.min(scrollY / heroH, 1); // 0 ~ 1
+
+    // 텍스트: 위로 올라가며 blur, 자간 벌어지며 사라짐
+    heroText.style.transform = `translate(-50%, calc(-50% - ${scrollY * 0.25}px))`;
+    heroText.style.opacity = Math.max(1 - p * 2.2, 0);
+    heroText.style.filter = `blur(${p * 24}px)`;
+    heroText.style.letterSpacing = `${-4 + p * 60}px`;
+
+    // 태그라인: 빠르게 페이드아웃
+    heroTagline.style.opacity = Math.max(1 - p * 3.5, 0);
+    heroTagline.style.transform = `translateY(${scrollY * 0.15}px)`;
+
+    // 스크롤 힌트: 바로 사라짐
+    heroScroll.style.opacity = Math.max(1 - p * 6, 0);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
 </script>
 </body>
 </html>

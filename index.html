@@ -26,16 +26,26 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       background: transparent;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 60px;
+      padding: 0 40px; height: 64px;
     }
-    .nav-left { display: flex; align-items: center; gap: 20px; }
-    .nav-hamburger { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 4px; }
-    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -.3px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -.3px; white-space: nowrap; }
     .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a {
+      display: flex; align-items: center; height: 64px; padding: 0 16px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8);
+      text-decoration: none; letter-spacing: .1px; transition: color .2s;
+    }
+    .nav-menu li a:hover { color: #fff; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
-    .nav-right a { font-size: 13px; font-weight: 600; color: #fff; text-decoration: none; opacity: .85; transition: opacity .2s; }
-    .nav-right a:hover { opacity: 1; }
-    .nav-menu { display: none; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); text-decoration: none; transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    @media (max-width: 960px) {
+      .nav-menu { display: none; }
+      .nav-hamburger { display: flex; align-items: center; }
+    }
 
     /* ── HERO ── */
     .hero {
@@ -214,26 +224,29 @@
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <div class="nav-left">
+  <a href="/" class="nav-logo-text">
+    <span class="nav-logo-dot"></span>Connect the dots
+  </a>
+  <ul class="nav-menu">
+    <li><a href="#">SHOP</a></li>
+    <li><a href="#">INSPIRE</a></li>
+    <li><a href="#">Membership</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Insight</a></li>
+    <li><a href="#">Review</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#">로그인</a>
+    <a href="#" class="nav-cart">장바구니</a>
     <button class="nav-hamburger" onclick="toggleNav()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <a href="/" class="nav-logo-text">
-      <span class="nav-logo-dot"></span>Connect the dots
-    </a>
-  </div>
-  <div class="nav-right">
-    <a href="#">Login</a>
-    <a href="#">Cart</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg-text">Connect the dots</div>
-  <img class="hero-book"
-    src="image/책만3_clean.png"
-    alt="Connect the dots 주간지" />
   <div class="hero-tagline">
     매일 한 점, <em>수능영어 1등급</em>으로 잇다.
   </div>

@@ -112,7 +112,7 @@
       padding: 148px 60px 100px;
       display: flex; align-items: center;
     }
-    .hero .container { display: grid; grid-template-columns: 1fr 420px; gap: 80px; align-items: center; }
+    .hero .container { display: grid; grid-template-columns: 1fr 1.6fr; gap: 40px; align-items: center; }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -133,8 +133,8 @@
     /* book mockup */
     .book-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
     .book-img {
-      width: 100%;
-      max-width: 600px;
+      width: 110%;
+      max-width: none;
       display: block;
       filter: drop-shadow(0 32px 60px rgba(0,0,0,.22));
       animation: float 3.5s ease-in-out infinite;
@@ -211,27 +211,29 @@
     .problem-section { background: var(--white); }
 
     /* ─── 4. SOLUTION ─── */
-    .solution-section { background: var(--bg); }
-    .solution-section .tag { color: var(--orange); }
-    .sol-tabs { display: flex; gap: 0; margin-top: 48px; border-bottom: 2px solid var(--gray-200); }
+    .solution-section { background: var(--orange); }
+    .solution-section .tag { color: rgba(255,255,255,.7); }
+    .solution-section h2.big { color: var(--white); }
+    .solution-section h2.big .hl { color: var(--white); opacity: .75; }
+    .sol-tabs { display: flex; gap: 0; margin-top: 48px; border-bottom: 2px solid rgba(255,255,255,.3); }
     .sol-tab {
       padding: 14px 32px; cursor: pointer; border: none; background: transparent;
-      font-size: 16px; font-weight: 700; color: var(--gray-500); letter-spacing: -.4px;
+      font-size: 16px; font-weight: 700; color: rgba(255,255,255,.6); letter-spacing: -.4px;
       border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s; font-family: inherit;
     }
-    .sol-tab:hover { color: var(--black); }
-    .sol-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+    .sol-tab:hover { color: var(--white); }
+    .sol-tab.active { color: var(--white); border-bottom-color: var(--white); }
     .sol-panels { margin-top: 52px; }
     .sol-panel { display: none; }
     .sol-panel.active { display: grid; grid-template-columns: 55% 1fr; gap: 64px; align-items: center; }
-    .sol-panel-img { background: var(--gray-200); border-radius: 16px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; color: var(--gray-400); font-size: 13px; overflow: hidden; }
+    .sol-panel-img { background: rgba(255,255,255,.15); border-radius: 16px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.6); font-size: 13px; overflow: hidden; }
     .sol-panel-body { display: flex; flex-direction: column; gap: 20px; }
-    .sol-panel-tag { display: inline-block; background: var(--orange-light); color: var(--orange); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 100px; width: fit-content; letter-spacing: .3px; }
-    .sol-panel-title { font-size: 30px; font-weight: 900; color: var(--black); letter-spacing: -1.2px; line-height: 1.25; }
-    .sol-panel-desc { font-size: 15px; color: var(--gray-500); line-height: 1.85; }
+    .sol-panel-tag { display: inline-block; background: rgba(255,255,255,.2); color: var(--white); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 100px; width: fit-content; letter-spacing: .3px; }
+    .sol-panel-title { font-size: 30px; font-weight: 900; color: var(--white); letter-spacing: -1.2px; line-height: 1.25; }
+    .sol-panel-desc { font-size: 15px; color: rgba(255,255,255,.8); line-height: 1.85; }
     .sol-panel-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-    .sol-panel-list li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--black); }
-    .sol-panel-list li::before { content: '✓'; color: var(--orange); font-weight: 900; flex-shrink: 0; font-size: 13px; }
+    .sol-panel-list li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--white); }
+    .sol-panel-list li::before { content: '✓'; color: var(--white); font-weight: 900; flex-shrink: 0; font-size: 13px; }
 
     /* ─── 5. FEATURES ─── */
 

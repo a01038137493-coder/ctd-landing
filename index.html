@@ -472,22 +472,47 @@
       .nav-links { display: none; }
       section { padding: 72px 24px; }
       .hero { padding: 110px 24px 72px; }
-      .hero .container { grid-template-columns: 1fr; gap: 48px; }
+      .hero .container { grid-template-columns: 1fr; gap: 40px; }
       .book-wrap { display: none; }
       .grid-3, .grid-2, .mc-grid { grid-template-columns: 1fr; }
       .price-band { grid-template-columns: 1fr; }
       .price-header { padding: 72px 24px 40px; }
       .price-col { padding: 40px 24px; }
       .price-note { padding: 24px; }
-      .price-amount { font-size: 52px; }
-      .sample-inner { grid-template-columns: 1fr; gap: 36px; }
+      .price-amount { font-size: 48px; }
+      .sample-inner { grid-template-columns: 1fr; gap: 32px; }
       .process-row { flex-direction: column; gap: 10px; padding: 28px 24px; }
       .usage-grid { grid-template-columns: 1fr; }
       .usage-card.wide { grid-column: span 1; }
-      .cta-inner { grid-template-columns: 1fr; gap: 48px; }
-      .cta-card { padding: 36px 24px; }
-      footer { padding: 32px 24px; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+      .cta-section { padding: 80px 24px; }
+      .cta-card { padding: 32px 24px; }
+      footer { padding: 28px 24px; }
+      .mc-title { font-size: 30px; min-height: auto; }
+      .mc-img-wrap img { width: 60%; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions a, .hero-actions button { width: 100%; justify-content: center; text-align: center; }
+      .opt-card { animation: none; }
+      .scroll-top { bottom: 20px; right: 20px; width: 42px; height: 42px; }
+      .cta-left h2 { font-size: 34px; }
+      h2.big { font-size: clamp(26px, 6vw, 40px); }
+    }
+
+    @media (max-width: 480px) {
+      section { padding: 60px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .hero h1 { font-size: 30px; letter-spacing: -1px; }
+      .hero-desc { font-size: 14px; }
+      h2.big { font-size: 26px; letter-spacing: -1px; }
+      .mc-title { font-size: 26px; }
+      .faq-q { padding: 18px 20px; font-size: 14px; }
+      .faq-a-inner { padding: 0 20px 18px; padding-top: 14px; }
+      .cta-card-title { font-size: 18px; }
+      .price-amount { font-size: 40px; }
+      .card h3 { font-size: 22px; }
+      .opt-card h3 { font-size: 16px; }
+      .process-row { padding: 24px 20px; }
+      .hero-badge { font-size: 11px; }
     }
   </style>
 </head>

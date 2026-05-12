@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Connect the dots — 수능영어 멤버십</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -62,20 +62,19 @@
       background: rgba(0,0,0,.45);
     }
     @keyframes boldGrow {
-      0%   { font-variation-settings: 'wght' 100; opacity: 0; letter-spacing: 8px; }
-      40%  { opacity: 1; }
-      100% { font-variation-settings: 'wght' 900; opacity: 1; letter-spacing: -4px; }
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.82); letter-spacing: 12px; }
+      60%  { opacity: 1; }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); letter-spacing: -4px; }
     }
     .hero-bg-text {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-size: clamp(80px, 12vw, 180px);
-      font-variation-settings: 'wght' 900;
-      color: #fff;
+      font-weight: 900; color: #fff;
       white-space: nowrap; pointer-events: none;
       z-index: 2; letter-spacing: -4px; line-height: 1;
       width: 100%; text-align: center;
-      animation: boldGrow 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: boldGrow 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .hero-book {
       position: relative; z-index: 2;

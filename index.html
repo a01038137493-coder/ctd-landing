@@ -329,6 +329,12 @@
     .cta-meta-row strong { color: var(--gray-700); font-weight: 500; }
     .cta-toast { display: none; background: var(--orange); color: var(--white); text-align: center; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
 
+    /* ─── SCROLL TOP ─── */
+    .scroll-top { position: fixed; bottom: 32px; right: 32px; width: 48px; height: 48px; border-radius: 50%; background: var(--orange); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(255,122,0,.35); opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; z-index: 999; }
+    .scroll-top.show { opacity: 1; pointer-events: auto; }
+    .scroll-top:hover { transform: translateY(-3px); }
+    .scroll-top svg { stroke: white; }
+
     /* ─── FOOTER ─── */
     footer { background: #0a0a0a; padding: 32px 60px; border-top: 1px solid rgba(255,255,255,.07); text-align: center; }
     .footer-logo img { height: 20px; display: inline-block; filter: brightness(0) invert(1); }
@@ -851,6 +857,11 @@
   </div>
 </section>
 
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo"><img src="logo png vertical.png" alt="Connect the dots" /></div>
@@ -882,6 +893,10 @@
   }
 
   // FAQ accordion
+  // Scroll top button
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('show', window.scrollY > 400));
+
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');

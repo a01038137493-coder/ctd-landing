@@ -112,7 +112,7 @@
       padding: 148px 60px 100px;
       display: flex; align-items: center;
     }
-    .hero .container { position: relative; }
+    .hero .container { display: grid; grid-template-columns: 1.4fr 1fr; gap: 60px; align-items: center; }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -131,10 +131,10 @@
     .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
     /* book mockup */
-    .book-wrap { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); width: 520px; pointer-events: none; }
+    .book-wrap { display: flex; justify-content: center; align-items: center; }
     .book-img {
       width: 100%;
-      max-width: none;
+      max-width: 560px;
       display: block;
       filter: drop-shadow(0 32px 60px rgba(0,0,0,.22));
       animation: float 3.5s ease-in-out infinite;
@@ -557,6 +557,9 @@
 <!-- ━━━ 1. HERO ━━━ -->
 <section class="hero">
   <div class="container">
+    <div class="book-wrap">
+      <img src="image/책만_final.png" alt="Connect the dots 교재" class="book-img" />
+    </div>
     <div>
       <div class="hero-badge">고등부 영어학원 전용 콘텐츠</div>
       <h1>영어 콘텐츠<br>준비부담은 줄이고,<br>학원 밖 학습루틴은<br><span class="hl">더 선명하게</span> 만드세요</h1>
@@ -568,9 +571,6 @@
         <a href="tel:01031182266" class="btn-main">샘플 다운로드</a>
         <a href="tel:01031182266" class="btn-line">학원 공급가 문의하기</a>
       </div>
-    </div>
-    <div class="book-wrap">
-      <img src="image/책만_final.png" alt="Connect the dots 교재" class="book-img" />
     </div>
   </div>
 </section>

@@ -393,22 +393,29 @@
   const heroScroll = document.querySelector('.hero-scroll-hint');
   const hero = document.querySelector('.hero');
 
+  // CSS animation이 JS inline style보다 cascade 우선순위가 높아서
+  // animationend 후 animation을 none으로 취소하고 JS가 제어권을 가져감
+  heroText.addEventListener('animationend', () => {
+    heroText.style.animation = 'none';
+    heroText.style.transform = 'translate(-50%, -50%)';
+    heroText.style.opacity = '1';
+    heroText.style.filter = 'blur(0px)';
+    heroText.style.letterSpacing = '-4px';
+  });
+
   function onScroll() {
     const scrollY = window.scrollY;
     const heroH = hero.offsetHeight;
-    const p = Math.min(scrollY / heroH, 1); // 0 ~ 1
+    const p = Math.min(scrollY / heroH, 1);
 
-    // 텍스트: 위로 올라가며 blur, 자간 벌어지며 사라짐
     heroText.style.transform = `translate(-50%, calc(-50% - ${scrollY * 0.25}px))`;
     heroText.style.opacity = Math.max(1 - p * 2.2, 0);
     heroText.style.filter = `blur(${p * 24}px)`;
     heroText.style.letterSpacing = `${-4 + p * 60}px`;
 
-    // 태그라인: 빠르게 페이드아웃
     heroTagline.style.opacity = Math.max(1 - p * 3.5, 0);
     heroTagline.style.transform = `translateY(${scrollY * 0.15}px)`;
 
-    // 스크롤 힌트: 바로 사라짐
     heroScroll.style.opacity = Math.max(1 - p * 6, 0);
   }
 

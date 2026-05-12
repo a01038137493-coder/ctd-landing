@@ -24,40 +24,59 @@
     /* ── NAV ── */
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      background: #fff; border-bottom: 1px solid var(--gray-200);
+      background: transparent;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px; height: 60px;
+      padding: 0 32px; height: 60px;
     }
-    .nav-logo img { height: 32px; display: block; }
-    .nav-menu { display: flex; gap: 0; list-style: none; height: 60px; }
-    .nav-menu > li { position: relative; display: flex; align-items: center; }
-    .nav-menu > li > a {
-      display: flex; align-items: center; height: 60px; padding: 0 18px;
-      font-size: 13px; font-weight: 600; color: var(--gray-700);
-      text-decoration: none; letter-spacing: .1px;
-      transition: color .2s;
-    }
-    .nav-menu > li > a:hover { color: var(--orange); }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .nav-icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 6px; color: var(--gray-700); }
-    .nav-icon-btn:hover { color: var(--orange); }
-    .nav-login-btn { font-size: 13px; font-weight: 600; color: var(--gray-700); text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background .2s; }
-    .nav-login-btn:hover { background: var(--gray-100); }
-    .nav-cart-btn { display: flex; align-items: center; gap: 6px; background: var(--black); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; }
-    .nav-mobile { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-left { display: flex; align-items: center; gap: 20px; }
+    .nav-hamburger { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 4px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: #fff; text-decoration: none; opacity: .85; transition: opacity .2s; }
+    .nav-right a:hover { opacity: 1; }
+    .nav-menu { display: none; }
 
     /* ── HERO ── */
-    .hero { padding-top: 60px; background: var(--bg); min-height: 100vh; display: flex; align-items: center; }
-    .hero-inner { max-width: 1200px; margin: 0 auto; padding: 80px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .hero-left {}
-    .hero-kicker { display: inline-block; background: var(--orange); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 4px; letter-spacing: 1px; margin-bottom: 24px; }
-    .hero h1 { font-size: clamp(30px, 3.8vw, 52px); font-weight: 900; line-height: 1.18; letter-spacing: -2px; margin-bottom: 20px; }
-    .hero h1 em { color: var(--orange); font-style: normal; }
-    .hero-sub { font-size: 16px; color: var(--gray-500); line-height: 1.85; margin-bottom: 36px; }
-    .hero-price-box { display: flex; align-items: baseline; gap: 6px; margin-bottom: 36px; padding: 20px 24px; background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,.07); width: fit-content; }
-    .hero-price-label { font-size: 13px; font-weight: 700; color: var(--gray-500); }
-    .hero-price-num { font-size: 44px; font-weight: 900; color: var(--orange); letter-spacing: -2px; line-height: 1; }
-    .hero-price-unit { font-size: 16px; font-weight: 600; color: var(--gray-700); }
+    .hero {
+      position: relative; min-height: 100vh;
+      background: #888;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg-text {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(80px, 12vw, 180px);
+      font-weight: 900; color: #fff;
+      white-space: nowrap; pointer-events: none;
+      z-index: 1; letter-spacing: -4px; line-height: 1;
+      width: 100%; text-align: center;
+    }
+    .hero-book {
+      position: relative; z-index: 2;
+      width: clamp(260px, 28vw, 420px);
+      filter: drop-shadow(-20px 40px 60px rgba(0,0,0,.35));
+      animation: float 4s ease-in-out infinite;
+    }
+    .hero-tagline {
+      position: absolute; bottom: 80px; left: 0; right: 0;
+      text-align: center; z-index: 3;
+      font-size: clamp(16px, 2vw, 22px); font-weight: 700; color: #fff;
+    }
+    .hero-tagline em {
+      font-style: normal; background: var(--orange);
+      padding: 2px 8px; border-radius: 3px;
+    }
+    .hero-scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,.5); font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    }
+    .hero-scroll-hint svg { animation: bounce 1.8s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
     .btn-primary { display: inline-flex; align-items: center; gap: 6px; background: var(--orange); color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 800; text-decoration: none; transition: opacity .2s, transform .2s; }
     .btn-primary:hover { opacity: .88; transform: translateY(-2px); }
@@ -195,56 +214,33 @@
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <a href="/" class="nav-logo">
-    <img src="https://cdn.imweb.me/upload/S202605046b88b4746bb19/cb83c12f3b25b.png" alt="Connect the dots" onerror="this.style.display='none'" />
-  </a>
-  <ul class="nav-menu">
-    <li><a href="#">SHOP</a></li>
-    <li><a href="#">INSPIRE</a></li>
-    <li><a href="#">Membership</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#">Insight</a></li>
-    <li><a href="#">Review</a></li>
-  </ul>
-  <div class="nav-right">
-    <a href="#" class="nav-login-btn">로그인</a>
-    <a href="#" class="nav-icon-btn" title="알림">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-    </a>
-    <a href="#" class="nav-cart-btn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      0
-    </a>
-    <button class="nav-mobile" onclick="toggleNav()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <div class="nav-left">
+    <button class="nav-hamburger" onclick="toggleNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
+    <a href="/" class="nav-logo-text">
+      <span class="nav-logo-dot"></span>Connect the dots
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="#">Login</a>
+    <a href="#">Cart</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <span class="hero-kicker">MEMBERSHIP</span>
-      <h1>15,900원으로<br>함께하는<br><em>내 옆의 수능영어</em><br>과외선생</h1>
-      <p class="hero-sub">절대평가 수능영어, 필요한 만큼 효율적으로.<br>매주 실물 주간지 + 하이라이트 영상해설.</p>
-      <div class="hero-price-box">
-        <span class="hero-price-label">월</span>
-        <span class="hero-price-num">15,900</span>
-        <span class="hero-price-unit">원</span>
-      </div>
-      <div class="hero-btns">
-        <a href="#" class="btn-primary">멤버십 시작하기 →</a>
-        <a href="#" class="btn-secondary">교재만 구매하기</a>
-      </div>
-    </div>
-    <div class="hero-right fu">
-      <img class="hero-img-main" src="https://cdn.imweb.me/thumbnail/20260512/c4f1c377944d9.png" alt="Connect the dots 주간지" onerror="this.style.background='var(--gray-200)'; this.style.height='300px'" />
-      <div class="hero-img-row">
-        <img src="https://cdn.imweb.me/thumbnail/20260511/0e55bf76abb9f.png" alt="" onerror="this.style.display='none'" />
-        <img src="https://cdn.imweb.me/thumbnail/20260505/059a890751a5f.png" alt="" onerror="this.style.display='none'" />
-      </div>
-    </div>
+  <div class="hero-bg-text">Connect the dots</div>
+  <img class="hero-book"
+    src="https://cdn.imweb.me/thumbnail/20260512/c4f1c377944d9.png"
+    alt="Connect the dots 주간지"
+    onerror="this.src='image/책만3_clean.png'" />
+  <div class="hero-tagline">
+    매일 한 점, <em>수능영어 1등급</em>으로 잇다.
+  </div>
+  <div class="hero-scroll-hint">
+    SCROLL
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
 </section>
 

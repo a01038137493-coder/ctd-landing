@@ -267,7 +267,10 @@
     .opt-card {
       background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
       border-radius: 16px; padding: 36px 30px;
+      animation: float 3s ease-in-out infinite;
     }
+    .opt-card:nth-child(2) { animation-delay: .4s; }
+    .opt-card:nth-child(3) { animation-delay: .8s; }
     .opt-card .card-num { color: var(--orange); }
     .opt-card h3 { font-size: 18px; font-weight: 900; color: var(--white); letter-spacing: -.5px; margin-bottom: 12px; }
     .opt-card p { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.8; }

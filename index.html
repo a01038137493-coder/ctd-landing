@@ -79,7 +79,7 @@
       animation: float 4s ease-in-out infinite;
     }
     .hero-tagline {
-      position: absolute; bottom: 160px; left: 0; right: 0;
+      position: absolute; bottom: 220px; left: 0; right: 0;
       text-align: center; z-index: 3;
       font-size: clamp(22px, 3vw, 36px); font-weight: 700; color: #fff;
     }
@@ -198,6 +198,32 @@
     .footer-col a:hover { color: #fff; }
     .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; }
 
+    /* ── MEMBERSHIP PITCH ── */
+    .pitch { background: #F2C4A8; padding: 120px 40px; text-align: center; }
+    .pitch-tag { display: inline-block; border: 1px solid rgba(0,0,0,.25); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 100px; color: rgba(0,0,0,.7); margin-bottom: 44px; letter-spacing: .3px; }
+    .pitch-heading { font-size: clamp(40px, 6.5vw, 96px); font-weight: 900; letter-spacing: -3px; line-height: 1.08; color: var(--black); margin-bottom: 52px; }
+    .pitch-heading span { color: var(--orange); }
+    .pitch-list { list-style: none; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    .pitch-list li { font-size: 17px; color: rgba(0,0,0,.55); font-weight: 500; }
+
+    /* ── FEATURE GRID ── */
+    .fgrid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .fgrid-item { display: flex; flex-direction: column; }
+    .fgrid-photo { aspect-ratio: 3/4; background: #222; overflow: hidden; }
+    .fgrid-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .fgrid-info { background: #2A2A2A; padding: 40px 28px; flex: 1; border-right: 1px solid rgba(255,255,255,.06); }
+    .fgrid-item:last-child .fgrid-info { border-right: none; }
+    .fgrid-num { font-size: 52px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 24px; letter-spacing: -2px; }
+    .fgrid-title { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.4; }
+    .fgrid-desc { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.75; }
+    @media (max-width: 960px) {
+      .fgrid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .fgrid { grid-template-columns: 1fr; }
+      .pitch { padding: 80px 24px; }
+    }
+
     /* ── FADE ── */
     .fu { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
     .fu.vis { opacity: 1; transform: none; }
@@ -264,52 +290,53 @@
   </div>
 </section>
 
-<!-- FEATURE STRIP -->
-<!-- MEMBERSHIP COMPARE -->
-<section class="section membership">
-  <div class="container">
-    <span class="section-tag">MEMBERSHIP</span>
-    <h2 class="section-title fu">나에게 맞는 플랜을<br>선택하세요</h2>
-    <div class="membership-inner">
-      <div class="mem-card hot fu">
-        <span class="mem-hot-badge">🔥 추천</span>
-        <div class="mem-plan">커닥 멤버십</div>
-        <div class="mem-price">
-          <span class="mem-price-num">15,900</span>
-          <span class="mem-price-unit">원 / 월</span>
-        </div>
-        <p class="mem-note">실물 주간지 + 영상해설 + Q&A까지<br>수능영어 완전 정복 패키지</p>
-        <hr class="mem-divider" />
-        <ul class="mem-list">
-          <li><span class="mem-check">✓</span> 매달 실물 주간지 1시즌 포함</li>
-          <li><span class="mem-check">✓</span> 배송비 포함</li>
-          <li><span class="mem-check">✓</span> 전체 영상해설 무제한 시청</li>
-          <li><span class="mem-check">✓</span> 커닥 전용 Q&A 단톡방</li>
-          <li><span class="mem-check">✓</span> 학습관리 콘텐츠 제공</li>
-          <li><span class="mem-check">✓</span> 언제든 해지 가능</li>
-        </ul>
-        <a href="#" class="mem-btn-primary">멤버십 시작하기 →</a>
-      </div>
-      <div class="mem-card fu">
-        <div class="mem-plan">일반 교재 구매</div>
-        <div class="mem-price">
-          <span class="mem-price-num" style="font-size:36px;">8,900</span>
-          <span class="mem-price-unit">원 / 시즌</span>
-        </div>
-        <p class="mem-note">시즌별 단권 구매로<br>필요한 교재만 선택</p>
-        <hr class="mem-divider" />
-        <ul class="mem-list">
-          <li><span class="mem-check">✓</span> 시즌별 단권 구매 가능</li>
-          <li class="off"><span class="mem-cross">✗</span> 배송비 별도</li>
-          <li class="off"><span class="mem-cross">✗</span> 일부 영상해설만 제공</li>
-          <li class="off"><span class="mem-cross">✗</span> Q&A 단톡방 미포함</li>
-          <li class="off"><span class="mem-cross">✗</span> 학습관리 콘텐츠 미포함</li>
-        </ul>
-        <a href="#" class="mem-btn-outline">교재만 구매하기</a>
-      </div>
+<!-- MEMBERSHIP PITCH -->
+<section class="pitch">
+  <span class="pitch-tag">수능영어 멤버십, 2027 수능 대비 오픈</span>
+  <h2 class="pitch-heading">15900원으로 두는,<br>내 옆의 <span>수능영어 과외선생</span></h2>
+  <ul class="pitch-list">
+    <li>매주 제공되는 수능 영어 기출 주간지</li>
+    <li>핵심 문항 하이라이트 해설 강의</li>
+    <li>약점을 채우는 멤버십 콘텐츠</li>
+    <li>조교·집필진이 답변하는 초고속 학습 관리</li>
+  </ul>
+</section>
+
+<!-- FEATURE GRID -->
+<div class="fgrid">
+  <div class="fgrid-item">
+    <div class="fgrid-photo"></div>
+    <div class="fgrid-info">
+      <div class="fgrid-num">01</div>
+      <div class="fgrid-title">매주 학습하는 기출 주간지</div>
+      <div class="fgrid-desc">핵심만 선별한 커닥 주간지</div>
     </div>
   </div>
-</section>
+  <div class="fgrid-item">
+    <div class="fgrid-photo"></div>
+    <div class="fgrid-info">
+      <div class="fgrid-num">02</div>
+      <div class="fgrid-title">핵심 문항 하이라이트 강의</div>
+      <div class="fgrid-desc">혼자 넘기기 어려운 문항만 정확하게</div>
+    </div>
+  </div>
+  <div class="fgrid-item">
+    <div class="fgrid-photo"></div>
+    <div class="fgrid-info">
+      <div class="fgrid-num">03</div>
+      <div class="fgrid-title">고퀄리티 핵심 콘텐츠</div>
+      <div class="fgrid-desc">구문·어휘·해석 과제·하프 모의고사까지</div>
+    </div>
+  </div>
+  <div class="fgrid-item">
+    <div class="fgrid-photo"></div>
+    <div class="fgrid-info">
+      <div class="fgrid-num">04</div>
+      <div class="fgrid-title">초고속 학습 관리</div>
+      <div class="fgrid-desc">조교·집필진이 함께하는 1:1 질의응답</div>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>

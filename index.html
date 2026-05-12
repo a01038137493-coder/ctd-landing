@@ -263,6 +263,16 @@
       aspect-ratio: 16/9; position: relative;
     }
     .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .video-facade { position: absolute; inset: 0; cursor: pointer; }
+    .video-facade img { width: 100%; height: 100%; object-fit: cover; }
+    .video-play-btn {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; background: var(--orange); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,.35); transition: transform .2s, opacity .2s;
+    }
+    .video-facade:hover .video-play-btn { transform: translate(-50%, -50%) scale(1.1); }
+    .video-play-btn svg { margin-left: 5px; }
     .video-placeholder-text { text-align: center; }
     .video-placeholder-text svg { display: block; margin: 0 auto 10px; opacity: .4; }
     .sample-info h3 { font-size: 22px; font-weight: 900; letter-spacing: -.6px; margin-bottom: 16px; }
@@ -770,8 +780,13 @@
     <h2 class="big">실제 해설 콘텐츠를<br>확인해보세요</h2>
     <div class="sample-inner">
       <div>
-        <div class="video-box fu">
-          <iframe src="https://www.youtube.com/embed/opb1dgB2FVQ?rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        <div class="video-box fu" id="videoBox">
+          <div class="video-facade" onclick="loadVideo()">
+            <img src="https://img.youtube.com/vi/opb1dgB2FVQ/maxresdefault.jpg" alt="샘플 영상 썸네일" />
+            <div class="video-play-btn">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
         </div>
       </div>
       <div class="sample-info fu">
@@ -974,6 +989,11 @@
   document.querySelectorAll('.fu').forEach(el => observer.observe(el));
 
   // Solution tabs
+  function loadVideo() {
+    const box = document.getElementById('videoBox');
+    box.innerHTML = '<iframe src="https://www.youtube.com/embed/opb1dgB2FVQ?rel=0&autoplay=1&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>';
+  }
+
   function switchTab(idx) {
     document.querySelectorAll('.sol-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
     document.querySelectorAll('.sol-panel').forEach((p, i) => p.classList.toggle('active', i === idx));

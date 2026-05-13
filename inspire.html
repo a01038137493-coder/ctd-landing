@@ -82,7 +82,8 @@
 
     .section-divider { height: 1px; background: var(--border); max-width: 1100px; margin: 0 auto; }
 
-    /* OT VIDEO */
+    /* OT VIDEO — wrapped in a soft band */
+    .ot-band { background: var(--bg-2); }
     .ot-sec { text-align: center; }
     .ot-frame {
       position: relative;
@@ -151,24 +152,27 @@
     .curri-title { font-size: 22px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; color: var(--ink); }
     .curri-desc { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
 
-    /* POINTS */
-    .points-sec { background: var(--bg-2); text-align: center; }
-    .points-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 56px; }
-    @media (max-width: 760px) { .points-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 420px) { .points-grid { grid-template-columns: 1fr; } }
-    .point-item {
-      padding: 36px 20px; border: 1px solid var(--border); border-radius: 12px;
-      background: #fff;
+    /* KEY QUESTIONS — compact pill row (inside Curriculum) */
+    .points-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 56px;
     }
-    .point-num {
-      font-size: 13px; font-weight: 800; color: var(--orange);
-      letter-spacing: 2px; margin-bottom: 14px;
+    .point-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 10px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 700; color: var(--ink);
+      letter-spacing: -.2px;
+    }
+    .point-pill-num {
+      font-size: 11px; font-weight: 800; color: var(--orange);
+      letter-spacing: 1px;
       font-family: 'SF Mono', Menlo, monospace;
     }
-    .point-text { font-size: 15px; font-weight: 700; line-height: 1.5; color: var(--ink); }
 
     /* CONNECTION */
-    .conn-sec { background: linear-gradient(180deg, #fff 0%, var(--bg-2) 100%); text-align: center; }
+    .conn-sec { background: #fff; text-align: center; }
     .conn-quote {
       font-size: clamp(20px, 2.4vw, 30px); font-weight: 800; letter-spacing: -1px;
       line-height: 1.6; max-width: 920px; margin: 0 auto 44px;
@@ -177,7 +181,7 @@
     .conn-quote em { font-style: normal; color: var(--orange); }
 
     /* FREE CLASS */
-    .free-sec { background: #fff; }
+    .free-sec { background: var(--bg-2); }
     .free-title { font-size: clamp(28px, 3.5vw, 44px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.3; color: var(--ink); }
     .free-title em { font-style: normal; color: var(--orange); }
     .free-body { font-size: 16px; color: var(--ink-2); line-height: 1.85; margin-top: 24px; max-width: 700px; }
@@ -192,7 +196,7 @@
     .free-stat-sub { font-size: 12px; color: var(--ink-3); margin-top: 8px; }
 
     /* SPECIAL LECTURE */
-    .special-sec { background: var(--bg-2); }
+    .special-sec { background: #fff; }
     .special-card {
       background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
       padding: 56px 48px; margin-top: 48px;
@@ -252,26 +256,10 @@
     무엇을 조심하며, 어떻게 문제를 바라봐야 하는지를 정리하는 <strong style="color:var(--ink);">독해 완성 메뉴얼</strong>입니다.
   </p>
   <div class="hero-ctas">
-    <a href="#ot" class="btn-primary">강의 보러가기 →</a>
-    <a href="#free" class="btn-secondary">무료 강의 안내</a>
+    <a href="#free" class="btn-primary">무료로 강의 보기 →</a>
+    <a href="#curriculum" class="btn-secondary">커리큘럼 살펴보기</a>
   </div>
 </section>
-
-<!-- OT VIDEO -->
-<section class="section ot-sec" id="ot">
-  <p class="section-eyebrow">Orientation</p>
-  <h2 class="section-title">먼저, OT 영상을 확인하세요</h2>
-  <p class="section-lead" style="margin: 0 auto;">
-    INSPIRE를 시작하기 전, 강의 전체 구성과 접근 방식을 OT 영상에서 먼저 확인해보세요.<br>
-    어떤 자세로 강의를 따라와야 하는지 함께 정리합니다.
-  </p>
-  <div class="ot-frame">
-    <button class="ot-play" aria-label="OT 영상 재생"></button>
-    <div class="ot-label">INSPIRE · ORIENTATION</div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
 
 <!-- PROBLEM -->
 <section class="section problem-sec">
@@ -287,6 +275,9 @@
 <section class="section solution-sec">
   <p class="section-eyebrow">Our Approach</p>
   <h2 class="section-title">INSPIRE의 <em>관점</em></h2>
+  <p class="section-lead" style="margin-bottom:8px;">
+    수능영어 공부의 시작은 더 많은 문제집이 아니라, 글을 대하는 <strong>자세</strong>입니다.
+  </p>
   <div class="solution-grid">
     <div class="solution-card">
       <div class="solution-num">01</div>
@@ -304,9 +295,20 @@
 </section>
 
 <!-- CURRICULUM -->
-<section class="section curri-sec">
+<section class="section curri-sec" id="curriculum">
   <p class="section-eyebrow">Curriculum</p>
-  <h2 class="section-title">강의는 <em>네 가지 축</em>으로 구성됩니다</h2>
+  <h2 class="section-title">강의가 답하는 <em>네 가지 질문</em></h2>
+  <p class="section-lead" style="margin-bottom:36px;">
+    INSPIRE는 다음 네 가지 질문을 순서대로 정리합니다.
+  </p>
+
+  <div class="points-row">
+    <span class="point-pill"><span class="point-pill-num">01</span> 무엇을 조심해야 하는가</span>
+    <span class="point-pill"><span class="point-pill-num">02</span> 어떻게 읽어가야 하는가</span>
+    <span class="point-pill"><span class="point-pill-num">03</span> 어떻게 풀어가야 하는가</span>
+    <span class="point-pill"><span class="point-pill-num">04</span> 무엇을 반복해야 하는가</span>
+  </div>
+
   <div class="curri-grid">
     <div class="curri-card">
       <div class="curri-num">00 · 진단</div>
@@ -331,29 +333,21 @@
   </div>
 </section>
 
-<!-- POINTS -->
-<section class="section points-sec">
-  <p class="section-eyebrow">Key Questions</p>
-  <h2 class="section-title">강의가 답하는 <em>네 가지 질문</em></h2>
-  <div class="points-grid">
-    <div class="point-item">
-      <div class="point-num">01</div>
-      <div class="point-text">무엇을<br>조심해야 하는가</div>
+<!-- OT VIDEO -->
+<div class="ot-band">
+  <section class="section ot-sec" id="ot">
+    <p class="section-eyebrow">Orientation</p>
+    <h2 class="section-title">강의를 시작하기 전,<br><em>OT 영상</em>을 먼저 확인하세요</h2>
+    <p class="section-lead" style="margin: 0 auto 0;">
+      어떤 자세로 강의를 따라와야 하는지, 8차수 전체를 어떻게 활용해야 하는지<br>
+      OT에서 함께 정리합니다.
+    </p>
+    <div class="ot-frame">
+      <button class="ot-play" aria-label="OT 영상 재생"></button>
+      <div class="ot-label">INSPIRE · ORIENTATION</div>
     </div>
-    <div class="point-item">
-      <div class="point-num">02</div>
-      <div class="point-text">어떻게<br>읽어가야 하는가</div>
-    </div>
-    <div class="point-item">
-      <div class="point-num">03</div>
-      <div class="point-text">어떻게<br>풀어가야 하는가</div>
-    </div>
-    <div class="point-item">
-      <div class="point-num">04</div>
-      <div class="point-text">무엇을<br>반복해야 하는가</div>
-    </div>
-  </div>
-</section>
+  </section>
+</div>
 
 <!-- CONNECTION -->
 <section class="section conn-sec">

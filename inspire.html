@@ -24,7 +24,7 @@
 
     /* Unified emphasis: inverted black box for all <em> in copy */
     .hero-title em, .section-title em, .problem-title em, .problem-footer em,
-    .solution-text em, .conn-quote em, .free-title em,
+    .conn-quote em, .free-title em,
     .part-title em {
       font-style: normal;
       background: var(--ink);
@@ -35,10 +35,17 @@
     }
     @media (max-width: 700px) {
       .hero-title em, .section-title em, .problem-title em, .problem-footer em,
-      .solution-text em, .conn-quote em, .free-title em,
+      .conn-quote em, .free-title em,
       .part-title em {
         padding: 2px 8px;
       }
+    }
+
+    /* Approach section cards — italic emphasis instead of box */
+    .solution-text em {
+      font-style: italic;
+      font-weight: 900;
+      color: var(--ink);
     }
 
     /* NAV */

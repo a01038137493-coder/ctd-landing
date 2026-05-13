@@ -184,26 +184,33 @@
     .curri-title { font-size: 22px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; color: var(--ink); }
     .curri-desc { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
 
-    /* KEY QUESTIONS — own section with centered pills */
+    /* KEY QUESTIONS — boxed grid */
     .questions-sec { background: #fff; }
-    .points-row {
-      display: flex; flex-wrap: wrap; gap: 10px;
+    .points-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
     }
-    .points-row-centered { justify-content: center; }
-    .point-pill {
-      display: inline-flex; align-items: center; gap: 10px;
+    @media (max-width: 960px) { .points-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .points-grid { grid-template-columns: 1fr; } }
+    .point-box {
       background: #fff;
       border: 1px solid var(--border);
-      padding: 14px 20px; border-radius: 999px;
-      font-size: 14px; font-weight: 700; color: var(--ink);
-      letter-spacing: -.2px;
-      transition: border-color .2s ease, transform .2s ease;
+      padding: 36px 28px;
+      transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+      min-height: 180px;
+      display: flex; flex-direction: column; justify-content: space-between;
     }
-    .point-pill:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .point-pill-num {
-      font-size: 11px; font-weight: 800; color: var(--accent);
-      letter-spacing: 1px;
+    .point-box:hover { border-color: var(--ink); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(17,17,17,.05); }
+    .point-box-num {
+      font-size: 13px; font-weight: 800; color: var(--ink-3);
+      letter-spacing: 2px;
       font-family: 'SF Mono', Menlo, monospace;
+    }
+    .point-box-text {
+      font-size: 18px; font-weight: 800;
+      color: var(--ink);
+      line-height: 1.45;
+      letter-spacing: -.4px;
+      margin-top: 28px;
     }
 
     /* CONNECTION */
@@ -354,11 +361,23 @@
   <p class="section-lead" style="text-align:center; margin: 0 auto 56px;">
     INSPIRE는 다음 네 가지 질문을 순서대로 정리합니다.
   </p>
-  <div class="points-row points-row-centered">
-    <span class="point-pill"><span class="point-pill-num">01</span> 무엇을 조심해야 하는가</span>
-    <span class="point-pill"><span class="point-pill-num">02</span> 어떻게 읽어가야 하는가</span>
-    <span class="point-pill"><span class="point-pill-num">03</span> 어떻게 풀어가야 하는가</span>
-    <span class="point-pill"><span class="point-pill-num">04</span> 무엇을 반복해야 하는가</span>
+  <div class="points-grid">
+    <div class="point-box">
+      <div class="point-box-num">01</div>
+      <div class="point-box-text">무엇을<br>조심해야 하는가</div>
+    </div>
+    <div class="point-box">
+      <div class="point-box-num">02</div>
+      <div class="point-box-text">어떻게<br>읽어가야 하는가</div>
+    </div>
+    <div class="point-box">
+      <div class="point-box-num">03</div>
+      <div class="point-box-text">어떻게<br>풀어가야 하는가</div>
+    </div>
+    <div class="point-box">
+      <div class="point-box-num">04</div>
+      <div class="point-box-text">무엇을<br>반복해야 하는가</div>
+    </div>
   </div>
 </section>
 

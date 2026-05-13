@@ -322,6 +322,8 @@
     .mentor-sec-inner { max-width: 800px; margin: 0 auto; }
     .mentor-heading { font-size: clamp(32px, 5vw, 68px); font-weight: 900; letter-spacing: -2.5px; line-height: 1.2; color: #111; margin-bottom: 72px; }
     .mentor-phone-wrap { display: flex; justify-content: center; margin-bottom: 52px; }
+    .mentor-mockup { width: 320px; max-width: 100%; height: auto; display: block; }
+    @media (max-width: 760px) { .mentor-mockup { width: 280px; } }
     .mentor-phone { width: 320px; background: #fff; border-radius: 40px; box-shadow: 0 0 0 1.5px #d0d0d0, 0 24px 64px rgba(0,0,0,.13); overflow: hidden; padding: 0; }
     .mentor-phone-bar { height: 12px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
     .mentor-phone-bar::after { content: ''; width: 60px; height: 4px; background: #bbb; border-radius: 2px; }
@@ -592,52 +594,7 @@
   <div class="mentor-sec-inner">
     <h2 class="mentor-heading">혼자 고민하지 않도록,<br>바로 해결합니다.</h2>
     <div class="mentor-phone-wrap">
-      <div class="mentor-phone">
-        <div class="mentor-phone-bar"></div>
-        <div class="kakao-header">
-          <div class="kakao-header-title">
-            <span>영어 공부 멘토</span>
-          </div>
-          <div class="kakao-header-icons">
-            <span>&#128269;</span>
-            <span>&#9776;</span>
-          </div>
-        </div>
-        <div class="kakao-chat">
-          <div class="kakao-row right">
-            <div class="kakao-col">
-              <div class="kakao-bubble">Q. 24번 문항에서 이 표현이 정확히<br>어떤 의미인지 모르겠어요.</div>
-            </div>
-            <span class="kakao-time">오전 10:21</span>
-          </div>
-          <div class="kakao-row">
-            <div class="kakao-avatar">이미지</div>
-            <div class="kakao-col">
-              <span class="kakao-sender">영어 공부 멘토</span>
-              <div class="kakao-bubble">A. 해당 문장은 앞 문장과 함께 봐야 이해됩니다.<br>핵심은 이 표현이 지칭하는 대상입니다.</div>
-            </div>
-            <span class="kakao-time">오전 10:22</span>
-          </div>
-          <div class="kakao-row right">
-            <div class="kakao-col">
-              <div class="kakao-bubble">Q. 공부 방향이 맞는지 확신이 안 들어요.</div>
-            </div>
-            <span class="kakao-time">오전 13:23</span>
-          </div>
-          <div class="kakao-row">
-            <div class="kakao-avatar">이미지</div>
-            <div class="kakao-col">
-              <span class="kakao-sender">영어 공부 멘토</span>
-              <div class="kakao-bubble">A. 현재 단계에서는 해석 정확도를 먼저 잡는 것이 중요합니다.<br>지금 방향대로 계속 진행하셔도 됩니다.</div>
-            </div>
-            <span class="kakao-time">오전 13:24</span>
-          </div>
-        </div>
-        <div style="height:40px; background:#fff; display:flex; align-items:center; justify-content:flex-end; padding:0 14px; gap:12px; border-top:1px solid #eee;">
-          <span style="font-size:16px; color:#aaa;">&#128512;</span>
-          <span style="font-size:16px; color:#aaa;">#</span>
-        </div>
-      </div>
+      <img src="image/목업2.png" alt="멘토 채팅 목업" class="mentor-mockup" />
     </div>
     <p class="mentor-caption">커넥츠 더 닷츠는 단순히 책 한권이 아닙니다.</p>
     <p class="mentor-caption-bold">수능영어 1등급 출신 조교와<br><strong>교재 집필진이 함께하는 실시간 학습 관리 시스템입니다.</strong></p>

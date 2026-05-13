@@ -23,8 +23,9 @@
     a { color: inherit; text-decoration: none; }
 
     /* Unified emphasis: bold black + thick underline for all <em> in copy */
-    .hero-title em, .section-title em, .problem-title em,
-    .solution-text em, .conn-quote em, .free-title em {
+    .hero-title em, .section-title em, .problem-title em, .problem-footer em,
+    .solution-text em, .conn-quote em, .free-title em,
+    .part-title em {
       font-style: normal;
       color: var(--ink);
       background-image: linear-gradient(var(--ink), var(--ink));
@@ -34,8 +35,9 @@
       padding-bottom: 8px;
     }
     @media (max-width: 700px) {
-      .hero-title em, .section-title em, .problem-title em,
-      .solution-text em, .conn-quote em, .free-title em {
+      .hero-title em, .section-title em, .problem-title em, .problem-footer em,
+      .solution-text em, .conn-quote em, .free-title em,
+      .part-title em {
         background-size: 100% 3px;
         padding-bottom: 5px;
       }
@@ -237,8 +239,82 @@
     .free-stat-label { font-size: 14px; font-weight: 700; color: var(--ink-2); letter-spacing: 1px; }
     .free-stat-sub { font-size: 12px; color: var(--ink-3); margin-top: 8px; }
 
-    /* SPECIAL LECTURE */
-    .special-sec { background: #fff; }
+    /* HERO STATS */
+    .hero-stats { position: relative; z-index: 2; display: inline-flex; gap: 28px; margin: 0 0 36px; flex-wrap: wrap; justify-content: center; padding: 14px 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .hero-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 110px; }
+    .hero-stat-num { font-size: 22px; font-weight: 900; color: var(--ink); letter-spacing: -.5px; line-height: 1; }
+    .hero-stat-label { font-size: 11px; color: var(--ink-3); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* PROBLEM CARDS (3 inefficiency) */
+    .problem-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 56px 0 36px; }
+    @media (max-width: 760px) { .problem-cards { grid-template-columns: 1fr; } }
+    .problem-card {
+      background: #fff; border: 1px solid var(--border); padding: 32px 28px;
+      position: relative;
+    }
+    .problem-card-num {
+      position: absolute; top: 24px; right: 24px;
+      font-size: 12px; font-weight: 800; color: var(--ink-3);
+      font-family: 'SF Mono', Menlo, monospace; letter-spacing: 2px;
+    }
+    .problem-card-tag {
+      display: inline-block; background: var(--ink); color: #fff;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+      padding: 4px 10px; margin-bottom: 18px;
+    }
+    .problem-card-title { font-size: 18px; font-weight: 800; color: var(--ink); line-height: 1.45; margin-bottom: 10px; letter-spacing: -.3px; }
+    .problem-card-desc { font-size: 13px; color: var(--ink-2); line-height: 1.7; }
+    .problem-footer { font-size: 17px; font-weight: 700; color: var(--ink); line-height: 1.7; text-align: center; padding-top: 28px; border-top: 1px solid var(--border); }
+
+    /* COURSE PARTS (3 vertical big blocks) */
+    .parts-stack { display: flex; flex-direction: column; gap: 16px; margin-top: 48px; }
+    .part-block {
+      background: #fff; border: 1px solid var(--border); padding: 48px 56px;
+      display: grid; grid-template-columns: 200px 1fr; gap: 56px; align-items: start;
+      transition: border-color .2s ease;
+    }
+    .part-block:hover { border-color: var(--ink); }
+    @media (max-width: 760px) { .part-block { grid-template-columns: 1fr; padding: 32px 28px; gap: 20px; } }
+    .part-label { font-size: 13px; font-weight: 800; color: var(--ink-3); letter-spacing: 3px; font-family: 'SF Mono', Menlo, monospace; }
+    .part-num { display: block; font-size: 54px; font-weight: 900; color: var(--ink); letter-spacing: -3px; line-height: 1; margin-top: 6px; }
+    .part-title { font-size: 24px; font-weight: 800; letter-spacing: -.5px; line-height: 1.4; margin-bottom: 14px; color: var(--ink); }
+    .part-desc { font-size: 15px; color: var(--ink-2); line-height: 1.8; margin-bottom: 20px; }
+    .part-sublist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .part-sublist li { display: flex; align-items: baseline; gap: 14px; font-size: 14px; color: var(--ink); padding: 12px 0; border-top: 1px solid var(--border); }
+    .part-sublist li:first-child { border-top: 1px solid var(--border-strong); }
+    .part-sublist li::before { content: ''; width: 6px; height: 6px; background: var(--ink); border-radius: 50%; flex-shrink: 0; }
+
+    /* BEYOND SECTION (membership bridge) */
+    .beyond-sec { background: #fff; }
+    .beyond-card {
+      background: var(--ink); color: #fff;
+      padding: 56px; border-radius: 0;
+      margin-top: 48px;
+      display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: center;
+    }
+    @media (max-width: 760px) { .beyond-card { grid-template-columns: 1fr; padding: 40px 28px; gap: 28px; } }
+    .beyond-eyebrow { font-size: 11px; font-weight: 800; color: rgba(255,255,255,.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+    .beyond-title { font-size: 26px; font-weight: 900; letter-spacing: -.5px; line-height: 1.4; margin-bottom: 12px; }
+    .beyond-text { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.85; }
+    .beyond-btn { display: inline-flex; align-items: center; gap: 6px; padding: 16px 28px; background: #fff; color: var(--ink); font-size: 14px; font-weight: 800; border-radius: 6px; white-space: nowrap; transition: opacity .15s ease; }
+    .beyond-btn:hover { opacity: .85; }
+
+    /* OUTCOME GRID (final 3 cards) */
+    .outcome-sec { background: var(--bg-2); }
+    .outcome-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 56px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    @media (max-width: 760px) { .outcome-grid { grid-template-columns: 1fr; } }
+    .outcome-card { padding: 48px 36px; border-right: 1px solid var(--border); background: transparent; }
+    .outcome-card:last-child { border-right: none; }
+    @media (max-width: 760px) { .outcome-card { border-right: none; border-bottom: 1px solid var(--border); } .outcome-card:last-child { border-bottom: none; } }
+    .outcome-num { font-size: 13px; font-weight: 800; color: var(--ink-3); font-family: 'SF Mono', Menlo, monospace; letter-spacing: 2px; margin-bottom: 18px; }
+    .outcome-title { font-size: 20px; font-weight: 800; line-height: 1.5; letter-spacing: -.4px; color: var(--ink); }
+
+    /* FINAL CTA */
+    .final-cta { background: var(--ink); color: #fff; padding: 100px 40px; text-align: center; }
+    .final-cta-title { font-size: clamp(28px, 4vw, 48px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.25; margin-bottom: 18px; }
+    .final-cta-sub { font-size: 15px; color: rgba(255,255,255,.55); line-height: 1.8; margin-bottom: 36px; }
+    .final-cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 18px 44px; background: #fff; color: var(--ink); font-size: 15px; font-weight: 800; border-radius: 6px; transition: opacity .15s ease; }
+    .final-cta-btn:hover { opacity: .9; }
     .special-card {
       background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
       padding: 56px 48px; margin-top: 48px;
@@ -291,19 +367,33 @@
 
 <!-- HERO -->
 <section class="hero">
-  <p class="hero-eyebrow">INSPIRE</p>
-  <h1 class="hero-title">수능영어, 무엇을 연습해야 하는지<br><em>알려주는 강의</em></h1>
+  <p class="hero-eyebrow">INSPIRE · ORIENTATION</p>
+  <h1 class="hero-title">수능 영어 독해 완성을 위한<br><em>오리엔테이션 강의</em></h1>
   <p class="hero-desc">
-    INSPIRE는 수능영어 독해를 시작하기 전, 학생이 어떤 자세로 읽고,<br>
-    무엇을 조심하며, 어떻게 문제를 바라봐야 하는지를 정리하는 <strong style="color:var(--ink);">독해 완성 메뉴얼</strong>입니다.
+    무엇을 조심하고, 어떻게 읽고, 어떻게 풀어야 하는지<br>
+    가장 <strong style="color:var(--ink);">간단한 도구</strong>로 정리하는 짧고 단단한 강의입니다.
   </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">8시간</span>
+      <span class="hero-stat-label">미만 분량</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">3 PARTS</span>
+      <span class="hero-stat-label">핵심 구성</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">27학년 6월</span>
+      <span class="hero-stat-label">평가원까지 완강</span>
+    </div>
+  </div>
   <div class="hero-ctas">
-    <a href="#free" class="btn-primary">무료로 강의 보기 →</a>
-    <a href="#curriculum" class="btn-secondary">커리큘럼 살펴보기</a>
+    <a href="#preview" class="btn-primary">강의 보러가기 →</a>
+    <a href="#structure" class="btn-secondary">강의 구성 보기</a>
   </div>
 </section>
 
-<!-- PROBLEM -->
+<!-- 01 / PROBLEM -->
 <section class="section problem-sec">
   <div class="chapter chapter-centered">
     <span class="chapter-line"></span>
@@ -312,14 +402,39 @@
     <span class="chapter-name">Problem</span>
     <span class="chapter-line"></span>
   </div>
-  <h2 class="problem-title">절대평가 시대,<br><em>영어에 쓸 시간은 많지 않습니다.</em></h2>
+  <h2 class="problem-title">수능 영어는 시간이 없는데,<br><em>잘못된 방향</em>으로 가고 있습니다.</h2>
   <p class="problem-body">
-    그런데 많은 학생들이 한 번으로 끝내야 할 영어 공부를<br>
-    <mark>무의미한 독해문제집 양치기</mark>로 허비하고 있습니다.
+    절대평가라 시간은 많지 않지만, 그렇기에 더더욱 <mark>제대로</mark> 공부해야 하는 과목.<br>
+    그런데 많은 학생들이 다음 세 가지 비효율에 빠져 있습니다.
+  </p>
+
+  <div class="problem-cards">
+    <div class="problem-card">
+      <span class="problem-card-num">01</span>
+      <span class="problem-card-tag">양치기</span>
+      <h3 class="problem-card-title">의미 없는 양치기식<br>문제 풀이</h3>
+      <p class="problem-card-desc">왜 맞고 왜 틀렸는지 정리되지 않은 채, 문제 수만 채우는 학습.</p>
+    </div>
+    <div class="problem-card">
+      <span class="problem-card-num">02</span>
+      <span class="problem-card-tag">EBS 의존</span>
+      <h3 class="problem-card-title">간접연계인데<br>EBS 수능특강만 보기</h3>
+      <p class="problem-card-desc">연계 방식은 간접인데도, 수특 지문을 외우듯 반복하는 비효율.</p>
+    </div>
+    <div class="problem-card">
+      <span class="problem-card-num">03</span>
+      <span class="problem-card-tag">채점 중심</span>
+      <h3 class="problem-card-title">맞고 틀린 것에만<br>집중하는 학습</h3>
+      <p class="problem-card-desc">채점에 멈춰서, "왜 그렇게 읽었는가"라는 자세 점검이 빠진 공부.</p>
+    </div>
+  </div>
+
+  <p class="problem-footer">
+    지금의 공부가 시험장에서 <em>어떤 실력</em>으로 이어질지 명확하지 않습니다.
   </p>
 </section>
 
-<!-- SOLUTION -->
+<!-- 02 / PHILOSOPHY -->
 <section class="section solution-sec">
   <div class="chapter">
     <span class="chapter-line"></span>
@@ -330,107 +445,106 @@
   </div>
   <h2 class="section-title" style="text-align:center;">INSPIRE의 <em>관점</em></h2>
   <p class="section-lead" style="text-align:center; margin: 0 auto 8px;">
-    수능영어 공부의 시작은 더 많은 문제집이 아니라, 글을 대하는 <strong>자세</strong>입니다.
+    더 많은 문제집이 아니라, 글을 대하는 <strong>자세</strong>에서 시작합니다.
   </p>
   <div class="solution-grid">
     <div class="solution-card">
       <div class="solution-num">01</div>
-      <div class="solution-text">글을 <em>읽는다는 건,</em><br>화자와 소통하는 일입니다.</div>
+      <div class="solution-text">수능 영어는 <em>글 읽기 시험</em>입니다.<br>화자가 설명하려는 말을 파악하는 것이 해석의 전부입니다.</div>
     </div>
     <div class="solution-card">
       <div class="solution-num">02</div>
-      <div class="solution-text">가장 <em>빠른 방법</em>은,<br>가장 바른 자세로 읽는 것입니다.</div>
+      <div class="solution-text">기본기와 <em>올바른 자세</em>를 먼저.<br>그것이 가장 빠른 성장 방법입니다.</div>
     </div>
     <div class="solution-card">
       <div class="solution-num">03</div>
-      <div class="solution-text">INSPIRE는 어떻게 조심하고,<br>읽고, 풀어야 하는지에 대한<br>가장 <em>간단한 도구</em>들을 제시합니다.</div>
+      <div class="solution-text"><em>최소한의 도구</em>로,<br>글 내용을 이해하는 데 에너지를 집중합니다.</div>
+    </div>
+    <div class="solution-card">
+      <div class="solution-num">04</div>
+      <div class="solution-text">도구적 생각이<br><em>글 이해력</em>을 앞서면 안 됩니다.</div>
     </div>
   </div>
 </section>
 
-<!-- KEY QUESTIONS -->
-<section class="section questions-sec">
+<!-- 03 / COURSE STRUCTURE -->
+<section class="section curri-sec" id="structure">
   <div class="chapter chapter-centered">
     <span class="chapter-line"></span>
     <span class="chapter-num">03</span>
     <span class="chapter-sep">/</span>
-    <span class="chapter-name">Key Questions</span>
+    <span class="chapter-name">Course Structure</span>
     <span class="chapter-line"></span>
   </div>
-  <h2 class="section-title" style="text-align:center;">강의가 답하는 <em>네 가지 질문</em></h2>
-  <p class="section-lead" style="text-align:center; margin: 0 auto 56px;">
-    INSPIRE는 다음 네 가지 질문을 순서대로 정리합니다.
+  <h2 class="section-title" style="text-align:center;">강의는 <em>세 가지 축</em>으로 구성됩니다</h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 0;">
+    조심해야 할 것 · 읽는 법 · 푸는 법 — 순서대로 정리합니다.
   </p>
-  <div class="points-grid">
-    <div class="point-box">
-      <div class="point-box-num">01</div>
-      <div class="point-box-text">무엇을<br>조심해야 하는가</div>
+
+  <div class="parts-stack">
+    <div class="part-block">
+      <div>
+        <div class="part-label">PART</div>
+        <div class="part-num">01</div>
+      </div>
+      <div>
+        <h3 class="part-title">어떤 걸 <em>조심해야</em> 하는가</h3>
+        <p class="part-desc">영어가 모국어가 아니기 때문에 생기는 나쁜 읽기 습관을 점검합니다. 4가지 섹션으로 잘못된 자세를 하나씩 개선합니다.</p>
+        <ul class="part-sublist">
+          <li>대명사 · 대동사의 지칭 점검</li>
+          <li>문장 연결관계 점검</li>
+          <li>긴 문장 처리 점검</li>
+          <li>단어 해상도 점검</li>
+        </ul>
+      </div>
     </div>
-    <div class="point-box">
-      <div class="point-box-num">02</div>
-      <div class="point-box-text">어떻게<br>읽어가야 하는가</div>
+
+    <div class="part-block">
+      <div>
+        <div class="part-label">PART</div>
+        <div class="part-num">02</div>
+      </div>
+      <div>
+        <h3 class="part-title">어떻게 <em>읽어가야</em> 하는가</h3>
+        <p class="part-desc">수능 영어 지문이 실제로 어떻게 짜여 있는지를 보고, 그 흐름에 맞춰 읽는 법을 정리합니다.</p>
+        <ul class="part-sublist">
+          <li>지문 표현의 재진술 — 같은 말이 어떻게 설명·반복되는가</li>
+          <li>글의 흐름 — 수능 지문에서 자주 나오는 흐름 읽기</li>
+        </ul>
+      </div>
     </div>
-    <div class="point-box">
-      <div class="point-box-num">03</div>
-      <div class="point-box-text">어떻게<br>풀어가야 하는가</div>
-    </div>
-    <div class="point-box">
-      <div class="point-box-num">04</div>
-      <div class="point-box-text">무엇을<br>반복해야 하는가</div>
+
+    <div class="part-block">
+      <div>
+        <div class="part-label">PART</div>
+        <div class="part-num">03</div>
+      </div>
+      <div>
+        <h3 class="part-title">어떻게 <em>문제를 풀어야</em> 하는가</h3>
+        <p class="part-desc">문제 유형마다 무엇을 먼저 보고, 어떻게 판단해야 하는지 — 꼭 알아야 할 필수 사항만 정리합니다.</p>
+        <ul class="part-sublist">
+          <li>주제 / 제목 문제</li>
+          <li>빈칸추론 문제</li>
+          <li>순서 / 삽입 문제</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CURRICULUM -->
-<section class="section curri-sec" id="curriculum">
-  <div class="chapter">
-    <span class="chapter-line"></span>
-    <span class="chapter-num">04</span>
-    <span class="chapter-sep">/</span>
-    <span class="chapter-name">Curriculum</span>
-    <span class="chapter-line"></span>
-  </div>
-  <h2 class="section-title" style="text-align:center;">네 가지 축으로 구성된 <em>커리큘럼</em></h2>
-  <p class="section-lead" style="text-align:center; margin: 0 auto 48px;">
-    진단부터 적용까지, 단계별로 글 읽는 자세를 완성합니다.
-  </p>
-  <div class="curri-grid">
-    <div class="curri-card">
-      <div class="curri-num">00 · 진단</div>
-      <h3 class="curri-title">읽기 습관 점검</h3>
-      <p class="curri-desc">대명사와 대동사, 문장 연결관계, 긴 문장 처리, 단어 해상도 등 독해가 무너지는 기본 습관을 점검합니다.</p>
-    </div>
-    <div class="curri-card">
-      <div class="curri-num">01 · 이해</div>
-      <h3 class="curri-title">글 이해하기 — 재진술</h3>
-      <p class="curri-desc">다르게 표현된 같은 말을 이해하고, 문장끼리의 연결성을 따지는 독해의 기본을 정리합니다.</p>
-    </div>
-    <div class="curri-card">
-      <div class="curri-num">02 · 흐름</div>
-      <h3 class="curri-title">글 흐름 보기</h3>
-      <p class="curri-desc">G-S 구조, P-S 구조, 과정과 순서의 전개, 글의 인덱스 매기기를 통해 글 전체의 흐름을 읽습니다.</p>
-    </div>
-    <div class="curri-card">
-      <div class="curri-num">03 · 적용</div>
-      <h3 class="curri-title">문제 풀기</h3>
-      <p class="curri-desc">대의파악, 빈칸추론, 순서·삽입 문제에서 무엇을 먼저 보고 어떻게 판단해야 하는지 정리합니다.</p>
-    </div>
-  </div>
-</section>
-
-<!-- OT VIDEO -->
+<!-- 04 / PREVIEW (OT) -->
 <div class="ot-band">
-  <section class="section ot-sec" id="ot">
+  <section class="section ot-sec" id="preview">
     <div class="chapter chapter-centered">
       <span class="chapter-line"></span>
-      <span class="chapter-num">05</span>
+      <span class="chapter-num">04</span>
       <span class="chapter-sep">/</span>
-      <span class="chapter-name">Orientation</span>
+      <span class="chapter-name">Preview</span>
       <span class="chapter-line"></span>
     </div>
-    <h2 class="section-title">강의를 시작하기 전,<br><em>OT 영상</em>을 먼저 확인하세요</h2>
+    <h2 class="section-title"><em>OT 영상</em>으로 먼저 만나보세요</h2>
     <p class="section-lead" style="margin: 0 auto 0;">
-      어떤 자세로 강의를 따라와야 하는지, 8차수 전체를 어떻게 활용해야 하는지<br>
+      8시간 안에 무엇을 다루는지, 어떤 자세로 따라와야 하는지<br>
       OT에서 함께 정리합니다.
     </p>
     <div class="ot-frame">
@@ -440,75 +554,72 @@
   </section>
 </div>
 
-<!-- CONNECTION -->
-<section class="section conn-sec">
+<!-- 05 / BEYOND THE LECTURE -->
+<section class="section beyond-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">05</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Beyond the Lecture</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="section-title" style="text-align:center;">강의가 끝난 뒤에도,<br><em>꾸준한 연습</em>으로</h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 0;">
+    강의에서 제시한 도구와 기준을 바탕으로, 자신의 생각과 정답을 지속적으로 비교하세요.<br>
+    올바른 방향으로 가고 있는지 끊임없이 점검하고, 부족한 부분을 보완하는 것이 핵심입니다.
+  </p>
+
+  <div class="beyond-card">
+    <div>
+      <p class="beyond-eyebrow">Connect the dots</p>
+      <h3 class="beyond-title">강의 후, <em style="color:#fff; background-image:linear-gradient(#fff,#fff); background-size:100% 3px; background-repeat:no-repeat; background-position:0 100%; padding-bottom:6px;">주간지</em>로 이어지는 학습</h3>
+      <p class="beyond-text">
+        INSPIRE 강의가 자세와 도구를 알려주는 강의라면,<br>
+        커넥츠 더 닷츠 주간지는 그 기준을 실제 기출 속에서 반복하게 만드는 학습 시스템입니다.
+      </p>
+    </div>
+    <a href="/shop.html" class="beyond-btn">Membership 알아보기 →</a>
+  </div>
+</section>
+
+<!-- 06 / OUTCOME -->
+<section class="section outcome-sec">
   <div class="chapter chapter-centered">
     <span class="chapter-line"></span>
     <span class="chapter-num">06</span>
     <span class="chapter-sep">/</span>
-    <span class="chapter-name">Connect</span>
+    <span class="chapter-name">Outcome</span>
     <span class="chapter-line"></span>
   </div>
-  <h2 class="section-title">INSPIRE 강의와<br><em>Connect the dots 시스템</em></h2>
-  <p class="conn-quote">
-    INSPIRE가 <em>수능영어를 어떻게 읽어야 하는지 알려주는 강의</em>라면,<br>
-    Connect the dots는 그 기준을 실제 기출 속에서 <em>반복하게 만드는 주간지 시스템</em>입니다.
+  <h2 class="section-title" style="text-align:center;">INSPIRE가 <em>목표하는 것</em></h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 0;">
+    이 강의가 끝나면, 다음 세 가지가 분명해집니다.
   </p>
-  <a href="/shop.html" class="btn-primary">Membership 알아보기 →</a>
-</section>
 
-<!-- FREE CLASS -->
-<section class="section free-sec" id="free">
-  <div class="chapter">
-    <span class="chapter-line"></span>
-    <span class="chapter-num">07</span>
-    <span class="chapter-sep">/</span>
-    <span class="chapter-name">Free Lecture</span>
-    <span class="chapter-line"></span>
-  </div>
-  <h2 class="free-title" style="text-align:center;">INSPIRE는 <em>무료로</em> 볼 수 있습니다</h2>
-  <p class="free-body" style="text-align:center; margin: 24px auto 0;">
-    해당 강의는 유튜브에 순차적으로 업로드될 예정이며,<br>
-    누구나 강의를 시청하고 자료 파일을 다운로드할 수 있습니다.
-  </p>
-  <div class="free-grid">
-    <div class="free-stat-box">
-      <div class="free-stat-num">08</div>
-      <div class="free-stat-label">차수 강의</div>
-      <div class="free-stat-sub">6월 모의평가 시행 전까지 순차 공개</div>
+  <div class="outcome-grid">
+    <div class="outcome-card">
+      <div class="outcome-num">01</div>
+      <div class="outcome-title">짧고 컴팩트한<br>핵심 도구</div>
     </div>
-    <div>
-      <p style="font-size:16px; color:var(--ink-2); line-height:1.9;">
-        총 <strong style="color:var(--ink);">8차수</strong>로 구성된 INSPIRE 강의가<br>
-        <strong style="color:var(--accent);">6월 모의평가</strong> 시행 전까지 순차적으로 업로드됩니다.
-      </p>
-      <a href="https://www.youtube.com/@ctdenglish" target="_blank" class="btn-secondary" style="margin-top:20px;">YouTube 채널 →</a>
+    <div class="outcome-card">
+      <div class="outcome-num">02</div>
+      <div class="outcome-title">수능 영어를 대하는<br>자세와 방향성</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-num">03</div>
+      <div class="outcome-title">시행착오를 줄이는<br>효율적 학습 맥락</div>
     </div>
   </div>
 </section>
 
-<!-- SPECIAL LECTURE -->
-<section class="section special-sec">
-  <div class="chapter chapter-centered">
-    <span class="chapter-line"></span>
-    <span class="chapter-num">08</span>
-    <span class="chapter-sep">/</span>
-    <span class="chapter-name">Live Special</span>
-    <span class="chapter-line"></span>
-  </div>
-  <h2 class="section-title" style="text-align:center;">매주 <em>실시간 무료 특강</em></h2>
-  <div class="special-card">
-    <div>
-      <span class="special-tag">FREE · LIVE</span>
-      <h3 class="special-title">매주 목요일 · 금요일<br>오전 9:00 ~ 10:00</h3>
-      <p class="special-meta">
-        <strong>별도 비용 없이 무료</strong>로 진행되며,<br>
-        Google Form을 통해 사전 신청 후 참여하실 수 있습니다.
-        <span class="free-badge">무료</span>
-      </p>
-    </div>
-    <a href="#" class="btn-primary">신청하기 →</a>
-  </div>
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2 class="final-cta-title">지금, <em style="background-image:linear-gradient(#fff,#fff); background-size:100% 4px; background-repeat:no-repeat; background-position:0 100%; padding-bottom:8px; color:#fff;">시작</em>하세요.</h2>
+  <p class="final-cta-sub">
+    27학년 6월 평가원까지 완강. 8시간 미만의 짧고 단단한 강의로<br>
+    수능 영어를 대하는 자세를 정리합니다.
+  </p>
+  <a href="#preview" class="final-cta-btn">강의 시작하기 →</a>
 </section>
 
 <!-- FOOTER -->

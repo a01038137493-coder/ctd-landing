@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · 상품 관리 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF7A00;
+      --bg: #0A0A0A;
+      --panel: #141414;
+      --panel-2: #1C1C1C;
+      --border: rgba(255,255,255,.08);
+      --border-2: rgba(255,255,255,.14);
+      --txt: #fff;
+      --txt-2: rgba(255,255,255,.6);
+      --txt-3: rgba(255,255,255,.35);
+      --sale-red: #FF4D4F;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg); color: var(--txt);
+      line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea, select { font-family: inherit; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 60px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-logo { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; }
+    .topbar-logo-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; }
+    .topbar-title { font-size: 13px; font-weight: 700; color: var(--txt-2); letter-spacing: .2px; padding-left: 14px; border-left: 1px solid var(--border-2); }
+    .topbar-right { display: flex; gap: 8px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 6px;
+      font-size: 13px; font-weight: 700;
+      border: 1px solid transparent;
+      transition: all .15s ease;
+    }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { opacity: .9; }
+    .btn-ghost { background: transparent; color: var(--txt-2); border-color: var(--border-2); }
+    .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,.3); }
+    .btn-danger { background: transparent; color: var(--sale-red); border-color: rgba(255,77,79,.4); }
+    .btn-danger:hover { background: rgba(255,77,79,.1); }
+    .btn-link { background: none; border: none; color: var(--txt-2); font-size: 12px; font-weight: 600; padding: 4px 6px; }
+    .btn-link:hover { color: #fff; }
+
+    /* ── LAYOUT ── */
+    .layout { display: grid; grid-template-columns: 1fr 480px; min-height: calc(100vh - 60px); }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+
+    /* ── LIST PANE ── */
+    .list-pane { padding: 28px; overflow-y: auto; }
+    .list-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .list-title { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+    .list-title small { color: var(--txt-3); font-size: 13px; font-weight: 600; margin-left: 8px; }
+    .list-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .product-list { display: flex; flex-direction: column; gap: 8px; }
+    .product-row {
+      display: grid; grid-template-columns: 60px 1fr auto auto auto;
+      gap: 14px; align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      transition: border-color .15s ease, background .15s ease;
+      cursor: grab;
+    }
+    .product-row:hover { border-color: var(--border-2); }
+    .product-row.editing { border-color: var(--orange); background: var(--panel-2); }
+    .product-row.dragging { opacity: .5; }
+    .product-row-thumb {
+      width: 60px; height: 60px;
+      border-radius: 6px; overflow: hidden;
+      background: #222; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .product-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .product-row-thumb-empty { font-size: 10px; color: var(--txt-3); text-align: center; }
+    .product-row-info { min-width: 0; }
+    .product-row-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-row-meta { font-size: 11px; color: var(--txt-3); margin-top: 4px; }
+    .product-row-price { font-size: 14px; font-weight: 800; white-space: nowrap; }
+    .product-row-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+      letter-spacing: .5px; white-space: nowrap;
+    }
+    .product-row-badge.sale { color: var(--sale-red); border: 1px solid var(--sale-red); }
+    .product-row-badge.sold { background: #6b6b6b; color: #fff; }
+    .product-row-actions { display: flex; gap: 4px; }
+    .icon-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: transparent; border: 1px solid var(--border-2);
+      color: var(--txt-2); display: flex; align-items: center; justify-content: center;
+      transition: all .15s ease;
+    }
+    .icon-btn:hover { color: #fff; border-color: rgba(255,255,255,.3); }
+    .icon-btn.danger:hover { color: var(--sale-red); border-color: rgba(255,77,79,.6); background: rgba(255,77,79,.08); }
+
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+      color: var(--txt-3); font-size: 14px;
+    }
+    .empty-state strong { color: #fff; display: block; margin-bottom: 8px; font-size: 16px; }
+
+    /* ── FORM PANE ── */
+    .form-pane {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      padding: 28px;
+      overflow-y: auto;
+      position: sticky; top: 60px;
+      max-height: calc(100vh - 60px);
+    }
+    @media (max-width: 1100px) {
+      .form-pane { position: static; max-height: none; border-left: none; border-top: 1px solid var(--border); }
+    }
+    .form-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .form-title { font-size: 18px; font-weight: 900; letter-spacing: -.3px; }
+    .form-mode { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--orange); color: #fff; }
+    .form-mode.edit { background: rgba(255,255,255,.12); color: var(--txt-2); }
+
+    .field { margin-bottom: 18px; }
+    .field-label { display: block; font-size: 12px; font-weight: 700; color: var(--txt-2); margin-bottom: 6px; letter-spacing: .2px; }
+    .field-label .req { color: var(--orange); }
+    .field-hint { font-size: 11px; color: var(--txt-3); margin-top: 4px; line-height: 1.5; }
+    .input, .textarea, .select {
+      width: 100%;
+      background: #0A0A0A;
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 13px;
+      transition: border-color .15s ease;
+    }
+    .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--orange); }
+    .textarea { resize: vertical; min-height: 70px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .image-upload {
+      border: 1.5px dashed var(--border-2);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .image-upload:hover { border-color: var(--orange); }
+    .image-upload.has-image { padding: 8px; }
+    .image-preview {
+      width: 100%; aspect-ratio: 1/1;
+      border-radius: 6px;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .image-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-empty { color: var(--txt-3); font-size: 12px; }
+    .image-actions { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+    input[type="file"] { display: none; }
+
+    .form-actions {
+      display: flex; gap: 8px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .form-actions .btn { flex: 1; justify-content: center; }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+      background: var(--orange); color: #fff;
+      padding: 12px 24px; border-radius: 8px;
+      font-size: 13px; font-weight: 700;
+      box-shadow: 0 12px 32px rgba(0,0,0,.4);
+      opacity: 0; transition: opacity .25s ease, transform .25s ease;
+      z-index: 100; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── LOGIN GATE ── */
+    .gate {
+      position: fixed; inset: 0; z-index: 999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gate-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 32px;
+      width: 100%; max-width: 360px;
+      text-align: center;
+    }
+    .gate-logo { display: inline-flex; align-items: center; gap: 7px; font-size: 16px; font-weight: 800; margin-bottom: 28px; }
+    .gate-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .gate-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .gate-sub { font-size: 13px; color: var(--txt-3); margin-bottom: 24px; }
+    .gate input { margin-bottom: 12px; }
+    .gate-error { font-size: 12px; color: var(--sale-red); margin-top: 8px; min-height: 16px; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="gate" id="gate">
+  <form class="gate-box" id="gate-form">
+    <div class="gate-logo"><span class="gate-dot"></span>Connect the dots</div>
+    <div class="gate-title">Admin 로그인</div>
+    <div class="gate-sub">상품을 관리하려면 비밀번호를 입력하세요.</div>
+    <input class="input" type="password" id="gate-pw" placeholder="비밀번호" autofocus />
+    <button class="btn btn-primary" type="submit" style="width:100%; justify-content:center; margin-top:4px;">로그인</button>
+    <div class="gate-error" id="gate-error"></div>
+  </form>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="topbar-logo" href="/"><span class="topbar-logo-dot"></span>Connect the dots</a>
+    <span class="topbar-title">상품 관리</span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-link" id="btn-import">불러오기 (JSON)</button>
+    <button class="btn-link" id="btn-export">내보내기 (JSON)</button>
+    <button class="btn-link" id="btn-reset">초기화</button>
+    <a class="btn btn-ghost" href="/shop.html" target="_blank">SHOP 보기 →</a>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- LIST PANE -->
+  <section class="list-pane">
+    <div class="list-head">
+      <div class="list-title">상품 목록 <small id="list-count">(0)</small></div>
+      <div class="list-actions">
+        <button class="btn btn-primary" id="btn-new">＋ 새 상품</button>
+      </div>
+    </div>
+    <div class="product-list" id="product-list"></div>
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <strong>상품이 없습니다</strong>
+      "＋ 새 상품" 버튼을 눌러 첫 상품을 추가하세요.
+    </div>
+  </section>
+
+  <!-- FORM PANE -->
+  <aside class="form-pane">
+    <div class="form-head">
+      <div class="form-title">상품 편집</div>
+      <span class="form-mode" id="form-mode">신규</span>
+    </div>
+
+    <form id="product-form" autocomplete="off">
+      <input type="hidden" id="f-id" />
+
+      <div class="field">
+        <label class="field-label">상품명 <span class="req">*</span></label>
+        <input class="input" id="f-name" placeholder="예: [본교재] Connect the dots 시즌별 단행본" required />
+      </div>
+
+      <div class="field">
+        <label class="field-label">이미지</label>
+        <div class="image-upload" id="image-upload">
+          <div class="image-preview" id="image-preview">
+            <span class="image-preview-empty">이미지 없음</span>
+          </div>
+          <div class="image-actions">
+            <label class="btn btn-ghost" for="f-file" style="font-size:12px; padding:7px 12px;">파일 선택</label>
+            <input type="file" id="f-file" accept="image/*" />
+            <button type="button" class="btn btn-ghost" id="btn-image-url" style="font-size:12px; padding:7px 12px;">URL 입력</button>
+            <button type="button" class="btn btn-ghost" id="btn-image-clear" style="font-size:12px; padding:7px 12px;">제거</button>
+          </div>
+        </div>
+        <input type="hidden" id="f-image" />
+        <div class="field-hint">이미지는 base64로 저장됩니다. 너무 큰 파일은 피해주세요 (권장 500KB 이하).</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label class="field-label">판매가 (원) <span class="req">*</span></label>
+          <input class="input" id="f-price" type="number" min="0" step="100" placeholder="8900" required />
+        </div>
+        <div class="field">
+          <label class="field-label">정상가 (원)</label>
+          <input class="input" id="f-price-was" type="number" min="0" step="100" placeholder="비워두면 미표시" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">배지</label>
+        <select class="select" id="f-badge">
+          <option value="">없음</option>
+          <option value="SALE">SALE</option>
+          <option value="SOLDOUT">SOLDOUT</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-ghost" type="button" id="btn-cancel">취소</button>
+        <button class="btn btn-primary" type="submit" id="btn-save">저장</button>
+      </div>
+    </form>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="import-file" accept="application/json" style="display:none;" />
+
+<script src="js/products.js"></script>
+<script>
+  const ADMIN_PW = 'ctd2026';
+
+  // ── GATE ──
+  const gate = document.getElementById('gate');
+  const gateForm = document.getElementById('gate-form');
+  const gatePw = document.getElementById('gate-pw');
+  const gateError = document.getElementById('gate-error');
+  const SESSION_KEY = 'ctd_admin_session';
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    gate.style.display = 'none';
+  }
+  gateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (gatePw.value === ADMIN_PW) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      gate.style.display = 'none';
+    } else {
+      gateError.textContent = '비밀번호가 올바르지 않습니다.';
+      gatePw.value = '';
+      gatePw.focus();
+    }
+  });
+
+  // ── STATE ──
+  let products = (CTDProducts.loadLocal() || CTDProducts.defaultProducts.slice())
+    .map(p => ({ ...p }));
+  let editingId = null;
+
+  function persist() {
+    CTDProducts.saveLocal(products);
+  }
+
+  // ── RENDER LIST ──
+  const listEl = document.getElementById('product-list');
+  const emptyEl = document.getElementById('empty-state');
+  const countEl = document.getElementById('list-count');
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function renderList() {
+    const sorted = products.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    countEl.textContent = `(${sorted.length})`;
+    if (!sorted.length) { listEl.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = sorted.map(p => `
+      <div class="product-row ${p.id === editingId ? 'editing' : ''}" data-id="${escapeHtml(p.id)}" draggable="true">
+        <div class="product-row-thumb">
+          ${p.image
+            ? `<img src="${escapeHtml(p.image)}" alt="" />`
+            : '<span class="product-row-thumb-empty">표지<br>없음</span>'}
+        </div>
+        <div class="product-row-info">
+          <div class="product-row-name">${escapeHtml(p.name)}</div>
+          <div class="product-row-meta">순서 ${p.order ?? '-'} · ID ${escapeHtml(p.id)}</div>
+        </div>
+        <div class="product-row-price">${CTDProducts.formatPrice(p.price)}</div>
+        ${p.badge === 'SALE' ? '<span class="product-row-badge sale">SALE</span>'
+          : p.badge === 'SOLDOUT' ? '<span class="product-row-badge sold">SOLDOUT</span>'
+          : '<span></span>'}
+        <div class="product-row-actions">
+          <button class="icon-btn" data-action="edit" title="편집">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn danger" data-action="delete" title="삭제">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  listEl.addEventListener('click', (e) => {
+    const row = e.target.closest('.product-row');
+    if (!row) return;
+    const id = row.dataset.id;
+    const action = e.target.closest('[data-action]')?.dataset.action;
+    if (action === 'edit') { startEdit(id); return; }
+    if (action === 'delete') {
+      const p = products.find(p => p.id === id);
+      if (confirm(`"${p?.name}" 상품을 삭제할까요?`)) {
+        products = products.filter(p => p.id !== id);
+        if (editingId === id) resetForm();
+        persist(); renderList(); toast('삭제됨');
+      }
+      return;
+    }
+    startEdit(id);
+  });
+
+  // ── DRAG TO REORDER ──
+  let dragId = null;
+  listEl.addEventListener('dragstart', (e) => {
+    const row = e.target.closest('.product-row');
+    if (!row) return;
+    dragId = row.dataset.id;
+    row.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  listEl.addEventListener('dragend', (e) => {
+    const row = e.target.closest('.product-row');
+    if (row) row.classList.remove('dragging');
+    dragId = null;
+  });
+  listEl.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const row = e.target.closest('.product-row');
+    if (!row || row.dataset.id === dragId) return;
+    const bb = row.getBoundingClientRect();
+    const after = (e.clientY - bb.top) / bb.height > 0.5;
+    listEl.insertBefore(document.querySelector(`.product-row[data-id="${dragId}"]`), after ? row.nextSibling : row);
+  });
+  listEl.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const newOrder = Array.from(listEl.querySelectorAll('.product-row')).map((r, i) => ({ id: r.dataset.id, order: i + 1 }));
+    products = products.map(p => {
+      const found = newOrder.find(n => n.id === p.id);
+      return found ? { ...p, order: found.order } : p;
+    });
+    persist(); renderList(); toast('순서 변경됨');
+  });
+
+  // ── FORM ──
+  const form = document.getElementById('product-form');
+  const fId = document.getElementById('f-id');
+  const fName = document.getElementById('f-name');
+  const fPrice = document.getElementById('f-price');
+  const fPriceWas = document.getElementById('f-price-was');
+  const fBadge = document.getElementById('f-badge');
+  const fImage = document.getElementById('f-image');
+  const fFile = document.getElementById('f-file');
+  const imagePreview = document.getElementById('image-preview');
+  const formMode = document.getElementById('form-mode');
+
+  function setImage(src) {
+    fImage.value = src || '';
+    if (src) {
+      imagePreview.innerHTML = `<img src="${escapeHtml(src)}" alt="preview" />`;
+    } else {
+      imagePreview.innerHTML = '<span class="image-preview-empty">이미지 없음</span>';
+    }
+  }
+
+  function resetForm() {
+    editingId = null;
+    fId.value = '';
+    fName.value = '';
+    fPrice.value = '';
+    fPriceWas.value = '';
+    fBadge.value = '';
+    setImage('');
+    formMode.textContent = '신규';
+    formMode.classList.remove('edit');
+    renderList();
+  }
+
+  function startEdit(id) {
+    const p = products.find(p => p.id === id);
+    if (!p) return;
+    editingId = id;
+    fId.value = p.id;
+    fName.value = p.name || '';
+    fPrice.value = p.price ?? '';
+    fPriceWas.value = p.priceWas ?? '';
+    fBadge.value = p.badge || '';
+    setImage(p.image || '');
+    formMode.textContent = '편집';
+    formMode.classList.add('edit');
+    renderList();
+    fName.focus();
+  }
+
+  document.getElementById('btn-new').addEventListener('click', resetForm);
+  document.getElementById('btn-cancel').addEventListener('click', resetForm);
+
+  fFile.addEventListener('change', () => {
+    const file = fFile.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      if (!confirm('파일이 2MB를 초과합니다. localStorage 용량 초과 위험이 있습니다. 계속할까요?')) {
+        fFile.value = ''; return;
+      }
+    }
+    const reader = new FileReader();
+    reader.onload = () => setImage(reader.result);
+    reader.readAsDataURL(file);
+    fFile.value = '';
+  });
+
+  document.getElementById('btn-image-url').addEventListener('click', () => {
+    const url = prompt('이미지 URL 또는 경로를 입력하세요\n(예: image/product01.jpg)', fImage.value);
+    if (url !== null) setImage(url.trim());
+  });
+  document.getElementById('btn-image-clear').addEventListener('click', () => setImage(''));
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+      id: fId.value || CTDProducts.genId(),
+      name: fName.value.trim(),
+      image: fImage.value || '',
+      price: Number(fPrice.value) || 0,
+      priceWas: fPriceWas.value ? Number(fPriceWas.value) : null,
+      badge: fBadge.value || null,
+    };
+    if (!data.name) { alert('상품명을 입력하세요.'); return; }
+
+    const existingIdx = products.findIndex(p => p.id === data.id);
+    if (existingIdx >= 0) {
+      const old = products[existingIdx];
+      products[existingIdx] = { ...old, ...data };
+      toast('저장됨');
+    } else {
+      const maxOrder = products.reduce((m, p) => Math.max(m, p.order ?? 0), 0);
+      products.push({ ...data, order: maxOrder + 1 });
+      toast('추가됨');
+    }
+    persist();
+    resetForm();
+  });
+
+  // ── TOAST ──
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  // ── IMPORT / EXPORT / RESET ──
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(products, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'products.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('JSON 내보내기 완료');
+  });
+
+  const importFile = document.getElementById('import-file');
+  document.getElementById('btn-import').addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', () => {
+    const file = importFile.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!Array.isArray(data)) throw new Error('형식 오류');
+        if (!confirm(`${data.length}개 상품을 불러옵니다. 현재 데이터를 덮어쓸까요?`)) return;
+        products = data;
+        persist(); resetForm(); toast('불러오기 완료');
+      } catch {
+        alert('JSON 파일을 읽지 못했습니다.');
+      }
+      importFile.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    if (!confirm('모든 변경을 초기화하고 기본 상품으로 되돌릴까요?')) return;
+    CTDProducts.clearLocal();
+    products = CTDProducts.defaultProducts.map(p => ({ ...p }));
+    persist(); resetForm(); toast('초기화 완료');
+  });
+
+  // ── INITIAL ──
+  // If no localStorage yet, seed defaults so shop.html has data on first edit
+  if (!CTDProducts.loadLocal()) persist();
+  renderList();
+</script>
+
+</body>
+</html>

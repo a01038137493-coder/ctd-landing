@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHOP — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF7A00;
+      --black: #111;
+      --bg-dark: #000;
+      --sale-red: #FF4D4F;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg-dark); color: #fff; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+    }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; white-space: nowrap; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a {
+      display: flex; align-items: center; height: 64px; padding: 0 16px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8);
+      letter-spacing: .1px; transition: color .2s;
+    }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-menu li a.active { color: var(--orange); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    @media (max-width: 960px) {
+      .nav-menu { display: none; }
+      .nav-hamburger { display: flex; align-items: center; }
+    }
+
+    /* ── ALL PRODUCTS SECTION ── */
+    .shop-wrap {
+      padding: 160px 60px 120px;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+    .shop-title {
+      text-align: center;
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: var(--orange);
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .shop-subtitle {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 80px;
+      letter-spacing: -.2px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 48px 32px;
+    }
+    @media (max-width: 1100px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 760px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 36px 20px; } }
+    @media (max-width: 420px) { .product-grid { grid-template-columns: 1fr; } }
+
+    .product-card {
+      display: flex; flex-direction: column;
+      color: inherit;
+      transition: transform .25s ease;
+    }
+    .product-card:hover { transform: translateY(-4px); }
+
+    .product-card-img {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #1a1a1a;
+      margin-bottom: 18px;
+    }
+    .product-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform .5s ease;
+    }
+    .product-card:hover .product-card-img img { transform: scale(1.03); }
+    .product-card-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #f5f2ec; color: #999;
+      font-size: 14px; font-weight: 600; letter-spacing: .5px;
+    }
+
+    .product-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -.2px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+      min-height: 42px;
+    }
+    .product-card-price {
+      display: flex; align-items: baseline; gap: 10px;
+      font-size: 15px; font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+      margin-bottom: 10px;
+    }
+    .product-card-price-was {
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,.3);
+      text-decoration: line-through;
+    }
+
+    .product-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge-sale {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      color: var(--sale-red);
+      border: 1px solid var(--sale-red);
+      padding: 3px 12px;
+      border-radius: 999px;
+      letter-spacing: .5px;
+    }
+    .badge-soldout {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      color: #fff;
+      background: #6b6b6b;
+      padding: 4px 12px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+    }
+
+    /* ── FOOTER ── */
+    footer { background: #000; color: rgba(255,255,255,.45); padding: 60px 40px 36px; border-top: 1px solid rgba(255,255,255,.05); }
+    .footer-top { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-logo img { height: 28px; margin-bottom: 16px; filter: brightness(0) invert(1); opacity: .7; display: block; }
+    .footer-brand-text { font-size: 13px; line-height: 1.8; }
+    .footer-col h5 { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 760px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .shop-wrap { padding: 120px 24px 80px; }
+      .shop-subtitle { margin-bottom: 56px; }
+    }
+    @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="/" class="nav-logo-text">
+    <span class="nav-logo-dot"></span>Connect the dots
+  </a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html" class="active">SHOP</a></li>
+    <li><a href="/#">INSPIRE</a></li>
+    <li><a href="/#">Membership</a></li>
+    <li><a href="/#">About</a></li>
+    <li><a href="/#">Insight</a></li>
+    <li><a href="/#">Review</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#">로그인</a>
+    <a href="#" class="nav-cart">장바구니</a>
+    <button class="nav-hamburger" onclick="toggleNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ALL PRODUCTS -->
+<main class="shop-wrap">
+  <h1 class="shop-title">All products</h1>
+  <p class="shop-subtitle">커닥의 모든 콘텐츠를 확인하세요.</p>
+
+  <div class="product-grid" id="product-grid"></div>
+  <p id="product-empty" style="display:none; text-align:center; color:rgba(255,255,255,.4); padding:60px 0; font-size:14px;">등록된 상품이 없습니다.</p>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">
+        <img src="https://cdn.imweb.me/upload/S202605046b88b4746bb19/cb83c12f3b25b.png" alt="Connect the dots" />
+      </div>
+      <p class="footer-brand-text">수능영어의 점들을 연결합니다.<br>매주, 정확하게.<br><br>대구 수성구 달구벌대로 2528, 7층<br>soul3785@naver.com</p>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="/shop.html">ALL</a></li>
+        <li><a href="#">Membership</a></li>
+        <li><a href="#">Main Materials</a></li>
+        <li><a href="#">Content</a></li>
+        <li><a href="#">Online Classes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>메뉴</h5>
+      <ul>
+        <li><a href="/#">INSPIRE</a></li>
+        <li><a href="/#">About</a></li>
+        <li><a href="/#">Insight</a></li>
+        <li><a href="/#">Review</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>고객센터</h5>
+      <ul>
+        <li><a href="mailto:soul3785@naver.com">이메일 문의</a></li>
+        <li><a href="https://www.youtube.com/@ctdenglish" target="_blank">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Connect the dots. All rights reserved.</span>
+    <span>soul3785@naver.com</span>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script>
+  function toggleNav() {
+    const menu = document.querySelector('.nav-menu');
+    if (menu.style.display === 'flex') {
+      menu.style.display = '';
+    } else {
+      menu.style.display = 'flex';
+      menu.style.flexDirection = 'column';
+      menu.style.position = 'absolute';
+      menu.style.top = '64px';
+      menu.style.left = '0';
+      menu.style.right = '0';
+      menu.style.background = 'rgba(0,0,0,.92)';
+      menu.style.padding = '12px 0';
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function renderProducts(products) {
+    const grid = document.getElementById('product-grid');
+    const empty = document.getElementById('product-empty');
+    const sorted = products.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    if (!sorted.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    grid.innerHTML = sorted.map(p => {
+      const img = p.image
+        ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" />`
+        : `<div class="product-card-placeholder">표지 준비중</div>`;
+      const priceWas = p.priceWas
+        ? `<span class="product-card-price-was">${CTDProducts.formatPrice(p.priceWas)}</span>`
+        : '';
+      const badge = p.badge === 'SALE'
+        ? '<span class="badge-sale">SALE</span>'
+        : p.badge === 'SOLDOUT'
+          ? '<span class="badge-soldout">SOLDOUT</span>'
+          : '';
+      return `
+        <a href="#" class="product-card">
+          <div class="product-card-img">${img}</div>
+          <div class="product-card-name">${escapeHtml(p.name)}</div>
+          <div class="product-card-price"><span>${CTDProducts.formatPrice(p.price)}</span>${priceWas}</div>
+          <div class="product-badges">${badge}</div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  CTDProducts.loadProducts().then(renderProducts);
+
+  // Re-render when admin saves in another tab
+  window.addEventListener('storage', (e) => {
+    if (e.key === CTDProducts.STORAGE_KEY) {
+      CTDProducts.loadProducts().then(renderProducts);
+    }
+  });
+</script>
+
+</body>
+</html>

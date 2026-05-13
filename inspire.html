@@ -67,6 +67,14 @@
     @media (max-width: 960px) { .nav-menu { display: none; } }
 
     /* HERO */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes drift {
+      0%   { transform: translate(-50%, -50%) translateX(0); }
+      50%  { transform: translate(-50%, -50%) translateX(3%); }
+      100% { transform: translate(-50%, -50%) translateX(0); }
+    }
+    @keyframes watermarkFade { from { opacity: 0; } to { opacity: 1; } }
+
     .hero {
       position: relative;
       padding: 200px 40px 120px;
@@ -81,6 +89,15 @@
       font-weight: 900; letter-spacing: -10px; line-height: 1;
       color: rgba(17,17,17,.04);
       pointer-events: none; white-space: nowrap;
+      animation: watermarkFade 1.2s ease-out both, drift 18s ease-in-out 1.2s infinite;
+    }
+    .hero .hero-eyebrow { animation: fadeUp .8s ease-out .15s both; }
+    .hero .hero-title   { animation: fadeUp .9s ease-out .3s both; }
+    .hero .hero-desc    { animation: fadeUp .8s ease-out .55s both; }
+    .hero .hero-stats   { animation: fadeUp .8s ease-out .75s both; }
+    .hero .hero-ctas    { animation: fadeUp .8s ease-out .95s both; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero::after, .hero .hero-eyebrow, .hero .hero-title, .hero .hero-desc, .hero .hero-stats, .hero .hero-ctas { animation: none; }
     }
     .hero-eyebrow { position: relative; z-index: 2; font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 22px; }
     .hero-title { position: relative; z-index: 2; font-size: clamp(32px, 5vw, 60px); font-weight: 900; letter-spacing: -2.5px; line-height: 1.18; margin-bottom: 28px; color: var(--ink); }

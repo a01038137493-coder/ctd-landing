@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INSPIRE · 독해 완성 메뉴얼 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --orange: #FF7A00; --bg: #000; --bg-2: #0A0A0A; --panel: #141414; --border: rgba(255,255,255,.08); --sale-red: #FF4D4F; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: #fff; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a { display: flex; align-items: center; height: 64px; padding: 0 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-menu li a.active { color: var(--orange); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
+    @media (max-width: 960px) { .nav-menu { display: none; } }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 200px 40px 120px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at center top, rgba(255,122,0,.18), transparent 55%),
+        linear-gradient(180deg, #000 0%, var(--bg-2) 100%);
+      overflow: hidden;
+    }
+    .hero::after {
+      content: 'INSPIRE';
+      position: absolute; top: 52%; left: 50%; transform: translate(-50%,-50%);
+      font-size: clamp(140px, 22vw, 320px);
+      font-weight: 900; letter-spacing: -10px; line-height: 1;
+      color: rgba(255,255,255,.025);
+      pointer-events: none; white-space: nowrap;
+    }
+    .hero-eyebrow { position: relative; z-index: 2; font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 22px; }
+    .hero-title { position: relative; z-index: 2; font-size: clamp(32px, 5vw, 60px); font-weight: 900; letter-spacing: -2.5px; line-height: 1.18; margin-bottom: 28px; }
+    .hero-title em { font-style: normal; color: var(--orange); }
+    .hero-desc { position: relative; z-index: 2; font-size: 16px; color: rgba(255,255,255,.6); line-height: 1.8; max-width: 720px; margin: 0 auto 44px; }
+    .hero-ctas { position: relative; z-index: 2; display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 30px; border-radius: 8px;
+      font-size: 14px; font-weight: 800; letter-spacing: -.2px;
+      transition: all .15s ease; border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { opacity: .9; transform: translateY(-2px); }
+    .btn-secondary { background: transparent; color: #fff; border-color: rgba(255,255,255,.25); }
+    .btn-secondary:hover { border-color: #fff; }
+
+    /* SECTION COMMON */
+    .section { padding: 120px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
+    .section-title { font-size: clamp(26px, 3.5vw, 44px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.3; margin-bottom: 28px; }
+    .section-title em { font-style: normal; color: var(--orange); }
+    .section-lead { font-size: 17px; color: rgba(255,255,255,.7); line-height: 1.85; max-width: 720px; }
+    .section-lead strong { color: var(--orange); font-weight: 700; }
+
+    .section-divider { height: 1px; background: var(--border); max-width: 1100px; margin: 0 auto; }
+
+    /* OT VIDEO */
+    .ot-sec { text-align: center; }
+    .ot-frame {
+      position: relative;
+      aspect-ratio: 16/9; max-width: 900px; margin: 48px auto 0;
+      border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ot-frame::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(255,122,0,.15), transparent 60%);
+    }
+    .ot-play {
+      position: relative; width: 84px; height: 84px;
+      border-radius: 50%; background: var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 36px rgba(255,122,0,.4);
+      cursor: pointer;
+      transition: transform .2s ease;
+    }
+    .ot-play:hover { transform: scale(1.08); }
+    .ot-play::after { content: ''; width: 0; height: 0; border-style: solid; border-width: 14px 0 14px 22px; border-color: transparent transparent transparent #fff; margin-left: 6px; }
+    .ot-label { position: absolute; bottom: 24px; left: 24px; right: 24px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: 2px; text-transform: uppercase; }
+
+    /* PROBLEM */
+    .problem-sec { background: #000; text-align: center; }
+    .problem-title { font-size: clamp(28px, 4vw, 52px); font-weight: 900; letter-spacing: -2px; line-height: 1.25; margin-bottom: 36px; }
+    .problem-title em { font-style: normal; color: var(--orange); }
+    .problem-body { font-size: 18px; color: rgba(255,255,255,.65); line-height: 1.9; max-width: 760px; margin: 0 auto; }
+    .problem-body mark { background: rgba(255,122,0,.18); color: var(--orange); font-weight: 800; padding: 2px 6px; border-radius: 3px; }
+
+    /* SOLUTION 3 statements */
+    .solution-sec { background: var(--bg-2); }
+    .solution-grid { display: grid; gap: 24px; margin-top: 56px; }
+    .solution-card {
+      padding: 56px 48px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      display: grid; grid-template-columns: 80px 1fr; gap: 32px;
+      align-items: center;
+    }
+    @media (max-width: 700px) { .solution-card { grid-template-columns: 1fr; gap: 16px; padding: 36px 28px; } }
+    .solution-num { font-size: 56px; font-weight: 900; letter-spacing: -3px; color: var(--orange); line-height: 1; }
+    .solution-text { font-size: clamp(20px, 2.4vw, 28px); font-weight: 800; letter-spacing: -.8px; line-height: 1.5; color: #fff; }
+    .solution-text em { font-style: normal; color: var(--orange); }
+
+    /* CURRICULUM */
+    .curri-sec { background: #000; }
+    .curri-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 48px; }
+    @media (max-width: 760px) { .curri-grid { grid-template-columns: 1fr; } }
+    .curri-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+      padding: 36px 32px;
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .curri-card:hover { border-color: rgba(255,122,0,.4); transform: translateY(-3px); }
+    .curri-num {
+      font-size: 14px; font-weight: 800; color: var(--orange);
+      letter-spacing: 3px; margin-bottom: 14px;
+      font-family: 'SF Mono', Menlo, monospace;
+    }
+    .curri-title { font-size: 22px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; }
+    .curri-desc { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.7; }
+
+    /* POINTS (4 additional bullets) */
+    .points-sec { background: var(--bg-2); text-align: center; }
+    .points-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 56px; }
+    @media (max-width: 760px) { .points-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .points-grid { grid-template-columns: 1fr; } }
+    .point-item {
+      padding: 36px 20px; border: 1px solid var(--border); border-radius: 12px;
+      background: transparent;
+    }
+    .point-num {
+      font-size: 13px; font-weight: 800; color: var(--orange);
+      letter-spacing: 2px; margin-bottom: 14px;
+      font-family: 'SF Mono', Menlo, monospace;
+    }
+    .point-text { font-size: 15px; font-weight: 700; line-height: 1.5; }
+
+    /* CONNECTION (to membership) */
+    .conn-sec { background: linear-gradient(180deg, #0d0d0d 0%, #000 100%); text-align: center; }
+    .conn-quote {
+      font-size: clamp(20px, 2.4vw, 30px); font-weight: 800; letter-spacing: -1px;
+      line-height: 1.6; max-width: 920px; margin: 0 auto 44px;
+    }
+    .conn-quote em { font-style: normal; color: var(--orange); }
+
+    /* FREE CLASS */
+    .free-sec { background: var(--bg-2); }
+    .free-title { font-size: clamp(28px, 3.5vw, 44px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.3; }
+    .free-title em { font-style: normal; color: var(--orange); }
+    .free-body { font-size: 16px; color: rgba(255,255,255,.65); line-height: 1.85; margin-top: 24px; max-width: 700px; }
+    .free-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-top: 56px; }
+    @media (max-width: 760px) { .free-grid { grid-template-columns: 1fr; } }
+    .free-stat-box {
+      background: #000; border: 1px solid var(--border); border-radius: 16px;
+      padding: 48px 40px; text-align: center;
+    }
+    .free-stat-num { font-size: 80px; font-weight: 900; color: var(--orange); letter-spacing: -4px; line-height: 1; margin-bottom: 12px; }
+    .free-stat-label { font-size: 14px; font-weight: 700; color: rgba(255,255,255,.65); letter-spacing: 1px; }
+    .free-stat-sub { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 8px; }
+
+    /* SPECIAL LECTURE */
+    .special-sec { background: #000; }
+    .special-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+      padding: 56px 48px; margin-top: 48px;
+      display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: center;
+    }
+    @media (max-width: 760px) { .special-card { grid-template-columns: 1fr; gap: 24px; padding: 40px 28px; } }
+    .special-tag { display: inline-block; font-size: 11px; font-weight: 800; color: var(--orange); background: rgba(255,122,0,.12); padding: 5px 12px; border-radius: 999px; letter-spacing: 1.5px; margin-bottom: 16px; }
+    .special-title { font-size: 26px; font-weight: 900; letter-spacing: -.7px; line-height: 1.35; margin-bottom: 14px; }
+    .special-meta { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.85; }
+    .special-meta strong { color: #fff; font-weight: 700; }
+    .special-meta .free-badge { display: inline-block; background: var(--orange); color: #fff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 4px; margin-left: 6px; letter-spacing: .5px; }
+
+    /* FOOTER */
+    footer { background: #000; color: rgba(255,255,255,.45); padding: 60px 40px 36px; border-top: 1px solid rgba(255,255,255,.05); }
+    .footer-top { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-logo img { height: 28px; margin-bottom: 16px; filter: brightness(0) invert(1); opacity: .7; display: block; }
+    .footer-brand-text { font-size: 13px; line-height: 1.8; }
+    .footer-col h5 { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 760px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .section { padding: 80px 24px; }
+      .hero { padding: 140px 24px 80px; }
+    }
+    @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html">SHOP</a></li>
+    <li><a href="/inspire.html" class="active">INSPIRE</a></li>
+    <li><a href="/#">Membership</a></li>
+    <li><a href="/#">About</a></li>
+    <li><a href="/#">Insight</a></li>
+    <li><a href="/#">Review</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">INSPIRE</p>
+  <h1 class="hero-title">수능영어, 무엇을 연습해야 하는지<br><em>알려주는 강의</em></h1>
+  <p class="hero-desc">
+    INSPIRE는 수능영어 독해를 시작하기 전, 학생이 어떤 자세로 읽고,<br>
+    무엇을 조심하며, 어떻게 문제를 바라봐야 하는지를 정리하는 <strong style="color:#fff;">독해 완성 메뉴얼</strong>입니다.
+  </p>
+  <div class="hero-ctas">
+    <a href="#ot" class="btn-primary">강의 보러가기 →</a>
+    <a href="#free" class="btn-secondary">무료 강의 안내</a>
+  </div>
+</section>
+
+<!-- OT VIDEO -->
+<section class="section ot-sec" id="ot">
+  <p class="section-eyebrow">Orientation</p>
+  <h2 class="section-title">먼저, OT 영상을 확인하세요</h2>
+  <p class="section-lead" style="margin: 0 auto;">
+    INSPIRE를 시작하기 전, 강의 전체 구성과 접근 방식을 OT 영상에서 먼저 확인해보세요.<br>
+    어떤 자세로 강의를 따라와야 하는지 함께 정리합니다.
+  </p>
+  <div class="ot-frame">
+    <button class="ot-play" aria-label="OT 영상 재생"></button>
+    <div class="ot-label">INSPIRE · ORIENTATION</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROBLEM -->
+<section class="section problem-sec">
+  <p class="section-eyebrow" style="text-align:center;">Problem</p>
+  <h2 class="problem-title">절대평가 시대,<br><em>영어에 쓸 시간은 많지 않습니다.</em></h2>
+  <p class="problem-body">
+    그런데 많은 학생들이 한 번으로 끝내야 할 영어 공부를<br>
+    <mark>무의미한 독해문제집 양치기</mark>로 허비하고 있습니다.
+  </p>
+</section>
+
+<!-- SOLUTION -->
+<section class="section solution-sec">
+  <p class="section-eyebrow">Our Approach</p>
+  <h2 class="section-title">INSPIRE의 <em>관점</em></h2>
+  <div class="solution-grid">
+    <div class="solution-card">
+      <div class="solution-num">01</div>
+      <div class="solution-text">글을 <em>읽는다는 건,</em><br>화자와 소통하는 일입니다.</div>
+    </div>
+    <div class="solution-card">
+      <div class="solution-num">02</div>
+      <div class="solution-text">가장 <em>빠른 방법</em>은,<br>가장 바른 자세로 읽는 것입니다.</div>
+    </div>
+    <div class="solution-card">
+      <div class="solution-num">03</div>
+      <div class="solution-text">INSPIRE는 어떻게 조심하고,<br>읽고, 풀어야 하는지에 대한<br>가장 <em>간단한 도구</em>들을 제시합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="section curri-sec">
+  <p class="section-eyebrow">Curriculum</p>
+  <h2 class="section-title">강의는 <em>네 가지 축</em>으로 구성됩니다</h2>
+  <div class="curri-grid">
+    <div class="curri-card">
+      <div class="curri-num">00 · 진단</div>
+      <h3 class="curri-title">읽기 습관 점검</h3>
+      <p class="curri-desc">대명사와 대동사, 문장 연결관계, 긴 문장 처리, 단어 해상도 등 독해가 무너지는 기본 습관을 점검합니다.</p>
+    </div>
+    <div class="curri-card">
+      <div class="curri-num">01 · 이해</div>
+      <h3 class="curri-title">글 이해하기 — 재진술</h3>
+      <p class="curri-desc">다르게 표현된 같은 말을 이해하고, 문장끼리의 연결성을 따지는 독해의 기본을 정리합니다.</p>
+    </div>
+    <div class="curri-card">
+      <div class="curri-num">02 · 흐름</div>
+      <h3 class="curri-title">글 흐름 보기</h3>
+      <p class="curri-desc">G-S 구조, P-S 구조, 과정과 순서의 전개, 글의 인덱스 매기기를 통해 글 전체의 흐름을 읽습니다.</p>
+    </div>
+    <div class="curri-card">
+      <div class="curri-num">03 · 적용</div>
+      <h3 class="curri-title">문제 풀기</h3>
+      <p class="curri-desc">대의파악, 빈칸추론, 순서·삽입 문제에서 무엇을 먼저 보고 어떻게 판단해야 하는지 정리합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POINTS -->
+<section class="section points-sec">
+  <p class="section-eyebrow">Key Questions</p>
+  <h2 class="section-title">강의가 답하는 <em>네 가지 질문</em></h2>
+  <div class="points-grid">
+    <div class="point-item">
+      <div class="point-num">01</div>
+      <div class="point-text">무엇을<br>조심해야 하는가</div>
+    </div>
+    <div class="point-item">
+      <div class="point-num">02</div>
+      <div class="point-text">어떻게<br>읽어가야 하는가</div>
+    </div>
+    <div class="point-item">
+      <div class="point-num">03</div>
+      <div class="point-text">어떻게<br>풀어가야 하는가</div>
+    </div>
+    <div class="point-item">
+      <div class="point-num">04</div>
+      <div class="point-text">무엇을<br>반복해야 하는가</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECTION -->
+<section class="section conn-sec">
+  <p class="section-eyebrow">Connect</p>
+  <h2 class="section-title">INSPIRE 강의와<br><em>Connect the dots 시스템</em></h2>
+  <p class="conn-quote">
+    INSPIRE가 <em>수능영어를 어떻게 읽어야 하는지 알려주는 강의</em>라면,<br>
+    Connect the dots는 그 기준을 실제 기출 속에서 <em>반복하게 만드는 주간지 시스템</em>입니다.
+  </p>
+  <a href="/shop.html" class="btn-primary">Membership 알아보기 →</a>
+</section>
+
+<!-- FREE CLASS -->
+<section class="section free-sec" id="free">
+  <p class="section-eyebrow">Free Lecture</p>
+  <h2 class="free-title">INSPIRE는 <em>무료로</em> 볼 수 있습니다</h2>
+  <p class="free-body">
+    해당 강의는 유튜브에 순차적으로 업로드될 예정이며,<br>
+    누구나 강의를 시청하고 자료 파일을 다운로드할 수 있습니다.
+  </p>
+  <div class="free-grid">
+    <div class="free-stat-box">
+      <div class="free-stat-num">08</div>
+      <div class="free-stat-label">차수 강의</div>
+      <div class="free-stat-sub">6월 모의평가 시행 전까지 순차 공개</div>
+    </div>
+    <div>
+      <p style="font-size:16px; color:rgba(255,255,255,.65); line-height:1.9;">
+        총 <strong style="color:#fff;">8차수</strong>로 구성된 INSPIRE 강의가<br>
+        <strong style="color:var(--orange);">6월 모의평가</strong> 시행 전까지 순차적으로 업로드됩니다.
+      </p>
+      <a href="https://www.youtube.com/@ctdenglish" target="_blank" class="btn-secondary" style="margin-top:20px;">YouTube 채널 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIAL LECTURE -->
+<section class="section special-sec">
+  <p class="section-eyebrow">Special Lecture</p>
+  <h2 class="section-title">매주 <em>실시간 무료 특강</em></h2>
+  <div class="special-card">
+    <div>
+      <span class="special-tag">FREE · LIVE</span>
+      <h3 class="special-title">매주 목요일 · 금요일<br>오전 9:00 ~ 10:00</h3>
+      <p class="special-meta">
+        <strong>별도 비용 없이 무료</strong>로 진행되며,<br>
+        Google Form을 통해 사전 신청 후 참여하실 수 있습니다.
+        <span class="free-badge">무료</span>
+      </p>
+    </div>
+    <a href="#" class="btn-primary">신청하기 →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="https://cdn.imweb.me/upload/S202605046b88b4746bb19/cb83c12f3b25b.png" alt="Connect the dots" /></div>
+      <p class="footer-brand-text">수능영어의 점들을 연결합니다.<br>매주, 정확하게.<br><br>대구 수성구 달구벌대로 2528, 7층<br>soul3785@naver.com</p>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <ul><li><a href="/shop.html">ALL</a></li><li><a href="#">Membership</a></li><li><a href="#">Main Materials</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h5>메뉴</h5>
+      <ul><li><a href="/inspire.html">INSPIRE</a></li><li><a href="/#">About</a></li><li><a href="/#">Insight</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h5>고객센터</h5>
+      <ul><li><a href="mailto:soul3785@naver.com">이메일 문의</a></li><li><a href="https://www.youtube.com/@ctdenglish" target="_blank">YouTube</a></li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Connect the dots. All rights reserved.</span>
+    <span>soul3785@naver.com</span>
+  </div>
+</footer>
+
+<script src="js/cart.js"></script>
+<script>CTDCart.attachNavCount();</script>
+
+</body>
+</html>

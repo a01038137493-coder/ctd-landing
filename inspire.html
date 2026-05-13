@@ -74,13 +74,29 @@
 
     /* SECTION COMMON */
     .section { padding: 120px 40px; max-width: 1100px; margin: 0 auto; }
-    .section-eyebrow { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
     .section-title { font-size: clamp(26px, 3.5vw, 44px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.3; margin-bottom: 28px; color: var(--ink); }
     .section-title em { font-style: normal; color: var(--orange); }
     .section-lead { font-size: 17px; color: var(--ink-2); line-height: 1.85; max-width: 720px; }
     .section-lead strong { color: var(--orange); font-weight: 700; }
 
-    .section-divider { height: 1px; background: var(--border); max-width: 1100px; margin: 0 auto; }
+    /* CHAPTER MARK — section divider with numbered label */
+    .chapter {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px;
+      margin-bottom: 56px;
+    }
+    .chapter-line { flex: 0 1 80px; height: 1px; background: var(--border-strong); }
+    .chapter-num {
+      font-size: 12px; font-weight: 800; color: var(--orange);
+      letter-spacing: 3px; font-family: 'SF Mono', Menlo, monospace;
+    }
+    .chapter-sep { font-size: 11px; color: var(--ink-3); }
+    .chapter-name {
+      font-size: 12px; font-weight: 800; color: var(--ink);
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .chapter-centered { text-align: center; }
+    @media (max-width: 700px) { .chapter-line { flex-basis: 30px; } }
 
     /* OT VIDEO — wrapped in a soft band */
     .ot-band { background: var(--bg-2); }
@@ -152,19 +168,22 @@
     .curri-title { font-size: 22px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; color: var(--ink); }
     .curri-desc { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
 
-    /* KEY QUESTIONS — compact pill row (inside Curriculum) */
+    /* KEY QUESTIONS — own section with centered pills */
+    .questions-sec { background: #fff; }
     .points-row {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin-bottom: 56px;
+      display: flex; flex-wrap: wrap; gap: 10px;
     }
+    .points-row-centered { justify-content: center; }
     .point-pill {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: inline-flex; align-items: center; gap: 10px;
       background: #fff;
       border: 1px solid var(--border);
-      padding: 10px 16px; border-radius: 999px;
-      font-size: 13px; font-weight: 700; color: var(--ink);
+      padding: 14px 20px; border-radius: 999px;
+      font-size: 14px; font-weight: 700; color: var(--ink);
       letter-spacing: -.2px;
+      transition: border-color .2s ease, transform .2s ease;
     }
+    .point-pill:hover { border-color: var(--orange); transform: translateY(-2px); }
     .point-pill-num {
       font-size: 11px; font-weight: 800; color: var(--orange);
       letter-spacing: 1px;
@@ -263,7 +282,13 @@
 
 <!-- PROBLEM -->
 <section class="section problem-sec">
-  <p class="section-eyebrow" style="text-align:center;">Problem</p>
+  <div class="chapter chapter-centered">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">01</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Problem</span>
+    <span class="chapter-line"></span>
+  </div>
   <h2 class="problem-title">절대평가 시대,<br><em>영어에 쓸 시간은 많지 않습니다.</em></h2>
   <p class="problem-body">
     그런데 많은 학생들이 한 번으로 끝내야 할 영어 공부를<br>
@@ -273,9 +298,15 @@
 
 <!-- SOLUTION -->
 <section class="section solution-sec">
-  <p class="section-eyebrow">Our Approach</p>
-  <h2 class="section-title">INSPIRE의 <em>관점</em></h2>
-  <p class="section-lead" style="margin-bottom:8px;">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">02</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Our Approach</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="section-title" style="text-align:center;">INSPIRE의 <em>관점</em></h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 8px;">
     수능영어 공부의 시작은 더 많은 문제집이 아니라, 글을 대하는 <strong>자세</strong>입니다.
   </p>
   <div class="solution-grid">
@@ -294,21 +325,40 @@
   </div>
 </section>
 
-<!-- CURRICULUM -->
-<section class="section curri-sec" id="curriculum">
-  <p class="section-eyebrow">Curriculum</p>
-  <h2 class="section-title">강의가 답하는 <em>네 가지 질문</em></h2>
-  <p class="section-lead" style="margin-bottom:36px;">
+<!-- KEY QUESTIONS -->
+<section class="section questions-sec">
+  <div class="chapter chapter-centered">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">03</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Key Questions</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="section-title" style="text-align:center;">강의가 답하는 <em>네 가지 질문</em></h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 56px;">
     INSPIRE는 다음 네 가지 질문을 순서대로 정리합니다.
   </p>
-
-  <div class="points-row">
+  <div class="points-row points-row-centered">
     <span class="point-pill"><span class="point-pill-num">01</span> 무엇을 조심해야 하는가</span>
     <span class="point-pill"><span class="point-pill-num">02</span> 어떻게 읽어가야 하는가</span>
     <span class="point-pill"><span class="point-pill-num">03</span> 어떻게 풀어가야 하는가</span>
     <span class="point-pill"><span class="point-pill-num">04</span> 무엇을 반복해야 하는가</span>
   </div>
+</section>
 
+<!-- CURRICULUM -->
+<section class="section curri-sec" id="curriculum">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">04</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Curriculum</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="section-title" style="text-align:center;">네 가지 축으로 구성된 <em>커리큘럼</em></h2>
+  <p class="section-lead" style="text-align:center; margin: 0 auto 48px;">
+    진단부터 적용까지, 단계별로 글 읽는 자세를 완성합니다.
+  </p>
   <div class="curri-grid">
     <div class="curri-card">
       <div class="curri-num">00 · 진단</div>
@@ -336,7 +386,13 @@
 <!-- OT VIDEO -->
 <div class="ot-band">
   <section class="section ot-sec" id="ot">
-    <p class="section-eyebrow">Orientation</p>
+    <div class="chapter chapter-centered">
+      <span class="chapter-line"></span>
+      <span class="chapter-num">05</span>
+      <span class="chapter-sep">/</span>
+      <span class="chapter-name">Orientation</span>
+      <span class="chapter-line"></span>
+    </div>
     <h2 class="section-title">강의를 시작하기 전,<br><em>OT 영상</em>을 먼저 확인하세요</h2>
     <p class="section-lead" style="margin: 0 auto 0;">
       어떤 자세로 강의를 따라와야 하는지, 8차수 전체를 어떻게 활용해야 하는지<br>
@@ -351,7 +407,13 @@
 
 <!-- CONNECTION -->
 <section class="section conn-sec">
-  <p class="section-eyebrow">Connect</p>
+  <div class="chapter chapter-centered">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">06</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Connect</span>
+    <span class="chapter-line"></span>
+  </div>
   <h2 class="section-title">INSPIRE 강의와<br><em>Connect the dots 시스템</em></h2>
   <p class="conn-quote">
     INSPIRE가 <em>수능영어를 어떻게 읽어야 하는지 알려주는 강의</em>라면,<br>
@@ -362,9 +424,15 @@
 
 <!-- FREE CLASS -->
 <section class="section free-sec" id="free">
-  <p class="section-eyebrow">Free Lecture</p>
-  <h2 class="free-title">INSPIRE는 <em>무료로</em> 볼 수 있습니다</h2>
-  <p class="free-body">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">07</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Free Lecture</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="free-title" style="text-align:center;">INSPIRE는 <em>무료로</em> 볼 수 있습니다</h2>
+  <p class="free-body" style="text-align:center; margin: 24px auto 0;">
     해당 강의는 유튜브에 순차적으로 업로드될 예정이며,<br>
     누구나 강의를 시청하고 자료 파일을 다운로드할 수 있습니다.
   </p>
@@ -386,8 +454,14 @@
 
 <!-- SPECIAL LECTURE -->
 <section class="section special-sec">
-  <p class="section-eyebrow">Special Lecture</p>
-  <h2 class="section-title">매주 <em>실시간 무료 특강</em></h2>
+  <div class="chapter chapter-centered">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">08</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Live Special</span>
+    <span class="chapter-line"></span>
+  </div>
+  <h2 class="section-title" style="text-align:center;">매주 <em>실시간 무료 특강</em></h2>
   <div class="special-card">
     <div>
       <span class="special-tag">FREE · LIVE</span>

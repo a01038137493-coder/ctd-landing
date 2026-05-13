@@ -22,24 +22,22 @@
     body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
 
-    /* Unified emphasis: bold black + thick underline for all <em> in copy */
+    /* Unified emphasis: inverted black box for all <em> in copy */
     .hero-title em, .section-title em, .problem-title em, .problem-footer em,
     .solution-text em, .conn-quote em, .free-title em,
     .part-title em {
       font-style: normal;
-      color: var(--ink);
-      background-image: linear-gradient(var(--ink), var(--ink));
-      background-size: 100% 4px;
-      background-repeat: no-repeat;
-      background-position: 0 100%;
-      padding-bottom: 8px;
+      background: var(--ink);
+      color: #fff;
+      padding: 2px 12px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
     @media (max-width: 700px) {
       .hero-title em, .section-title em, .problem-title em, .problem-footer em,
       .solution-text em, .conn-quote em, .free-title em,
       .part-title em {
-        background-size: 100% 3px;
-        padding-bottom: 5px;
+        padding: 2px 8px;
       }
     }
 
@@ -572,7 +570,7 @@
   <div class="beyond-card">
     <div>
       <p class="beyond-eyebrow">Connect the dots</p>
-      <h3 class="beyond-title">강의 후, <em style="color:#fff; background-image:linear-gradient(#fff,#fff); background-size:100% 3px; background-repeat:no-repeat; background-position:0 100%; padding-bottom:6px;">주간지</em>로 이어지는 학습</h3>
+      <h3 class="beyond-title">강의 후, <em style="background:#fff; color:#111; padding:2px 12px; -webkit-box-decoration-break:clone; box-decoration-break:clone;">주간지</em>로 이어지는 학습</h3>
       <p class="beyond-text">
         INSPIRE 강의가 자세와 도구를 알려주는 강의라면,<br>
         커넥츠 더 닷츠 주간지는 그 기준을 실제 기출 속에서 반복하게 만드는 학습 시스템입니다.
@@ -614,7 +612,7 @@
 
 <!-- FINAL CTA -->
 <section class="final-cta">
-  <h2 class="final-cta-title">지금, <em style="background-image:linear-gradient(#fff,#fff); background-size:100% 4px; background-repeat:no-repeat; background-position:0 100%; padding-bottom:8px; color:#fff;">시작</em>하세요.</h2>
+  <h2 class="final-cta-title">지금, <em style="background:#fff; color:#111; padding:2px 14px; -webkit-box-decoration-break:clone; box-decoration-break:clone;">시작</em>하세요.</h2>
   <p class="final-cta-sub">
     27학년 6월 평가원까지 완강. 8시간 미만의 짧고 단단한 강의로<br>
     수능 영어를 대하는 자세를 정리합니다.

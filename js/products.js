@@ -45,6 +45,7 @@
       priceWas: row.price_was ?? null,
       badge: row.badge ?? null,
       order: row.order ?? 0,
+      description: row.description || '',
     };
   }
   function toRow(p) {
@@ -56,6 +57,7 @@
       price_was: p.priceWas != null && p.priceWas !== '' ? Number(p.priceWas) : null,
       badge: p.badge || null,
       order: Number(p.order) || 0,
+      description: p.description || null,
     };
   }
 
@@ -81,6 +83,31 @@
   }
 
   // ── Public API ───────────────────────────────────────────────────────────
+  async function getProductById(id) {
+    if (hasSupabase()) {
+      const { data, error } = await client().from('products').select('*').eq('id', id).single();
+      if (error) { console.error('[Supabase] getProductById:', error); return null; }
+      return data ? fromRow(data) : null;
+    }
+    const all = await loadProducts();
+    return all.find(p => p.id === id) || null;
+  }
+
+  async function createOrder(order) {
+    // order = { customer_name, customer_phone, customer_email, customer_address, memo, items, total }
+    if (!hasSupabase()) {
+      // localStorage fallback so the flow doesn't break in demo mode
+      const orders = JSON.parse(localStorage.getItem('ctd_orders_v1') || '[]');
+      const rec = { ...order, id: 'o_' + Date.now().toString(36), created_at: new Date().toISOString(), status: 'pending' };
+      orders.push(rec);
+      localStorage.setItem('ctd_orders_v1', JSON.stringify(orders));
+      return rec;
+    }
+    const { data, error } = await client().from('orders').insert(order).select().single();
+    if (error) throw error;
+    return data;
+  }
+
   async function loadProducts() {
     if (hasSupabase()) {
       const { data, error } = await client().from('products').select('*').order('order', { ascending: true });
@@ -199,6 +226,8 @@
     defaultProducts,
     hasSupabase,
     loadProducts,
+    getProductById,
+    createOrder,
     saveProduct,
     deleteProduct,
     updateOrders,

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장바구니 · 주문서 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --orange: #FF7A00; --bg: #000; --panel: #141414; --border: rgba(255,255,255,.08); --sale-red: #FF4D4F; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: #fff; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea, select { font-family: inherit; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; white-space: nowrap; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a { display: flex; align-items: center; height: 64px; padding: 0 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); letter-spacing: .1px; transition: color .2s; }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
+    @media (max-width: 960px) { .nav-menu { display: none; } }
+
+    /* HEADER */
+    .ct-header { padding: 120px 40px 32px; text-align: center; border-bottom: 1px solid var(--border); }
+    .ct-title { font-size: clamp(28px, 3.5vw, 40px); font-weight: 900; letter-spacing: -1px; }
+    .ct-steps { display: inline-flex; gap: 8px; margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.5); font-weight: 600; }
+    .ct-steps .on { color: var(--orange); }
+
+    /* LAYOUT */
+    .ct-wrap { max-width: 1200px; margin: 0 auto; padding: 56px 40px 80px; display: grid; grid-template-columns: 1fr 380px; gap: 36px; align-items: start; }
+    @media (max-width: 960px) { .ct-wrap { grid-template-columns: 1fr; padding: 40px 24px 60px; } }
+
+    .ct-main {}
+    .ct-section { margin-bottom: 48px; }
+    .ct-section-title { font-size: 16px; font-weight: 800; letter-spacing: -.2px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .ct-section-title .count { color: var(--orange); }
+
+    /* ITEMS */
+    .ct-empty { text-align: center; padding: 80px 0; color: rgba(255,255,255,.4); font-size: 15px; }
+    .ct-empty strong { display: block; color: #fff; font-size: 18px; margin-bottom: 8px; font-weight: 800; }
+    .ct-empty a { display: inline-block; margin-top: 28px; padding: 12px 28px; background: var(--orange); color: #fff; border-radius: 8px; font-weight: 800; font-size: 14px; }
+
+    .ct-items { display: flex; flex-direction: column; gap: 12px; }
+    .ct-item { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: 80px 1fr auto auto; gap: 16px; align-items: center; }
+    @media (max-width: 600px) { .ct-item { grid-template-columns: 70px 1fr; grid-template-rows: auto auto; } .ct-item-qty-wrap { grid-column: 2 / 3; } .ct-item-actions { grid-column: 1 / 3; justify-self: end; } }
+    .ct-item-thumb { width: 80px; height: 80px; border-radius: 6px; overflow: hidden; background: #1a1a1a; }
+    .ct-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .ct-item-info { min-width: 0; }
+    .ct-item-name { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 6px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .ct-item-unit-price { font-size: 12px; color: rgba(255,255,255,.45); font-weight: 600; }
+    .ct-item-qty-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .qty-box { display: inline-flex; align-items: center; border: 1px solid rgba(255,255,255,.18); border-radius: 6px; overflow: hidden; }
+    .qty-btn { width: 30px; height: 30px; background: transparent; border: none; color: #fff; font-size: 14px; }
+    .qty-btn:hover { background: rgba(255,255,255,.08); }
+    .qty-input { width: 40px; height: 30px; background: transparent; border: none; color: #fff; text-align: center; font-size: 13px; font-weight: 700; -moz-appearance: textfield; }
+    .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .ct-item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 90px; }
+    .ct-item-subtotal { font-size: 16px; font-weight: 900; color: #fff; white-space: nowrap; }
+    .ct-item-remove { background: none; border: none; color: rgba(255,255,255,.35); font-size: 12px; font-weight: 600; padding: 4px; text-decoration: underline; }
+    .ct-item-remove:hover { color: var(--sale-red); }
+
+    /* FORM */
+    .ct-field { margin-bottom: 16px; }
+    .ct-field-label { display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); margin-bottom: 6px; letter-spacing: .2px; }
+    .ct-field-label .req { color: var(--orange); }
+    .input, .textarea { width: 100%; background: #0A0A0A; border: 1px solid rgba(255,255,255,.14); border-radius: 6px; padding: 11px 13px; color: #fff; font-size: 14px; transition: border-color .15s ease; }
+    .input:focus, .textarea:focus { outline: none; border-color: var(--orange); }
+    .textarea { resize: vertical; min-height: 80px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* SUMMARY (right column) */
+    .ct-summary { position: sticky; top: 88px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .ct-summary-title { font-size: 14px; font-weight: 800; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .ct-summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: rgba(255,255,255,.7); }
+    .ct-summary-row.total { font-size: 18px; font-weight: 900; color: #fff; padding-top: 18px; margin-top: 12px; border-top: 1px solid var(--border); }
+    .ct-summary-row.total .price { color: var(--orange); font-size: 22px; }
+    .ct-checkout-btn { display: block; width: 100%; margin-top: 22px; padding: 16px; background: var(--orange); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 800; transition: opacity .15s ease; }
+    .ct-checkout-btn:hover { opacity: .9; }
+    .ct-checkout-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* SUCCESS OVERLAY */
+    .ct-success { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.92); display: none; align-items: center; justify-content: center; padding: 24px; }
+    .ct-success.show { display: flex; }
+    .ct-success-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 56px 48px; max-width: 420px; text-align: center; }
+    .ct-success-icon { font-size: 56px; color: var(--orange); margin-bottom: 16px; line-height: 1; }
+    .ct-success-title { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+    .ct-success-sub { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.7; margin-bottom: 28px; }
+    .ct-success-id { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: rgba(255,255,255,.5); background: #0A0A0A; padding: 8px 14px; border-radius: 6px; display: inline-block; margin-bottom: 28px; }
+    .ct-success-btns { display: flex; gap: 8px; }
+    .ct-success-btns a { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+    .ct-success-btns .primary { background: var(--orange); color: #fff; }
+    .ct-success-btns .ghost { background: transparent; color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.2); }
+
+    /* FOOTER */
+    footer { background: #000; color: rgba(255,255,255,.45); padding: 60px 40px 36px; border-top: 1px solid rgba(255,255,255,.05); }
+    .footer-top { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-logo img { height: 28px; margin-bottom: 16px; filter: brightness(0) invert(1); opacity: .7; display: block; }
+    .footer-brand-text { font-size: 13px; line-height: 1.8; }
+    .footer-col h5 { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 760px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--orange); color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; box-shadow: 0 12px 32px rgba(0,0,0,.4); opacity: 0; transition: opacity .25s ease, transform .25s ease; z-index: 100; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html">SHOP</a></li>
+    <li><a href="/#">INSPIRE</a></li>
+    <li><a href="/#">Membership</a></li>
+    <li><a href="/#">About</a></li>
+    <li><a href="/#">Insight</a></li>
+    <li><a href="/#">Review</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
+  </div>
+</nav>
+
+<header class="ct-header">
+  <h1 class="ct-title">장바구니 · 주문서</h1>
+  <div class="ct-steps">
+    <span class="on">01 장바구니</span>
+    <span>›</span>
+    <span class="on">02 주문서 작성</span>
+    <span>›</span>
+    <span>03 주문 완료</span>
+  </div>
+</header>
+
+<main class="ct-wrap" id="wrap">
+  <div class="ct-main">
+    <!-- ITEMS -->
+    <section class="ct-section">
+      <div class="ct-section-title">주문 상품 <span class="count" id="item-count">0</span></div>
+      <div id="empty-state" class="ct-empty" style="display:none;">
+        <strong>장바구니가 비어있습니다</strong>
+        상품을 추가해주세요.
+        <br>
+        <a href="/shop.html">SHOP으로 가기</a>
+      </div>
+      <div class="ct-items" id="items"></div>
+    </section>
+
+    <!-- CHECKOUT FORM -->
+    <section class="ct-section" id="form-section" style="display:none;">
+      <div class="ct-section-title">주문자 정보</div>
+      <form id="order-form" autocomplete="on">
+        <div class="row2">
+          <div class="ct-field">
+            <label class="ct-field-label">이름 <span class="req">*</span></label>
+            <input class="input" id="f-name" required maxlength="40" />
+          </div>
+          <div class="ct-field">
+            <label class="ct-field-label">연락처 <span class="req">*</span></label>
+            <input class="input" id="f-phone" required maxlength="20" placeholder="010-0000-0000" />
+          </div>
+        </div>
+        <div class="ct-field">
+          <label class="ct-field-label">이메일</label>
+          <input class="input" id="f-email" type="email" maxlength="80" placeholder="order@example.com" />
+        </div>
+        <div class="ct-field">
+          <label class="ct-field-label">배송지 주소 <span class="req">*</span></label>
+          <input class="input" id="f-address" required maxlength="160" placeholder="우편번호 · 도로명 주소 · 상세 주소" />
+        </div>
+        <div class="ct-field">
+          <label class="ct-field-label">주문 메모</label>
+          <textarea class="textarea" id="f-memo" maxlength="300" placeholder="배송 요청사항 등"></textarea>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <aside class="ct-summary" id="summary">
+    <div class="ct-summary-title">결제 요약</div>
+    <div class="ct-summary-row"><span>상품 금액</span><span id="sub-amount">0원</span></div>
+    <div class="ct-summary-row"><span>배송비</span><span>무료</span></div>
+    <div class="ct-summary-row total"><span>총 결제 금액</span><span class="price" id="total-amount">0원</span></div>
+    <button class="ct-checkout-btn" id="btn-checkout">주문하기</button>
+    <p style="margin-top:14px; font-size:11px; color:rgba(255,255,255,.4); line-height:1.6; text-align:center;">
+      결제는 별도 안내됩니다.<br>주문 접수 후 담당자가 연락드립니다.
+    </p>
+  </aside>
+</main>
+
+<!-- SUCCESS OVERLAY -->
+<div class="ct-success" id="success">
+  <div class="ct-success-box">
+    <div class="ct-success-icon">✓</div>
+    <div class="ct-success-title">주문이 접수되었습니다</div>
+    <div class="ct-success-sub">담당자가 빠른 시일 내에 연락드리겠습니다.<br>입력하신 연락처로 결제 안내가 발송됩니다.</div>
+    <div class="ct-success-id" id="success-id"></div>
+    <div class="ct-success-btns">
+      <a href="/shop.html" class="ghost">계속 쇼핑하기</a>
+      <a href="/" class="primary">홈으로</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="https://cdn.imweb.me/upload/S202605046b88b4746bb19/cb83c12f3b25b.png" alt="Connect the dots" /></div>
+      <p class="footer-brand-text">수능영어의 점들을 연결합니다.<br>매주, 정확하게.<br><br>대구 수성구 달구벌대로 2528, 7층<br>soul3785@naver.com</p>
+    </div>
+    <div class="footer-col"><h5>Shop</h5><ul><li><a href="/shop.html">ALL</a></li></ul></div>
+    <div class="footer-col"><h5>메뉴</h5><ul><li><a href="/#">INSPIRE</a></li></ul></div>
+    <div class="footer-col"><h5>고객센터</h5><ul><li><a href="mailto:soul3785@naver.com">이메일 문의</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2024 Connect the dots. All rights reserved.</span><span>soul3785@naver.com</span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script>
+  CTDCart.attachNavCount();
+
+  function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(window.__t); window.__t = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+
+  function render() {
+    const items = CTDCart.load();
+    const empty = items.length === 0;
+    document.getElementById('item-count').textContent = items.length;
+    document.getElementById('empty-state').style.display = empty ? 'block' : 'none';
+    document.getElementById('items').style.display = empty ? 'none' : 'flex';
+    document.getElementById('form-section').style.display = empty ? 'none' : 'block';
+    document.getElementById('summary').style.opacity = empty ? '.5' : '1';
+    document.getElementById('btn-checkout').disabled = empty;
+
+    document.getElementById('items').innerHTML = items.map(it => `
+      <div class="ct-item" data-id="${escapeHtml(it.id)}">
+        <a href="/product.html?id=${encodeURIComponent(it.id)}" class="ct-item-thumb">
+          ${it.image ? `<img src="${escapeHtml(it.image)}" alt="${escapeHtml(it.name)}" />` : ''}
+        </a>
+        <div class="ct-item-info">
+          <a href="/product.html?id=${encodeURIComponent(it.id)}" class="ct-item-name">${escapeHtml(it.name)}</a>
+          <div class="ct-item-unit-price">단가 ${CTDProducts.formatPrice(it.price)}</div>
+        </div>
+        <div class="ct-item-qty-wrap">
+          <div class="qty-box">
+            <button class="qty-btn" data-act="dec">−</button>
+            <input class="qty-input" type="number" min="1" value="${it.qty}" data-act="set" />
+            <button class="qty-btn" data-act="inc">＋</button>
+          </div>
+        </div>
+        <div class="ct-item-actions">
+          <div class="ct-item-subtotal">${CTDProducts.formatPrice(it.price * it.qty)}</div>
+          <button class="ct-item-remove" data-act="remove">삭제</button>
+        </div>
+      </div>
+    `).join('');
+
+    const sub = CTDCart.total();
+    document.getElementById('sub-amount').textContent = CTDProducts.formatPrice(sub);
+    document.getElementById('total-amount').textContent = CTDProducts.formatPrice(sub);
+  }
+
+  document.getElementById('items').addEventListener('click', (e) => {
+    const row = e.target.closest('.ct-item');
+    if (!row) return;
+    const id = row.dataset.id;
+    const act = e.target.dataset.act;
+    if (!act) return;
+    const items = CTDCart.load();
+    const it = items.find(i => i.id === id);
+    if (!it) return;
+    if (act === 'dec') CTDCart.setQty(id, it.qty - 1);
+    else if (act === 'inc') CTDCart.setQty(id, it.qty + 1);
+    else if (act === 'remove') {
+      if (confirm('이 상품을 삭제할까요?')) CTDCart.removeItem(id);
+    }
+    render();
+  });
+  document.getElementById('items').addEventListener('change', (e) => {
+    if (e.target.dataset.act !== 'set') return;
+    const row = e.target.closest('.ct-item');
+    const n = Math.max(1, parseInt(e.target.value) || 1);
+    CTDCart.setQty(row.dataset.id, n);
+    render();
+  });
+
+  document.getElementById('btn-checkout').addEventListener('click', async () => {
+    const items = CTDCart.load();
+    if (!items.length) return;
+    const f = (id) => document.getElementById(id).value.trim();
+    const name = f('f-name'), phone = f('f-phone'), address = f('f-address');
+    const email = f('f-email'), memo = f('f-memo');
+    if (!name || !phone || !address) {
+      alert('이름, 연락처, 주소는 필수입니다.');
+      document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const btn = document.getElementById('btn-checkout');
+    btn.disabled = true; btn.textContent = '처리 중...';
+    try {
+      const order = {
+        customer_name: name,
+        customer_phone: phone,
+        customer_email: email || null,
+        customer_address: address,
+        memo: memo || null,
+        items,
+        total: CTDCart.total(),
+      };
+      const saved = await CTDProducts.createOrder(order);
+      CTDCart.clear();
+      document.getElementById('success-id').textContent = '주문번호: ' + (saved.id || '').toString().slice(0, 12);
+      document.getElementById('success').classList.add('show');
+    } catch (err) {
+      alert('주문 접수 실패: ' + (err.message || err));
+      btn.disabled = false; btn.textContent = '주문하기';
+    }
+  });
+
+  render();
+  document.addEventListener('cart:change', render);
+</script>
+
+</body>
+</html>

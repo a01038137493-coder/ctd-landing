@@ -316,6 +316,12 @@
         </select>
       </div>
 
+      <div class="field">
+        <label class="field-label">상품 설명</label>
+        <textarea class="textarea" id="f-description" rows="6" placeholder="상세 페이지에 표시될 설명입니다.&#10;줄바꿈 그대로 출력됩니다."></textarea>
+        <div class="field-hint">상품 상세 페이지(/product.html)의 "상품 상세" 영역에 표시됩니다.</div>
+      </div>
+
       <div class="form-actions">
         <button class="btn btn-ghost" type="button" id="btn-cancel">취소</button>
         <button class="btn btn-primary" type="submit" id="btn-save">저장</button>
@@ -517,6 +523,7 @@
   const fPrice = document.getElementById('f-price');
   const fPriceWas = document.getElementById('f-price-was');
   const fBadge = document.getElementById('f-badge');
+  const fDescription = document.getElementById('f-description');
   const fImage = document.getElementById('f-image');
   const fFile = document.getElementById('f-file');
   const imagePreview = document.getElementById('image-preview');
@@ -538,6 +545,7 @@
     fPrice.value = '';
     fPriceWas.value = '';
     fBadge.value = '';
+    fDescription.value = '';
     setImage('');
     formMode.textContent = '신규';
     formMode.classList.remove('edit');
@@ -553,6 +561,7 @@
     fPrice.value = p.price ?? '';
     fPriceWas.value = p.priceWas ?? '';
     fBadge.value = p.badge || '';
+    fDescription.value = p.description || '';
     setImage(p.image || '');
     formMode.textContent = '편집';
     formMode.classList.add('edit');
@@ -601,6 +610,7 @@
       price: Number(fPrice.value) || 0,
       priceWas: fPriceWas.value ? Number(fPriceWas.value) : null,
       badge: fBadge.value || null,
+      description: fDescription.value.trim() || null,
       order: existing?.order ?? maxOrder + 1,
     };
     if (!data.name) { alert('상품명을 입력하세요.'); return; }

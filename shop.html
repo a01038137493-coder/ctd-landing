@@ -242,6 +242,8 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products.js"></script>
 <script>
   function toggleNav() {
@@ -295,14 +297,16 @@
     }).join('');
   }
 
-  CTDProducts.loadProducts().then(renderProducts);
+  function refresh() { CTDProducts.loadProducts().then(renderProducts); }
+  refresh();
 
-  // Re-render when admin saves in another tab
+  // localStorage mode: re-render when admin saves in another tab
   window.addEventListener('storage', (e) => {
-    if (e.key === CTDProducts.STORAGE_KEY) {
-      CTDProducts.loadProducts().then(renderProducts);
-    }
+    if (e.key === CTDProducts.STORAGE_KEY) refresh();
   });
+
+  // Supabase mode: realtime push from server (admin edits visible to everyone)
+  if (CTDProducts.hasSupabase()) CTDProducts.subscribeChanges(refresh);
 </script>
 
 </body>

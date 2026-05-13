@@ -224,8 +224,9 @@
   <form class="gate-box" id="gate-form">
     <div class="gate-logo"><span class="gate-dot"></span>Connect the dots</div>
     <div class="gate-title">Admin 로그인</div>
-    <div class="gate-sub">상품을 관리하려면 비밀번호를 입력하세요.</div>
-    <input class="input" type="password" id="gate-pw" placeholder="비밀번호" autofocus />
+    <div class="gate-sub" id="gate-sub">관리자 계정으로 로그인하세요.</div>
+    <input class="input" type="email" id="gate-email" placeholder="이메일" autocomplete="username" style="margin-bottom:10px;" />
+    <input class="input" type="password" id="gate-pw" placeholder="비밀번호" autocomplete="current-password" />
     <button class="btn btn-primary" type="submit" style="width:100%; justify-content:center; margin-top:4px;">로그인</button>
     <div class="gate-error" id="gate-error"></div>
   </form>
@@ -238,9 +239,11 @@
     <span class="topbar-title">상품 관리</span>
   </div>
   <div class="topbar-right">
+    <span id="mode-indicator" style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.06); color:rgba(255,255,255,.6); margin-right:4px;">…</span>
     <button class="btn-link" id="btn-import">불러오기 (JSON)</button>
     <button class="btn-link" id="btn-export">내보내기 (JSON)</button>
     <button class="btn-link" id="btn-reset">초기화</button>
+    <button class="btn-link" id="btn-logout" style="display:none;">로그아웃</button>
     <a class="btn btn-ghost" href="/shop.html" target="_blank">SHOP 보기 →</a>
   </div>
 </header>
@@ -325,39 +328,83 @@
 
 <input type="file" id="import-file" accept="application/json" style="display:none;" />
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products.js"></script>
 <script>
-  const ADMIN_PW = 'ctd2026';
+  const LOCAL_PW = 'ctd2026'; // localStorage 모드일 때만 사용
+  const SESSION_KEY = 'ctd_admin_session';
+
+  const useSupabase = CTDProducts.hasSupabase();
+  document.getElementById('mode-indicator').textContent = useSupabase ? 'Supabase' : 'Local';
+  document.getElementById('mode-indicator').style.color = useSupabase ? '#FF7A00' : 'rgba(255,255,255,.6)';
 
   // ── GATE ──
   const gate = document.getElementById('gate');
   const gateForm = document.getElementById('gate-form');
+  const gateEmail = document.getElementById('gate-email');
   const gatePw = document.getElementById('gate-pw');
   const gateError = document.getElementById('gate-error');
-  const SESSION_KEY = 'ctd_admin_session';
+  const gateSub = document.getElementById('gate-sub');
+  const btnLogout = document.getElementById('btn-logout');
 
-  if (sessionStorage.getItem(SESSION_KEY) === '1') {
-    gate.style.display = 'none';
+  if (!useSupabase) {
+    gateEmail.style.display = 'none';
+    gateSub.textContent = '상품을 관리하려면 비밀번호를 입력하세요. (로컬 모드)';
+    if (sessionStorage.getItem(SESSION_KEY) === '1') gate.style.display = 'none';
+  } else {
+    btnLogout.style.display = '';
+    CTDProducts.getSession().then(session => {
+      if (session) gate.style.display = 'none';
+    });
+    CTDProducts.onAuthChange(session => {
+      gate.style.display = session ? 'none' : 'flex';
+    });
   }
-  gateForm.addEventListener('submit', (e) => {
+
+  gateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (gatePw.value === ADMIN_PW) {
-      sessionStorage.setItem(SESSION_KEY, '1');
-      gate.style.display = 'none';
+    gateError.textContent = '';
+    if (useSupabase) {
+      try {
+        await CTDProducts.signIn(gateEmail.value.trim(), gatePw.value);
+        gate.style.display = 'none';
+        gatePw.value = '';
+        await refreshFromServer();
+      } catch (err) {
+        gateError.textContent = err.message || '로그인 실패';
+        gatePw.value = '';
+        gatePw.focus();
+      }
     } else {
-      gateError.textContent = '비밀번호가 올바르지 않습니다.';
-      gatePw.value = '';
-      gatePw.focus();
+      if (gatePw.value === LOCAL_PW) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        gate.style.display = 'none';
+      } else {
+        gateError.textContent = '비밀번호가 올바르지 않습니다.';
+        gatePw.value = '';
+        gatePw.focus();
+      }
     }
   });
 
+  btnLogout.addEventListener('click', async () => {
+    await CTDProducts.signOut();
+  });
+
   // ── STATE ──
-  let products = (CTDProducts.loadLocal() || CTDProducts.defaultProducts.slice())
-    .map(p => ({ ...p }));
+  let products = [];
   let editingId = null;
 
+  async function refreshFromServer() {
+    products = (await CTDProducts.loadProducts()).map(p => ({ ...p }));
+    renderList();
+  }
+
   function persist() {
-    CTDProducts.saveLocal(products);
+    // Only used in localStorage mode for full-array persistence (import/reset).
+    // Per-row writes in Supabase mode go through saveProduct/deleteProduct directly.
+    if (!useSupabase) CTDProducts.saveLocal(products);
   }
 
   // ── RENDER LIST ──
@@ -403,7 +450,7 @@
     `).join('');
   }
 
-  listEl.addEventListener('click', (e) => {
+  listEl.addEventListener('click', async (e) => {
     const row = e.target.closest('.product-row');
     if (!row) return;
     const id = row.dataset.id;
@@ -411,10 +458,14 @@
     if (action === 'edit') { startEdit(id); return; }
     if (action === 'delete') {
       const p = products.find(p => p.id === id);
-      if (confirm(`"${p?.name}" 상품을 삭제할까요?`)) {
+      if (!confirm(`"${p?.name}" 상품을 삭제할까요?`)) return;
+      try {
+        await CTDProducts.deleteProduct(id);
         products = products.filter(p => p.id !== id);
         if (editingId === id) resetForm();
-        persist(); renderList(); toast('삭제됨');
+        renderList(); toast('삭제됨');
+      } catch (err) {
+        alert('삭제 실패: ' + (err.message || err));
       }
       return;
     }
@@ -443,14 +494,20 @@
     const after = (e.clientY - bb.top) / bb.height > 0.5;
     listEl.insertBefore(document.querySelector(`.product-row[data-id="${dragId}"]`), after ? row.nextSibling : row);
   });
-  listEl.addEventListener('drop', (e) => {
+  listEl.addEventListener('drop', async (e) => {
     e.preventDefault();
     const newOrder = Array.from(listEl.querySelectorAll('.product-row')).map((r, i) => ({ id: r.dataset.id, order: i + 1 }));
     products = products.map(p => {
       const found = newOrder.find(n => n.id === p.id);
       return found ? { ...p, order: found.order } : p;
     });
-    persist(); renderList(); toast('순서 변경됨');
+    try {
+      await CTDProducts.updateOrders(newOrder);
+      persist(); renderList(); toast('순서 변경됨');
+    } catch (err) {
+      alert('순서 저장 실패: ' + (err.message || err));
+      refreshFromServer();
+    }
   });
 
   // ── FORM ──
@@ -506,17 +563,22 @@
   document.getElementById('btn-new').addEventListener('click', resetForm);
   document.getElementById('btn-cancel').addEventListener('click', resetForm);
 
-  fFile.addEventListener('change', () => {
+  fFile.addEventListener('change', async () => {
     const file = fFile.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
+    if (!useSupabase && file.size > 2 * 1024 * 1024) {
       if (!confirm('파일이 2MB를 초과합니다. localStorage 용량 초과 위험이 있습니다. 계속할까요?')) {
         fFile.value = ''; return;
       }
     }
-    const reader = new FileReader();
-    reader.onload = () => setImage(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      toast('이미지 업로드 중...');
+      const url = await CTDProducts.uploadImage(file);
+      setImage(url);
+      toast('이미지 업로드 완료');
+    } catch (err) {
+      alert('이미지 업로드 실패: ' + (err.message || err));
+    }
     fFile.value = '';
   });
 
@@ -526,30 +588,32 @@
   });
   document.getElementById('btn-image-clear').addEventListener('click', () => setImage(''));
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const isUpdate = !!fId.value;
+    const existing = isUpdate ? products.find(p => p.id === fId.value) : null;
+    const maxOrder = products.reduce((m, p) => Math.max(m, p.order ?? 0), 0);
+
     const data = {
-      id: fId.value || CTDProducts.genId(),
+      id: fId.value || (useSupabase ? undefined : CTDProducts.genId()),
       name: fName.value.trim(),
       image: fImage.value || '',
       price: Number(fPrice.value) || 0,
       priceWas: fPriceWas.value ? Number(fPriceWas.value) : null,
       badge: fBadge.value || null,
+      order: existing?.order ?? maxOrder + 1,
     };
     if (!data.name) { alert('상품명을 입력하세요.'); return; }
 
-    const existingIdx = products.findIndex(p => p.id === data.id);
-    if (existingIdx >= 0) {
-      const old = products[existingIdx];
-      products[existingIdx] = { ...old, ...data };
-      toast('저장됨');
-    } else {
-      const maxOrder = products.reduce((m, p) => Math.max(m, p.order ?? 0), 0);
-      products.push({ ...data, order: maxOrder + 1 });
-      toast('추가됨');
+    try {
+      const saved = await CTDProducts.saveProduct(data);
+      const idx = products.findIndex(p => p.id === saved.id);
+      if (idx >= 0) products[idx] = saved; else products.push(saved);
+      toast(isUpdate ? '저장됨' : '추가됨');
+      resetForm();
+    } catch (err) {
+      alert('저장 실패: ' + (err.message || err));
     }
-    persist();
-    resetForm();
   });
 
   // ── TOAST ──
@@ -579,32 +643,67 @@
     const file = importFile.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const data = JSON.parse(reader.result);
         if (!Array.isArray(data)) throw new Error('형식 오류');
         if (!confirm(`${data.length}개 상품을 불러옵니다. 현재 데이터를 덮어쓸까요?`)) return;
-        products = data;
-        persist(); resetForm(); toast('불러오기 완료');
-      } catch {
-        alert('JSON 파일을 읽지 못했습니다.');
+        if (useSupabase) {
+          for (const p of data) await CTDProducts.saveProduct(p);
+          await refreshFromServer();
+        } else {
+          products = data;
+          persist(); renderList();
+        }
+        resetForm(); toast('불러오기 완료');
+      } catch (err) {
+        alert('JSON 파일을 읽지 못했습니다: ' + (err.message || err));
       }
       importFile.value = '';
     };
     reader.readAsText(file);
   });
 
-  document.getElementById('btn-reset').addEventListener('click', () => {
+  document.getElementById('btn-reset').addEventListener('click', async () => {
     if (!confirm('모든 변경을 초기화하고 기본 상품으로 되돌릴까요?')) return;
-    CTDProducts.clearLocal();
-    products = CTDProducts.defaultProducts.map(p => ({ ...p }));
-    persist(); resetForm(); toast('초기화 완료');
+    if (useSupabase) {
+      try {
+        for (const p of products) await CTDProducts.deleteProduct(p.id);
+        for (const p of CTDProducts.defaultProducts) {
+          const { id, ...rest } = p; // let Supabase regenerate ids
+          await CTDProducts.saveProduct(rest);
+        }
+        await refreshFromServer();
+      } catch (err) {
+        alert('초기화 실패: ' + (err.message || err));
+        return;
+      }
+    } else {
+      CTDProducts.clearLocal();
+      products = CTDProducts.defaultProducts.map(p => ({ ...p }));
+      persist(); renderList();
+    }
+    resetForm(); toast('초기화 완료');
   });
 
-  // ── INITIAL ──
-  // If no localStorage yet, seed defaults so shop.html has data on first edit
-  if (!CTDProducts.loadLocal()) persist();
-  renderList();
+  // ── INITIAL LOAD ──
+  (async () => {
+    if (useSupabase) {
+      const session = await CTDProducts.getSession();
+      if (session) await refreshFromServer();
+    } else {
+      if (!CTDProducts.loadLocal()) {
+        products = CTDProducts.defaultProducts.map(p => ({ ...p }));
+        persist();
+      } else {
+        products = CTDProducts.loadLocal().map(p => ({ ...p }));
+      }
+      renderList();
+    }
+  })();
+
+  // Realtime: refresh list when DB changes from elsewhere
+  if (useSupabase) CTDProducts.subscribeChanges(() => refreshFromServer());
 </script>
 
 </body>

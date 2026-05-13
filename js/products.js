@@ -103,9 +103,17 @@
       localStorage.setItem('ctd_orders_v1', JSON.stringify(orders));
       return rec;
     }
-    const { data, error } = await client().from('orders').insert(order).select().single();
+    // Generate UUID client-side so we don't need SELECT permission to read it back.
+    // anon role only has INSERT on orders; reading the inserted row would require SELECT.
+    const id = (crypto.randomUUID && crypto.randomUUID()) ||
+      'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      });
+    const row = { id, ...order };
+    const { error } = await client().from('orders').insert(row);
     if (error) throw error;
-    return data;
+    return { ...row, status: 'pending', created_at: new Date().toISOString() };
   }
 
   async function loadProducts() {

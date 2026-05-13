@@ -806,29 +806,56 @@
     }
   }
 
-  // Scroll parallax
-  const heroText = document.querySelector('.hero-bg-text');
-  const heroTagline = document.querySelector('.hero-tagline');
-  const heroScroll = document.querySelector('.hero-scroll-hint');
-  const hero = document.querySelector('.hero');
+  // Scroll parallax — rAF-throttled, transform-only (no reflow per frame)
+  (function () {
+    const heroText = document.querySelector('.hero-bg-text');
+    const heroTagline = document.querySelector('.hero-tagline');
+    const heroScroll = document.querySelector('.hero-scroll-hint');
+    const hero = document.querySelector('.hero');
+    if (!hero || !heroText) return;
 
-  function onScroll() {
-    const scrollY = window.scrollY;
-    const heroH = hero.offsetHeight;
-    const p = Math.min(scrollY / heroH, 1);
+    // GPU hints
+    heroText.style.willChange = 'transform, opacity, filter';
+    if (heroTagline) heroTagline.style.willChange = 'transform, opacity';
+    if (heroScroll) heroScroll.style.willChange = 'opacity';
 
-    heroText.style.transform = `translate(-50%, calc(-50% - ${scrollY * 0.25}px))`;
-    heroText.style.opacity = Math.max(1 - p * 2.2, 0);
-    heroText.style.filter = `blur(${p * 24}px)`;
-    heroText.style.letterSpacing = `${-4 + p * 60}px`;
+    let heroH = hero.offsetHeight;
+    let scrollY = window.scrollY;
+    let ticking = false;
 
-    heroTagline.style.opacity = Math.max(1 - p * 3.5, 0);
-    heroTagline.style.transform = `translateY(${scrollY * 0.15}px)`;
+    function update() {
+      ticking = false;
+      const p = Math.min(scrollY / heroH, 1);
+      const tx = scrollY * 0.25;
+      // scale instead of letter-spacing — same "expand" feel, GPU-cheap
+      const scale = 1 + p * 0.35;
 
-    heroScroll.style.opacity = Math.max(1 - p * 6, 0);
-  }
+      heroText.style.transform = `translate(-50%, calc(-50% - ${tx}px)) scale(${scale})`;
+      heroText.style.opacity = Math.max(1 - p * 2.2, 0);
+      // only apply blur once we've scrolled a bit (skip first frames)
+      heroText.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+      if (heroTagline) {
+        heroTagline.style.opacity = Math.max(1 - p * 3.5, 0);
+        heroTagline.style.transform = `translateY(${scrollY * 0.15}px)`;
+      }
+      if (heroScroll) {
+        heroScroll.style.opacity = Math.max(1 - p * 6, 0);
+      }
+    }
+
+    function onScroll() {
+      scrollY = window.scrollY;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { heroH = hero.offsetHeight; update(); }, { passive: true });
+    update();
+  })();
 
   // Price slot machine animation
   (function() {

@@ -233,6 +233,7 @@
     STORAGE_KEY,
     defaultProducts,
     hasSupabase,
+    client, // shared singleton — used by auth.js
     loadProducts,
     getProductById,
     createOrder,

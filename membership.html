@@ -239,7 +239,7 @@
     <li><a href="/#">About</a></li>
   </ul>
   <div class="nav-right">
-    <a href="#">로그인</a>
+    <a href="/login.html">로그인</a>
     <a href="/cart.html" class="nav-cart">장바구니</a>
   </div>
 </nav>
@@ -419,8 +419,15 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
 <script src="js/cart.js"></script>
-<script>CTDCart.attachNavCount();</script>
+<script src="js/auth.js"></script>
+<script>
+  CTDCart.attachNavCount();
+  CTDAuth.attachNav();
+</script>
 
 </body>
 </html>

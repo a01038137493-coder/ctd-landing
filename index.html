@@ -450,7 +450,7 @@
     <li><a href="#">About</a></li>
   </ul>
   <div class="nav-right">
-    <a href="#">로그인</a>
+    <a href="/login.html">로그인</a>
     <a href="/cart.html" class="nav-cart">장바구니</a>
     <button class="nav-hamburger" onclick="toggleNav()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -783,9 +783,14 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
 <script>
   CTDCart.attachNavCount();
+  CTDAuth.attachNav();
 
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {

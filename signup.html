@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원가입 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --orange: #FF7A00; --bg: #000; --panel: #141414; --border: rgba(255,255,255,.08); --border-2: rgba(255,255,255,.14); --sale-red: #FF4D4F; --success: #4CD964; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: #fff; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    input { font-family: inherit; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a { display: flex; align-items: center; height: 64px; padding: 0 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
+    @media (max-width: 960px) { .nav-menu { display: none; } }
+
+    .auth-wrap { min-height: 100vh; padding: 120px 24px 60px; display: flex; align-items: center; justify-content: center; }
+    .auth-box {
+      width: 100%; max-width: 440px;
+      background: var(--panel); border: 1px solid var(--border);
+      padding: 44px 36px;
+      border-radius: 12px;
+    }
+    .auth-logo { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 16px; font-weight: 800; margin-bottom: 28px; }
+    .auth-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .auth-title { font-size: 22px; font-weight: 900; letter-spacing: -.5px; margin-bottom: 8px; text-align: center; }
+    .auth-sub { font-size: 13px; color: rgba(255,255,255,.5); text-align: center; margin-bottom: 28px; }
+
+    .field { margin-bottom: 14px; }
+    .field-label { display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); margin-bottom: 6px; letter-spacing: .2px; }
+    .field-label .req { color: var(--orange); }
+    .input {
+      width: 100%; background: #0A0A0A;
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #fff; font-size: 14px;
+      transition: border-color .15s ease;
+    }
+    .input:focus { outline: none; border-color: var(--orange); }
+    .field-hint { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 4px; line-height: 1.5; }
+
+    .auth-submit {
+      display: block; width: 100%; margin-top: 14px;
+      padding: 14px; background: var(--orange); color: #fff;
+      border: none; border-radius: 6px;
+      font-size: 14px; font-weight: 800;
+      transition: opacity .15s ease;
+    }
+    .auth-submit:hover { opacity: .92; }
+    .auth-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+    .auth-error {
+      margin-top: 14px; font-size: 12px; color: var(--sale-red);
+      min-height: 16px; text-align: center;
+    }
+
+    .auth-divider {
+      margin: 28px 0 20px; text-align: center; position: relative;
+      font-size: 11px; color: rgba(255,255,255,.35); letter-spacing: 2px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; position: absolute; top: 50%; width: calc(50% - 30px); height: 1px;
+      background: var(--border);
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    .auth-alt { text-align: center; font-size: 13px; color: rgba(255,255,255,.55); }
+    .auth-alt a { color: var(--orange); font-weight: 700; margin-left: 4px; }
+    .auth-alt a:hover { text-decoration: underline; }
+
+    .auth-back { display: block; text-align: center; margin-top: 32px; font-size: 12px; color: rgba(255,255,255,.4); }
+    .auth-back:hover { color: #fff; }
+
+    /* SUCCESS PANEL */
+    .success-box { text-align: center; }
+    .success-icon { font-size: 48px; color: var(--success); margin-bottom: 16px; }
+    .success-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+    .success-sub { font-size: 14px; color: rgba(255,255,255,.6); line-height: 1.75; margin-bottom: 28px; }
+    .success-email { background: #0A0A0A; padding: 10px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-bottom: 28px; display: inline-block; }
+    .success-btns { display: flex; gap: 8px; }
+    .success-btns a { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+    .success-btns .primary { background: var(--orange); color: #fff; }
+    .success-btns .ghost { background: transparent; color: rgba(255,255,255,.7); border: 1px solid var(--border-2); }
+
+    footer { background: #000; color: rgba(255,255,255,.35); padding: 32px 40px; text-align: center; font-size: 12px; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html">SHOP</a></li>
+    <li><a href="/inspire.html">INSPIRE</a></li>
+    <li><a href="/membership.html">Membership</a></li>
+    <li><a href="/#">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="/login.html">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
+  </div>
+</nav>
+
+<main class="auth-wrap">
+  <form class="auth-box" id="signup-form" autocomplete="on">
+    <div class="auth-logo"><span class="auth-logo-dot"></span>Connect the dots</div>
+    <h1 class="auth-title">회원가입</h1>
+    <p class="auth-sub">계정을 만들고 학습 시스템에 합류하세요.</p>
+
+    <div class="field">
+      <label class="field-label" for="name">이름</label>
+      <input class="input" id="name" type="text" autocomplete="name" maxlength="40" placeholder="홍길동" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="email">이메일 <span class="req">*</span></label>
+      <input class="input" id="email" type="email" autocomplete="email" required maxlength="80" placeholder="you@example.com" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="password">비밀번호 <span class="req">*</span></label>
+      <input class="input" id="password" type="password" autocomplete="new-password" required minlength="6" maxlength="60" />
+      <div class="field-hint">6자 이상</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="password2">비밀번호 확인 <span class="req">*</span></label>
+      <input class="input" id="password2" type="password" autocomplete="new-password" required minlength="6" maxlength="60" />
+    </div>
+
+    <button class="auth-submit" type="submit" id="btn-submit">가입하기 →</button>
+    <div class="auth-error" id="error"></div>
+
+    <div class="auth-divider">OR</div>
+    <p class="auth-alt">이미 계정이 있으신가요?<a href="/login.html">로그인 →</a></p>
+
+    <a class="auth-back" href="/">← 홈으로 돌아가기</a>
+  </form>
+
+  <!-- SUCCESS (email confirmation required) -->
+  <div class="auth-box success-box" id="success-confirm" style="display:none;">
+    <div class="success-icon">✓</div>
+    <h2 class="success-title">가입이 거의 완료되었습니다</h2>
+    <p class="success-sub">
+      입력하신 이메일로 인증 메일을 보냈습니다.<br>
+      메일의 인증 링크를 클릭하면 가입이 완료됩니다.
+    </p>
+    <div class="success-email" id="success-email"></div>
+    <div class="success-btns">
+      <a href="/" class="ghost">홈으로</a>
+      <a href="/login.html" class="primary">로그인 →</a>
+    </div>
+  </div>
+</main>
+
+<footer>© 2024 Connect the dots</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  const form = document.getElementById('signup-form');
+  const errEl = document.getElementById('error');
+  const btn = document.getElementById('btn-submit');
+
+  CTDAuth.getUser().then(user => {
+    if (user) location.href = '/';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errEl.textContent = '';
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+
+    if (password !== password2) {
+      errEl.textContent = '비밀번호가 일치하지 않습니다.';
+      return;
+    }
+    if (password.length < 6) {
+      errEl.textContent = '비밀번호는 6자 이상이어야 합니다.';
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = '처리 중...';
+    try {
+      const result = await CTDAuth.signUp(email, password, name ? { name } : undefined);
+      if (result.session) {
+        // Auto-confirmed and logged in
+        location.href = '/';
+      } else {
+        // Email confirmation required
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('success-email').textContent = email;
+        document.getElementById('success-confirm').style.display = 'block';
+      }
+    } catch (err) {
+      const msg = (err && err.message) || '가입에 실패했습니다.';
+      if (/already.*registered/i.test(msg) || /already.*exist/i.test(msg) || /User already registered/i.test(msg)) {
+        errEl.textContent = '이미 가입된 이메일입니다.';
+      } else if (/Password should be/i.test(msg)) {
+        errEl.textContent = '비밀번호가 너무 짧습니다.';
+      } else if (/Unable to validate email/i.test(msg) || /invalid.*email/i.test(msg)) {
+        errEl.textContent = '이메일 형식이 올바르지 않습니다.';
+      } else {
+        errEl.textContent = msg;
+      }
+      btn.disabled = false; btn.textContent = '가입하기 →';
+    }
+  });
+</script>
+
+</body>
+</html>

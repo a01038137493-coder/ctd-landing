@@ -38,11 +38,100 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; height: 60px;
     }
-    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-left { display: flex; align-items: center; gap: 18px; }
     .topbar-logo { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; }
     .topbar-logo-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; }
-    .topbar-title { font-size: 13px; font-weight: 700; color: var(--txt-2); letter-spacing: .2px; padding-left: 14px; border-left: 1px solid var(--border-2); }
+    .topbar-tabs { display: flex; gap: 2px; padding-left: 14px; border-left: 1px solid var(--border-2); }
+    .topbar-tab {
+      padding: 8px 14px; border-radius: 6px;
+      font-family: inherit; font-size: 13px; font-weight: 700;
+      color: var(--txt-2); background: transparent;
+      border: none; cursor: pointer;
+      transition: all .15s ease; letter-spacing: -.2px;
+    }
+    .topbar-tab:hover { color: #fff; background: rgba(255,255,255,.04); }
+    .topbar-tab.active { color: #fff; background: rgba(255,255,255,.08); }
     .topbar-right { display: flex; gap: 8px; align-items: center; }
+    .products-only { display: none; }
+    body.tab-products .products-only { display: inline-flex; }
+
+    /* ── TAB PANELS ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-panel.layout-panel.active { display: grid; grid-template-columns: 1fr 480px; min-height: calc(100vh - 60px); }
+    @media (max-width: 1100px) { .tab-panel.layout-panel.active { grid-template-columns: 1fr; } }
+
+    /* ── DASHBOARD (stats/orders/customers) ── */
+    .dashboard { padding: 28px; max-width: 1400px; margin: 0 auto; }
+    .dashboard-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 12px; flex-wrap: wrap; }
+    .dashboard-title { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+
+    /* Stats cards */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; }
+    .stat-label { font-size: 11px; font-weight: 800; color: var(--txt-3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+    .stat-value { font-size: 30px; font-weight: 900; letter-spacing: -1px; color: #fff; line-height: 1; }
+    .stat-sub { font-size: 11px; color: var(--txt-3); margin-top: 8px; }
+
+    /* Chart card */
+    .chart-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .chart-title { font-size: 14px; font-weight: 800; margin-bottom: 18px; color: #fff; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 0 4px; }
+    .chart-bar {
+      flex: 1; background: linear-gradient(180deg, var(--orange) 0%, #cc6300 100%);
+      border-radius: 3px 3px 0 0; min-height: 2px; position: relative;
+      transition: opacity .2s ease; cursor: pointer;
+    }
+    .chart-bar:hover { opacity: .85; }
+    .chart-bar-tip {
+      position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-4px);
+      font-size: 11px; font-weight: 700; color: #fff;
+      opacity: 0; transition: opacity .2s ease;
+      padding: 4px 8px; background: rgba(0,0,0,.9); border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
+    .chart-bar:hover .chart-bar-tip { opacity: 1; }
+    .chart-x { display: flex; gap: 6px; margin-top: 8px; padding: 0 4px; }
+    .chart-x-label { flex: 1; text-align: center; font-size: 10px; color: var(--txt-3); }
+
+    /* Data table */
+    .data-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    .data-table th {
+      text-align: left; padding: 14px 18px;
+      font-size: 11px; font-weight: 800; color: var(--txt-2);
+      background: var(--panel-2); border-bottom: 1px solid var(--border);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .data-table td {
+      padding: 14px 18px; font-size: 13px; color: #fff;
+      border-bottom: 1px solid var(--border); vertical-align: middle;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,.025); }
+    .cell-num { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--txt-3); }
+    .cell-money { font-weight: 800; }
+    .cell-muted { color: var(--txt-2); font-size: 12px; }
+    .cell-truncate { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cell-status {
+      display: inline-block; font-size: 10px; font-weight: 800;
+      padding: 4px 10px; border-radius: 4px; letter-spacing: .5px;
+    }
+    .cell-status.pending { background: rgba(255,193,7,.15); color: #ffc107; }
+    .cell-status.confirmed { background: rgba(76,217,100,.15); color: #4cd964; }
+    .cell-status.shipped { background: rgba(0,122,255,.15); color: #007aff; }
+    .cell-status.cancelled { background: rgba(255,77,79,.15); color: #ff4d4f; }
+    .status-select {
+      background: #0A0A0A; border: 1px solid var(--border-2);
+      color: #fff; padding: 6px 10px; border-radius: 5px;
+      font-size: 12px; font-family: inherit; cursor: pointer;
+    }
+    .status-select:focus { outline: none; border-color: var(--orange); }
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 9px 16px; border-radius: 6px;
@@ -236,19 +325,25 @@
 <header class="topbar">
   <div class="topbar-left">
     <a class="topbar-logo" href="/"><span class="topbar-logo-dot"></span>Connect the dots</a>
-    <span class="topbar-title">상품 관리</span>
+    <nav class="topbar-tabs">
+      <button class="topbar-tab" data-tab="stats">통계</button>
+      <button class="topbar-tab" data-tab="orders">주문</button>
+      <button class="topbar-tab" data-tab="customers">고객</button>
+      <button class="topbar-tab active" data-tab="products">상품</button>
+    </nav>
   </div>
   <div class="topbar-right">
     <span id="mode-indicator" style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.06); color:rgba(255,255,255,.6); margin-right:4px;">…</span>
-    <button class="btn-link" id="btn-import">불러오기 (JSON)</button>
-    <button class="btn-link" id="btn-export">내보내기 (JSON)</button>
-    <button class="btn-link" id="btn-reset">초기화</button>
+    <button class="btn-link products-only" id="btn-import">불러오기 (JSON)</button>
+    <button class="btn-link products-only" id="btn-export">내보내기 (JSON)</button>
+    <button class="btn-link products-only" id="btn-reset">초기화</button>
     <button class="btn-link" id="btn-logout" style="display:none;">로그아웃</button>
     <a class="btn btn-ghost" href="/shop.html" target="_blank">SHOP 보기 →</a>
   </div>
 </header>
 
-<div class="layout">
+<!-- TAB: PRODUCTS (existing layout) -->
+<div class="tab-panel layout-panel active" id="tab-products">
   <!-- LIST PANE -->
   <section class="list-pane">
     <div class="list-head">
@@ -328,6 +423,67 @@
       </div>
     </form>
   </aside>
+</div>
+
+<!-- TAB: STATS -->
+<div class="tab-panel" id="tab-stats">
+  <div class="dashboard">
+    <div class="dashboard-head">
+      <div class="dashboard-title">통계 <small style="color:var(--txt-3); font-size:12px; font-weight:600; margin-left:8px;">주문 데이터 기반</small></div>
+      <button class="btn btn-ghost" id="btn-refresh-stats">새로고침</button>
+    </div>
+
+    <div class="stat-grid" id="stat-cards">
+      <div class="stat-card"><div class="stat-label">총 주문수</div><div class="stat-value" id="stat-orders">—</div><div class="stat-sub">전체 누적</div></div>
+      <div class="stat-card"><div class="stat-label">총 매출</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-sub">전체 누적</div></div>
+      <div class="stat-card"><div class="stat-label">고객수</div><div class="stat-value" id="stat-customers">—</div><div class="stat-sub">고유 연락처 기준</div></div>
+      <div class="stat-card"><div class="stat-label">평균 주문가</div><div class="stat-value" id="stat-aov">—</div><div class="stat-sub">AOV</div></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">최근 14일 주문수</div>
+      <div class="chart-bars" id="chart-bars"></div>
+      <div class="chart-x" id="chart-x"></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">인기 상품 (주문 건수 기준)</div>
+      <table class="data-table" id="top-products-table">
+        <thead><tr><th style="width:40px;">#</th><th>상품명</th><th style="text-align:right; width:120px;">주문건</th><th style="text-align:right; width:160px;">매출</th></tr></thead>
+        <tbody id="top-products-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: ORDERS -->
+<div class="tab-panel" id="tab-orders">
+  <div class="dashboard">
+    <div class="dashboard-head">
+      <div class="dashboard-title">주문 관리 <small id="orders-count" style="color:var(--txt-3); font-size:14px; font-weight:600; margin-left:8px;">(0)</small></div>
+      <button class="btn btn-ghost" id="btn-refresh-orders">새로고침</button>
+    </div>
+    <table class="data-table">
+      <thead><tr><th style="width:130px;">주문일</th><th style="width:120px;">고객</th><th style="width:130px;">연락처</th><th>주소</th><th style="text-align:right; width:120px;">금액</th><th style="width:140px;">상태</th></tr></thead>
+      <tbody id="orders-body"></tbody>
+    </table>
+    <div id="orders-empty" class="empty-state" style="display:none;"><strong>주문이 없습니다</strong>아직 들어온 주문이 없습니다.</div>
+  </div>
+</div>
+
+<!-- TAB: CUSTOMERS -->
+<div class="tab-panel" id="tab-customers">
+  <div class="dashboard">
+    <div class="dashboard-head">
+      <div class="dashboard-title">고객 정보 <small id="customers-count" style="color:var(--txt-3); font-size:14px; font-weight:600; margin-left:8px;">(0)</small></div>
+      <button class="btn btn-ghost" id="btn-refresh-customers">새로고침</button>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>이름</th><th style="width:140px;">연락처</th><th>이메일</th><th style="text-align:right; width:100px;">주문수</th><th style="text-align:right; width:140px;">총 결제액</th><th style="width:120px;">최근 주문일</th></tr></thead>
+      <tbody id="customers-body"></tbody>
+    </table>
+    <div id="customers-empty" class="empty-state" style="display:none;"><strong>고객 데이터가 없습니다</strong>주문이 들어오면 자동으로 집계됩니다.</div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -714,6 +870,198 @@
 
   // Realtime: refresh list when DB changes from elsewhere
   if (useSupabase) CTDProducts.subscribeChanges(() => refreshFromServer());
+
+  // ── TAB SWITCHING ─────────────────────────────────────────────────
+  const tabs = document.querySelectorAll('.topbar-tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  const tabLoaders = { products: null, stats: loadStats, orders: loadOrders, customers: loadCustomers };
+  const tabsLoaded = { products: true };
+
+  function setTab(name) {
+    if (!tabLoaders.hasOwnProperty(name)) name = 'products';
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    panels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+    document.body.classList.toggle('tab-products', name === 'products');
+    if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+    if (!tabsLoaded[name] && tabLoaders[name]) {
+      tabsLoaded[name] = true;
+      tabLoaders[name]();
+    }
+  }
+  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
+  // Init body class so products-only buttons show by default
+  document.body.classList.add('tab-products');
+  // Read initial tab from hash
+  const initialTab = (location.hash || '').replace('#', '');
+  if (initialTab) setTab(initialTab);
+
+  // ── DATA HELPERS ──────────────────────────────────────────────────
+  async function fetchAllOrders() {
+    if (!useSupabase) return [];
+    const { data, error } = await CTDProducts.client().from('orders').select('*').order('created_at', { ascending: false });
+    if (error) { console.error('[orders]', error); return []; }
+    return data || [];
+  }
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+  function formatDay(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
+  }
+  function dayKey(d) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  // ── STATS ────────────────────────────────────────────────────────
+  async function loadStats() {
+    const orders = await fetchAllOrders();
+
+    // Cards
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+    const phones = new Set(orders.map(o => o.customer_phone).filter(Boolean));
+    const customers = phones.size;
+    const aov = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
+    document.getElementById('stat-orders').textContent = totalOrders.toLocaleString('ko-KR');
+    document.getElementById('stat-revenue').textContent = CTDProducts.formatPrice(totalRevenue);
+    document.getElementById('stat-customers').textContent = customers.toLocaleString('ko-KR');
+    document.getElementById('stat-aov').textContent = CTDProducts.formatPrice(aov);
+
+    // Daily chart — last 14 days
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+      days.push({ d, key: dayKey(d), count: 0 });
+    }
+    orders.forEach(o => {
+      const key = (o.created_at || '').slice(0, 10);
+      const slot = days.find(x => x.key === key);
+      if (slot) slot.count += 1;
+    });
+    const maxCount = Math.max(1, ...days.map(x => x.count));
+    document.getElementById('chart-bars').innerHTML = days.map(x => `
+      <div class="chart-bar" style="height: ${(x.count / maxCount) * 100}%;">
+        <span class="chart-bar-tip">${formatDay(x.d.toISOString())} · ${x.count}건</span>
+      </div>
+    `).join('');
+    document.getElementById('chart-x').innerHTML = days.map((x, i) =>
+      `<div class="chart-x-label">${i % 2 === 0 ? formatDay(x.d.toISOString()) : ''}</div>`
+    ).join('');
+
+    // Top products (by occurrence in items[])
+    const productAgg = new Map(); // id → { name, count, revenue }
+    orders.forEach(o => {
+      const items = Array.isArray(o.items) ? o.items : [];
+      items.forEach(it => {
+        const k = it.id || it.name || '';
+        if (!k) return;
+        const cur = productAgg.get(k) || { name: it.name || k, count: 0, revenue: 0 };
+        cur.count += it.qty || 1;
+        cur.revenue += (it.price || 0) * (it.qty || 1);
+        productAgg.set(k, cur);
+      });
+    });
+    const top = Array.from(productAgg.values()).sort((a, b) => b.count - a.count).slice(0, 10);
+    document.getElementById('top-products-body').innerHTML = top.length
+      ? top.map((p, i) => `
+        <tr>
+          <td class="cell-num">${String(i + 1).padStart(2, '0')}</td>
+          <td class="cell-truncate">${escapeHtml(p.name)}</td>
+          <td style="text-align:right;">${p.count.toLocaleString('ko-KR')}건</td>
+          <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(p.revenue)}</td>
+        </tr>
+      `).join('')
+      : `<tr><td colspan="4" style="text-align:center; padding:36px 0; color:var(--txt-3);">데이터가 아직 없습니다.</td></tr>`;
+  }
+  document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
+
+  // ── ORDERS ───────────────────────────────────────────────────────
+  const STATUS_LABELS = { pending: '대기', confirmed: '확정', shipped: '발송됨', cancelled: '취소' };
+  async function loadOrders() {
+    const orders = await fetchAllOrders();
+    document.getElementById('orders-count').textContent = `(${orders.length})`;
+    const body = document.getElementById('orders-body');
+    const empty = document.getElementById('orders-empty');
+    if (!orders.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    body.innerHTML = orders.map(o => `
+      <tr data-id="${escapeHtml(o.id)}">
+        <td class="cell-muted">${formatDate(o.created_at)}</td>
+        <td>${escapeHtml(o.customer_name)}</td>
+        <td class="cell-muted">${escapeHtml(o.customer_phone)}</td>
+        <td class="cell-truncate cell-muted" title="${escapeHtml(o.customer_address)}">${escapeHtml(o.customer_address)}</td>
+        <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(o.total)}</td>
+        <td>
+          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status}">
+            <option value="pending"${o.status === 'pending' ? ' selected' : ''}>대기</option>
+            <option value="confirmed"${o.status === 'confirmed' ? ' selected' : ''}>확정</option>
+            <option value="shipped"${o.status === 'shipped' ? ' selected' : ''}>발송됨</option>
+            <option value="cancelled"${o.status === 'cancelled' ? ' selected' : ''}>취소</option>
+          </select>
+        </td>
+      </tr>
+    `).join('');
+    // Wire status updates
+    body.querySelectorAll('.status-select').forEach(sel => {
+      sel.addEventListener('change', async (e) => {
+        const id = e.target.dataset.orderId;
+        const prev = e.target.dataset.current;
+        const next = e.target.value;
+        try {
+          const { error } = await CTDProducts.client().from('orders').update({ status: next }).eq('id', id);
+          if (error) throw error;
+          e.target.dataset.current = next;
+          toast('상태 변경됨');
+        } catch (err) {
+          alert('상태 변경 실패: ' + (err.message || err));
+          e.target.value = prev;
+        }
+      });
+    });
+  }
+  document.getElementById('btn-refresh-orders').addEventListener('click', () => { tabsLoaded.orders = true; loadOrders(); });
+
+  // ── CUSTOMERS ───────────────────────────────────────────────────
+  async function loadCustomers() {
+    const orders = await fetchAllOrders();
+    const map = new Map(); // phone → { name, phone, email, count, total, last }
+    orders.forEach(o => {
+      const key = o.customer_phone || o.customer_email || o.customer_name;
+      if (!key) return;
+      const cur = map.get(key) || {
+        name: o.customer_name, phone: o.customer_phone, email: o.customer_email,
+        count: 0, total: 0, last: o.created_at,
+      };
+      cur.count += 1;
+      cur.total += (o.total || 0);
+      if (new Date(o.created_at) > new Date(cur.last)) cur.last = o.created_at;
+      // Keep latest non-empty email/name
+      if (o.customer_email && !cur.email) cur.email = o.customer_email;
+      if (o.customer_name && !cur.name) cur.name = o.customer_name;
+      map.set(key, cur);
+    });
+    const list = Array.from(map.values()).sort((a, b) => new Date(b.last) - new Date(a.last));
+    document.getElementById('customers-count').textContent = `(${list.length})`;
+    const body = document.getElementById('customers-body');
+    const empty = document.getElementById('customers-empty');
+    if (!list.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    body.innerHTML = list.map(c => `
+      <tr>
+        <td><strong>${escapeHtml(c.name)}</strong></td>
+        <td class="cell-muted">${escapeHtml(c.phone || '-')}</td>
+        <td class="cell-muted">${escapeHtml(c.email || '-')}</td>
+        <td style="text-align:right;">${c.count}건</td>
+        <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(c.total)}</td>
+        <td class="cell-muted">${formatDay(c.last)}</td>
+      </tr>
+    `).join('');
+  }
+  document.getElementById('btn-refresh-customers').addEventListener('click', () => { tabsLoaded.customers = true; loadCustomers(); });
 </script>
 
 </body>

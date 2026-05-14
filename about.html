@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF7A00;
+      --orange-soft: #FFF3E8;
+      --bg: #FFFFFF;
+      --bg-2: #F9F7F4;
+      --bg-dark: #0D0D0D;
+      --ink: #111;
+      --ink-2: #444;
+      --ink-3: #888;
+      --border: #ECE9E3;
+      --border-strong: #DCD8D0;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* em emphasis */
+    .hero-title em, .section-title em, .quote em {
+      font-style: normal;
+      background: var(--orange);
+      color: #fff;
+      padding: 2px 12px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+    @media (max-width: 700px) { .hero-title em, .section-title em, .quote em { padding: 2px 8px; } }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .nav-menu { display: flex; gap: 0; list-style: none; }
+    .nav-menu li a { display: flex; align-items: center; height: 64px; padding: 0 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-menu li a.active { color: var(--orange); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
+    @media (max-width: 960px) { .nav-menu { display: none; } }
+
+    /* HERO ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes drift {
+      0%   { transform: translate(-50%, -50%) translateX(0); }
+      50%  { transform: translate(-50%, -50%) translateX(3%); }
+      100% { transform: translate(-50%, -50%) translateX(0); }
+    }
+    @keyframes watermarkFade { from { opacity: 0; } to { opacity: 1; } }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 200px 40px 120px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at center top, rgba(255,122,0,.13), transparent 55%),
+        linear-gradient(180deg, #fff 0%, var(--bg-2) 100%);
+      overflow: hidden;
+    }
+    .hero::after {
+      content: 'ABOUT';
+      position: absolute; top: 52%; left: 50%; transform: translate(-50%,-50%);
+      font-size: clamp(140px, 22vw, 320px);
+      font-weight: 900; letter-spacing: -10px; line-height: 1;
+      color: rgba(17,17,17,.04);
+      pointer-events: none; white-space: nowrap;
+      animation: watermarkFade 1.2s ease-out both, drift 18s ease-in-out 1.2s infinite;
+    }
+    .hero-eyebrow { position: relative; z-index: 2; font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 22px; animation: fadeUp .8s ease-out .15s both; }
+    .hero-title { position: relative; z-index: 2; font-size: clamp(32px, 5.5vw, 64px); font-weight: 900; letter-spacing: -2.5px; line-height: 1.15; margin-bottom: 32px; color: var(--ink); animation: fadeUp .9s ease-out .3s both; }
+    .hero-desc { position: relative; z-index: 2; font-size: 17px; color: var(--ink-2); line-height: 1.85; max-width: 720px; margin: 0 auto; animation: fadeUp .8s ease-out .55s both; }
+    .hero-desc strong { color: var(--ink); font-weight: 700; }
+
+    /* SECTION COMMON */
+    .section { padding: 120px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-size: clamp(28px, 4vw, 48px); font-weight: 900; letter-spacing: -1.8px; line-height: 1.25; margin-bottom: 32px; color: var(--ink); }
+    .section-body { font-size: 17px; color: var(--ink-2); line-height: 1.9; max-width: 760px; }
+    .section-body strong { color: var(--ink); font-weight: 700; }
+    .section-body p + p { margin-top: 18px; }
+
+    /* CHAPTER MARK */
+    .chapter { display: flex; align-items: center; gap: 18px; margin-bottom: 36px; }
+    .chapter-centered { justify-content: center; }
+    .chapter-line { flex: 0 1 60px; height: 1px; background: var(--border-strong); }
+    .chapter-num { font-size: 12px; font-weight: 800; color: var(--orange); letter-spacing: 3px; }
+    .chapter-sep { font-size: 11px; color: var(--ink-3); }
+    .chapter-name { font-size: 12px; font-weight: 800; color: var(--ink); letter-spacing: 3px; text-transform: uppercase; }
+    @media (max-width: 700px) { .chapter-line { flex-basis: 24px; } }
+
+    /* SECTION BACKGROUNDS */
+    .why-sec { background: #fff; }
+    .standard-sec { background: var(--bg-2); }
+    .membership-sec { background: #fff; }
+
+    /* MEMBERSHIP QUOTE BLOCK */
+    .quote {
+      font-size: clamp(24px, 3.4vw, 42px);
+      font-weight: 900; letter-spacing: -1.5px; line-height: 1.4;
+      color: var(--ink);
+      max-width: 880px;
+      margin: 0 0 32px;
+    }
+    .membership-cta { display: inline-flex; align-items: center; gap: 8px; padding: 16px 32px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 800; border-radius: 6px; transition: opacity .15s ease; margin-top: 24px; }
+    .membership-cta:hover { opacity: .88; }
+
+    /* FOUNDER */
+    .founder-sec { background: var(--bg-dark); color: #fff; }
+    .founder-sec .section-title { color: #fff; }
+    .founder-card {
+      margin-top: 48px;
+      display: grid; grid-template-columns: 220px 1fr; gap: 56px;
+      align-items: start;
+    }
+    @media (max-width: 760px) { .founder-card { grid-template-columns: 1fr; gap: 28px; } }
+    .founder-photo {
+      width: 100%; aspect-ratio: 4/5;
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.25); font-size: 13px; font-weight: 600; letter-spacing: 2px;
+    }
+    .founder-eyebrow { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+    .founder-name { font-size: clamp(28px, 3.5vw, 44px); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 8px; color: #fff; }
+    .founder-name-en { font-size: 14px; color: rgba(255,255,255,.45); font-weight: 600; letter-spacing: .5px; margin-bottom: 28px; }
+    .founder-bio { font-size: 15px; color: rgba(255,255,255,.7); line-height: 1.9; margin-bottom: 32px; max-width: 600px; }
+    .credentials { list-style: none; display: flex; flex-direction: column; gap: 12px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); }
+    .credentials li { display: flex; align-items: baseline; gap: 14px; font-size: 14px; color: rgba(255,255,255,.85); }
+    .credentials li::before { content: ''; width: 6px; height: 6px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+
+    /* CONTACT */
+    .contact-sec { background: #fff; }
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+    @media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-card { background: var(--bg-2); border: 1px solid var(--border); padding: 32px 28px; border-radius: 12px; }
+    .contact-label { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .contact-value { font-size: 16px; font-weight: 700; line-height: 1.5; }
+    .contact-value a { color: var(--ink); transition: color .15s ease; }
+    .contact-value a:hover { color: var(--orange); }
+    .contact-value .small { display: block; font-size: 13px; color: var(--ink-3); font-weight: 500; margin-top: 4px; }
+
+    /* FOOTER */
+    footer { background: #111; color: rgba(255,255,255,.45); padding: 60px 40px 36px; }
+    .footer-top { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-logo img { height: 28px; margin-bottom: 16px; filter: brightness(0) invert(1); opacity: .7; display: block; }
+    .footer-brand-text { font-size: 13px; line-height: 1.8; }
+    .footer-col h5 { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 760px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .section { padding: 80px 24px; }
+      .hero { padding: 140px 24px 80px; }
+    }
+    @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html">SHOP</a></li>
+    <li><a href="/inspire.html">INSPIRE</a></li>
+    <li><a href="/membership.html">Membership</a></li>
+    <li><a href="/about.html" class="active">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="/login.html">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">About Connect the dots</p>
+  <h1 class="hero-title">수능영어,<br>필요한 만큼만 <em>정확하게</em>.</h1>
+  <p class="hero-desc">
+    구문, 독해, 어휘 — 흩어진 영어 공부를 <strong>하나의 흐름</strong>으로 정리합니다.<br>
+    절대평가 시대에 꼭 필요한 만큼, 매주 이어지는 시스템을 만듭니다.
+  </p>
+</section>
+
+<!-- 01 / WHY WE MADE -->
+<section class="section why-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">01</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Why We Made</span>
+  </div>
+  <h2 class="section-title">흩어진 영어 공부를<br><em>하나로</em>.</h2>
+  <div class="section-body">
+    <p>
+      구문 강의 따로, 독해 강의 따로, 어휘 따로. 수능영어를 준비하는 학생들이
+      매번 새로운 강의와 교재를 찾아 헤매는 모습이 아쉬웠습니다.
+    </p>
+    <p>
+      그래서 만들었습니다. <strong>기출 한 줄</strong>로 구문 · 독해 · 어휘를 함께
+      훈련할 수 있는 학습 시스템, 매주 한 번씩 이어가는 학습의 흐름.
+    </p>
+  </div>
+</section>
+
+<!-- 02 / OUR STANDARD -->
+<section class="section standard-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">02</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Our Standard</span>
+  </div>
+  <h2 class="section-title"><em>분량</em>이 아니라,<br>기준입니다.</h2>
+  <div class="section-body">
+    <p>
+      커넥츠 더 닷츠는 <strong>무작정 분량을 줄인 교재</strong>가 아닙니다.
+      절대평가 시대에 꼭 필요한 기출과 학습 포인트만 선별했습니다.
+    </p>
+    <p>
+      1타 강사들과 함께 커리큘럼을 다듬고, 수능영어 기출분석 저자의 시각으로
+      골라낸 학습 포인트를 학생이 끝까지 따라올 수 있는 분량과 깊이로 정리합니다.
+    </p>
+  </div>
+</section>
+
+<!-- 03 / MEMBERSHIP -->
+<section class="section membership-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">03</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Membership</span>
+  </div>
+  <p class="quote">더 많이 하는 영어가 아니라,<br><em>끝까지 이어지는 영어</em>.</p>
+  <div class="section-body">
+    <p>
+      매주 도착하는 주간지, 고난도 문항 영상해설, 구문·어휘·해석 콘텐츠,
+      학습 관리 단톡방까지 — 멤버십 하나로 따로 구매할 필요 없이
+      <strong>수능영어 학습 전체를 이어갈 수 있도록</strong> 구성했습니다.
+    </p>
+  </div>
+  <a class="membership-cta" href="/membership.html">Membership 알아보기 →</a>
+</section>
+
+<!-- FOUNDER -->
+<section class="section founder-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num" style="color:var(--orange);">04</span>
+    <span class="chapter-sep" style="color:rgba(255,255,255,.4);">/</span>
+    <span class="chapter-name" style="color:#fff;">Founder</span>
+  </div>
+  <h2 class="section-title">대표 · 집필</h2>
+  <div class="founder-card">
+    <div class="founder-photo">PHOTO</div>
+    <div>
+      <p class="founder-eyebrow">Lead Author</p>
+      <h3 class="founder-name">김현철</h3>
+      <p class="founder-name-en">Kim Hyun-chul</p>
+      <p class="founder-bio">
+        대구에서 재수학원을 운영하며, 1타 강사들과 함께 수능영어 커리큘럼과
+        교재를 개발해왔습니다. 시그니처 기출분석서 저자로서 매년 새로 정리되는
+        수능영어의 흐름을 학생에게 가장 정확하게 전하는 일을 우선합니다.
+      </p>
+      <ul class="credentials">
+        <li>대구 재수학원 원장</li>
+        <li>1타 강사들과 교재·커리큘럼 개발</li>
+        <li>시그니처 수능영어 기출분석서 저자</li>
+        <li>출판사 수능영어 분야 베스트셀러 저자</li>
+        <li>한국외국어대학교 서울캠퍼스 경제학과</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-sec">
+  <div class="chapter">
+    <span class="chapter-line"></span>
+    <span class="chapter-num">05</span>
+    <span class="chapter-sep">/</span>
+    <span class="chapter-name">Contact</span>
+  </div>
+  <h2 class="section-title">문의 · <em>찾아오시는 길</em></h2>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="contact-label">Address</div>
+      <div class="contact-value">대구 수성구<br>달구벌대로 2528, 7층<span class="small">대구광역시</span></div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-label">Email</div>
+      <div class="contact-value"><a href="mailto:soul3785@naver.com">soul3785@naver.com</a><span class="small">이메일 문의는 1-2일 내 회신드립니다.</span></div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-label">YouTube</div>
+      <div class="contact-value"><a href="https://www.youtube.com/@ctdenglish" target="_blank">@ctdenglish</a><span class="small">강의 · 인사이트 · 소식</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="https://cdn.imweb.me/upload/S202605046b88b4746bb19/cb83c12f3b25b.png" alt="Connect the dots" /></div>
+      <p class="footer-brand-text">수능영어의 점들을 연결합니다.<br>매주, 정확하게.<br><br>대구 수성구 달구벌대로 2528, 7층<br>soul3785@naver.com</p>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <ul><li><a href="/shop.html">ALL</a></li><li><a href="/membership.html">Membership</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h5>메뉴</h5>
+      <ul><li><a href="/inspire.html">INSPIRE</a></li><li><a href="/about.html">About</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h5>고객센터</h5>
+      <ul><li><a href="mailto:soul3785@naver.com">이메일 문의</a></li><li><a href="https://www.youtube.com/@ctdenglish" target="_blank">YouTube</a></li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Connect the dots. All rights reserved.</span>
+    <span>soul3785@naver.com</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  CTDCart.attachNavCount();
+  CTDAuth.attachNav();
+</script>
+
+</body>
+</html>

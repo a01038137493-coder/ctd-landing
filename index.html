@@ -359,16 +359,22 @@
     .product-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: background .2s; }
     .product-btn:hover { background: #e06d00; }
     @media (max-width: 960px) {
-      .products-sec { padding: 72px 24px; }
-      .products-grid { flex-direction: row; height: auto; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 12px; gap: 12px; }
+      .products-sec { padding: 72px 0 80px; }
+      .products-sec-inner { padding: 0 24px; }
+      .products-heading { padding: 0; }
+      .products-grid { flex-direction: row; height: auto; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 0 24px 4px; margin: 0 -24px; gap: 12px; }
       .products-grid::-webkit-scrollbar { display: none; }
-      .product-item { flex: none !important; width: 200px; scroll-snap-align: start; }
+      .product-item { flex: none !important; width: 60vw; max-width: 260px; scroll-snap-align: start; }
       .product-cover { aspect-ratio: 3/4; flex: none; }
       .product-detail { max-height: none !important; opacity: 1 !important; padding: 0 16px 16px !important; }
       .product-detail-list li { white-space: normal; font-size: 12px; }
       .product-info { white-space: normal; }
     }
-    @media (max-width: 560px) { .product-item { width: 175px; } }
+    /* product dots */
+    .product-dots { display: none; justify-content: center; gap: 6px; margin-top: 20px; }
+    @media (max-width: 960px) { .product-dots { display: flex; } }
+    .product-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.2); transition: all .3s ease; cursor: pointer; }
+    .product-dot.active { width: 22px; border-radius: 3px; background: #FF7A00; }
 
     /* ── MENTOR SECTION ── */
     .mentor-sec { background: #fff; padding: 120px 80px; text-align: center; }
@@ -781,6 +787,13 @@
         </div>
       </div>
     </div>
+    <div class="product-dots" id="productDots">
+      <span class="product-dot active"></span>
+      <span class="product-dot"></span>
+      <span class="product-dot"></span>
+      <span class="product-dot"></span>
+      <span class="product-dot"></span>
+    </div>
   </div>
 </section>
 
@@ -993,6 +1006,28 @@
         }, i * 110);
       });
     }, { threshold: 0.5 }).observe(priceEl);
+  })();
+
+  // Product dots scroll indicator
+  (function() {
+    const grid = document.querySelector('.products-grid');
+    const dots = document.querySelectorAll('.product-dot');
+    if (!grid || !dots.length) return;
+    grid.addEventListener('scroll', () => {
+      const items = [...grid.querySelectorAll('.product-item')];
+      const scrollLeft = grid.scrollLeft;
+      let activeIdx = 0;
+      items.forEach((item, i) => {
+        if (item.offsetLeft - grid.offsetLeft <= scrollLeft + 20) activeIdx = i;
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+    }, { passive: true });
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        const items = [...grid.querySelectorAll('.product-item')];
+        if (items[i]) grid.scrollTo({ left: items[i].offsetLeft - grid.offsetLeft, behavior: 'smooth' });
+      });
+    });
   })();
 
   // Product card expand on hover

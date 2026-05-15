@@ -98,13 +98,18 @@
       content: ''; position: absolute; inset: 0;
       background: rgba(0,0,0,.45);
     }
-    .hero-bg-text {
+    .hero-group {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; z-index: 2; pointer-events: none;
+      width: 100%; text-align: center;
+    }
+    .hero-bg-text {
       font-size: clamp(80px, 12vw, 180px);
       font-weight: 900; color: #fff;
       white-space: nowrap; pointer-events: none;
-      z-index: 2; letter-spacing: -4px; line-height: 1;
+      letter-spacing: -4px; line-height: 1;
       width: 100%; text-align: center;
     }
     .hero-tagline { opacity: 1; }
@@ -116,8 +121,8 @@
       animation: float 4s ease-in-out infinite;
     }
     .hero-tagline {
-      position: absolute; bottom: 220px; left: 0; right: 0;
-      text-align: center; z-index: 3;
+      position: relative;
+      text-align: center;
       font-size: clamp(22px, 3vw, 36px); font-weight: 700; color: #fff;
     }
     .hero-tagline em {
@@ -502,7 +507,7 @@
       .footer-bottom { flex-direction: column; gap: 4px; font-size: 11px; }
       .hero-btns { flex-direction: column; align-items: center; }
       .hero-bg-text { font-size: clamp(36px, 10vw, 56px); white-space: normal; line-height: 1.15; }
-      .hero-tagline { top: calc(50% + 52px); bottom: auto; font-size: clamp(16px, 4.5vw, 24px); padding: 0 16px; }
+      .hero-tagline { font-size: clamp(16px, 4.5vw, 24px); padding: 0 16px; }
       .nav-right > *:not(.nav-hamburger) { display: none !important; }
       .price-table { padding: 60px 20px; }
       .pitch { padding: 56px 20px; }
@@ -561,9 +566,11 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg-text">Connect the dots</div>
-  <div class="hero-tagline">
-    매일 한 점, <em>수능영어 1등급</em>으로 잇다.
+  <div class="hero-group">
+    <div class="hero-bg-text">Connect the dots</div>
+    <div class="hero-tagline">
+      매일 한 점, <em>수능영어 1등급</em>으로 잇다.
+    </div>
   </div>
   <div class="hero-scroll-hint">
     SCROLL
@@ -906,15 +913,15 @@
 
   // Scroll parallax — rAF-throttled, transform-only (no reflow per frame)
   (function () {
+    const heroGroup = document.querySelector('.hero-group');
     const heroText = document.querySelector('.hero-bg-text');
-    const heroTagline = document.querySelector('.hero-tagline');
     const heroScroll = document.querySelector('.hero-scroll-hint');
     const hero = document.querySelector('.hero');
-    if (!hero || !heroText) return;
+    if (!hero || !heroGroup) return;
 
     // GPU hints
-    heroText.style.willChange = 'transform, opacity, filter';
-    if (heroTagline) heroTagline.style.willChange = 'transform, opacity, filter';
+    heroGroup.style.willChange = 'transform, opacity, filter';
+    if (heroText) heroText.style.willChange = 'transform';
     if (heroScroll) heroScroll.style.willChange = 'opacity';
 
     let heroH = hero.offsetHeight;
@@ -928,16 +935,10 @@
       // scale instead of letter-spacing — same "expand" feel, GPU-cheap
       const scale = 1 + p * 0.35;
 
-      heroText.style.transform = `translate(-50%, calc(-50% - ${tx}px)) scale(${scale})`;
-      heroText.style.opacity = Math.max(1 - p * 2.2, 0);
-      // only apply blur once we've scrolled a bit (skip first frames)
-      heroText.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
-
-      if (heroTagline) {
-        heroTagline.style.opacity = Math.max(1 - p * 2.2, 0);
-        heroTagline.style.transform = `translateY(-${tx}px)`;
-        heroTagline.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
-      }
+      heroGroup.style.transform = `translate(-50%, calc(-50% - ${tx}px))`;
+      heroGroup.style.opacity = Math.max(1 - p * 2.2, 0);
+      heroGroup.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
+      if (heroText) heroText.style.transform = `scale(${scale})`;
       if (heroScroll) {
         heroScroll.style.opacity = Math.max(1 - p * 6, 0);
       }

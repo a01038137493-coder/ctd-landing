@@ -125,8 +125,6 @@
     .addr-search-btn:hover { opacity: .85; }
     .addr-detail { margin-top: 8px; }
 
-    /* AUTH GUARD */
-    #wrap { visibility: hidden; }
   </style>
 </head>
 <body>
@@ -276,25 +274,28 @@
   CTDCart.attachNavCount();
   CTDAuth.attachNav();
 
-  // ── 로그인 가드 ──────────────────────────────────────────────────────────
+  // ── 상품 렌더 먼저 ────────────────────────────────────────────────────────
+  render();
+
+  // ── 로그인 가드 (비동기 체크) ─────────────────────────────────────────────
   let _userId = null;
-  CTDAuth.getSession().then(session => {
-    if (!session) {
-      location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
-      return;
+  (async function() {
+    try {
+      const session = await CTDAuth.getSession();
+      if (!session) {
+        location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
+        return;
+      }
+      const user = session.user;
+      _userId = user.id;
+      const meta = user.user_metadata || {};
+      if (user.email) document.getElementById('f-email').value = user.email;
+      if (meta.full_name || meta.name) document.getElementById('f-name').value = meta.full_name || meta.name || '';
+      if (meta.phone) document.getElementById('f-phone').value = meta.phone;
+    } catch(e) {
+      // Supabase 미설정 환경 — 폼은 그대로 유지
     }
-    const user = session.user;
-    _userId = user.id;
-    const meta = user.user_metadata || {};
-    if (user.email) document.getElementById('f-email').value = user.email;
-    if (meta.full_name || meta.name) document.getElementById('f-name').value = meta.full_name || meta.name || '';
-    if (meta.phone) document.getElementById('f-phone').value = meta.phone;
-    document.getElementById('wrap').style.visibility = '';
-    render();
-  }).catch(() => {
-    document.getElementById('wrap').style.visibility = '';
-    render();
-  });
+  })();
 
   // ── 카카오 주소 검색 ──────────────────────────────────────────────────────
   function searchAddress() {

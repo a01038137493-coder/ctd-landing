@@ -173,8 +173,7 @@
   }
 
   async function uploadImage(file) {
-    if (!hasSupabase()) {
-      // local mode → base64 inline
+    function toBase64() {
       return new Promise((resolve, reject) => {
         const r = new FileReader();
         r.onload = () => resolve(r.result);
@@ -182,13 +181,17 @@
         r.readAsDataURL(file);
       });
     }
+    if (!hasSupabase()) return toBase64();
     const cfg = global.SUPABASE_CONFIG;
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const path = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const { error } = await client().storage.from(cfg.bucket).upload(path, file, {
       cacheControl: '3600', upsert: false, contentType: file.type || undefined,
     });
-    if (error) throw error;
+    if (error) {
+      console.warn('[Storage] 업로드 실패, base64로 저장:', error.message);
+      return toBase64();
+    }
     const { data } = client().storage.from(cfg.bucket).getPublicUrl(path);
     return data.publicUrl;
   }

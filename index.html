@@ -396,8 +396,10 @@
     .video-placeholder { width: 420px; height: 300px; background: rgba(0,0,0,.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,.25); font-size: 13px; font-weight: 600; }
     @media (max-width: 760px) {
       .video-sec { padding: 72px 24px; }
-      .video-banner { flex-direction: column; align-items: flex-start; justify-content: flex-end; min-height: 280px; padding: 28px 24px; gap: 12px; }
-      .video-banner-left, .video-banner-right { position: static; text-align: left; }
+      .video-banner { flex-direction: column; align-items: center; justify-content: flex-end; min-height: 320px; padding: 32px 24px; gap: 16px; }
+      .video-banner-left, .video-banner-right { position: static; text-align: center; width: 100%; }
+      .video-banner-left p { font-size: 18px; }
+      .video-banner-right p { font-size: 13px; text-align: center; }
       .video-placeholder { width: 100%; height: 200px; }
     }
 
@@ -453,7 +455,7 @@
       .mentor-sec { padding: 60px 20px; }
       .split-sec { padding: 56px 20px; }
       .video-sec { padding: 56px 20px; }
-      .video-banner-left, .video-banner-right { text-align: center; }
+      .video-banner { min-height: 280px; padding: 28px 20px; }
     }
   </style>
 </head>

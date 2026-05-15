@@ -113,31 +113,63 @@
     .video-info-label { font-size: 10px; font-weight: 700; color: var(--ink-3); letter-spacing: 1.5px; text-transform: uppercase; }
     .video-info-value { font-size: 15px; font-weight: 800; color: var(--ink); }
 
-    /* ═══ PLAYLIST SIDEBAR ═══ */
+    /* ═══ SIDEBAR ═══ */
     .lecture-sidebar {
       border-left: 1px solid var(--border);
       height: calc(100vh - 64px);
       position: sticky; top: 64px;
-      overflow-y: auto;
+      display: flex; flex-direction: column;
       background: var(--bg-2);
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
     }
-    .lecture-sidebar::-webkit-scrollbar { width: 4px; }
-    .lecture-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-    .sidebar-header {
-      padding: 20px 20px 16px;
+    /* Tabs */
+    .sidebar-tabs {
+      display: flex; flex-shrink: 0;
       border-bottom: 1px solid var(--border);
       background: var(--bg-2);
-      position: sticky; top: 0; z-index: 10;
     }
-    .sidebar-course-name { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-    .sidebar-title { font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.4; }
-    .sidebar-count { font-size: 12px; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
+    .sidebar-tab {
+      flex: 1; padding: 15px 8px; text-align: center;
+      font-size: 12px; font-weight: 700; color: var(--ink-3);
+      cursor: pointer; transition: color .15s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .sidebar-tab:hover { color: var(--ink); }
+    .sidebar-tab.tab-active { color: var(--ink); border-bottom-color: var(--orange); }
+
+    /* Panels */
+    .sidebar-panel {
+      display: none; flex: 1; overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    .sidebar-panel::-webkit-scrollbar { width: 4px; }
+    .sidebar-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .sidebar-panel.panel-active { display: block; }
+
+    /* Timeline panel */
+    .tl-panel-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px; font-weight: 800; color: var(--ink-3);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .tl-now-playing {
+      font-size: 12px; font-weight: 700; color: var(--ink);
+      letter-spacing: 0; text-transform: none; margin-top: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Playlist panel header */
+    .sidebar-list-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-course-name { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+    .sidebar-count { font-size: 12px; color: var(--ink-3); font-weight: 500; }
 
     .part-header {
-      padding: 16px 20px 10px;
+      padding: 14px 20px 10px;
       font-size: 11px; font-weight: 800; color: var(--ink);
       letter-spacing: 2px; text-transform: uppercase;
       border-bottom: 1px solid var(--border);
@@ -171,7 +203,7 @@
     @media (max-width: 900px) {
       .lecture-wrap { grid-template-columns: 1fr; }
       .lecture-main { padding: 16px 16px 40px; }
-      .lecture-sidebar { position: static; height: auto; border-left: none; border-top: 1px solid var(--border); }
+      .lecture-sidebar { position: static; height: auto; border-left: none; border-top: 1px solid var(--border); max-height: 60vh; }
     }
   </style>
 </head>
@@ -225,16 +257,9 @@
     </div>
 
     <div class="video-meta">
-      <span class="video-part-badge" id="videoPart">PART 1</span>
+      <span class="video-part-badge" id="videoPart">OT</span>
       <h1 class="video-title" id="videoTitle">강의 제목</h1>
       <p class="video-desc" id="videoDesc"></p>
-
-      <!-- TIMELINE -->
-      <div class="timeline" id="timelineBlock">
-        <div class="timeline-header">타임라인</div>
-        <div class="timeline-list" id="timelineList"></div>
-      </div>
-
       <hr class="video-divider">
       <div class="video-info-row">
         <div class="video-info-item">
@@ -243,7 +268,7 @@
         </div>
         <div class="video-info-item">
           <span class="video-info-label">구성</span>
-          <span class="video-info-value">3 PARTS</span>
+          <span class="video-info-value">4 PARTS</span>
         </div>
         <div class="video-info-item">
           <span class="video-info-label">완강 목표</span>
@@ -253,14 +278,31 @@
     </div>
   </main>
 
-  <!-- PLAYLIST SIDEBAR -->
+  <!-- SIDEBAR -->
   <aside class="lecture-sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-course-name">INSPIRE</div>
-      <div class="sidebar-title">수능 영어 독해 완성을 위한<br>짧고 단단한 강의</div>
-      <div class="sidebar-count" id="sidebarCount"></div>
+    <!-- Tabs -->
+    <div class="sidebar-tabs">
+      <div class="sidebar-tab tab-active" data-tab="timeline" onclick="switchTab('timeline')">타임라인</div>
+      <div class="sidebar-tab" data-tab="playlist" onclick="switchTab('playlist')">강의 목록</div>
     </div>
-    <div id="playlist"></div>
+
+    <!-- Timeline Panel -->
+    <div class="sidebar-panel panel-active" id="panelTimeline">
+      <div class="tl-panel-header">
+        현재 강의
+        <div class="tl-now-playing" id="tlNowPlaying"></div>
+      </div>
+      <div class="timeline-list" id="timelineList"></div>
+    </div>
+
+    <!-- Playlist Panel -->
+    <div class="sidebar-panel" id="panelPlaylist">
+      <div class="sidebar-list-header">
+        <div class="sidebar-course-name">INSPIRE</div>
+        <div class="sidebar-count" id="sidebarCount"></div>
+      </div>
+      <div id="playlist"></div>
+    </div>
   </aside>
 
 </div>
@@ -358,6 +400,14 @@
     return null;
   }
 
+  // ─── 탭 전환 ───────────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    document.querySelectorAll('.sidebar-tab').forEach(el =>
+      el.classList.toggle('tab-active', el.dataset.tab === tab));
+    document.getElementById('panelTimeline').classList.toggle('panel-active', tab === 'timeline');
+    document.getElementById('panelPlaylist').classList.toggle('panel-active', tab === 'playlist');
+  }
+
   // ─── 플레이어 ──────────────────────────────────────────────────────────────
   let currentChId = PLAYLIST[0].chapters[0].id;
 
@@ -386,7 +436,9 @@
     document.getElementById('videoPart').textContent = partLabel;
     document.getElementById('videoTitle').textContent = ch.title;
     document.getElementById('videoDesc').textContent = ch.desc;
+    document.getElementById('tlNowPlaying').textContent = ch.title;
     renderTimeline(ch.timeline);
+    switchTab('timeline');
 
     document.querySelectorAll('.chapter-item').forEach(el => {
       el.classList.toggle('active', parseInt(el.dataset.id) === chId);
@@ -463,6 +515,7 @@
     document.getElementById('videoPart').textContent = PLAYLIST[0].part;
     document.getElementById('videoTitle').textContent = first.title;
     document.getElementById('videoDesc').textContent = first.desc;
+    document.getElementById('tlNowPlaying').textContent = first.title;
     renderTimeline(first.timeline);
     buildPlaylist();
   })();

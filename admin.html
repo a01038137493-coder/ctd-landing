@@ -288,6 +288,15 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── VISITOR STATS ── */
+    .vis-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 900px) { .vis-grid-2 { grid-template-columns: 1fr; } }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .bar-row-label { font-size: 12px; color: var(--txt-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-row-track { flex: 1; background: var(--panel-2); border-radius: 3px; overflow: hidden; height: 8px; }
+    .bar-row-fill { height: 100%; border-radius: 3px; }
+    .bar-row-count { font-size: 12px; font-weight: 700; flex-shrink: 0; width: 36px; text-align: right; }
+
     /* ── LOGIN GATE ── */
     .gate {
       position: fixed; inset: 0; z-index: 999;
@@ -332,6 +341,7 @@
     <a class="topbar-logo" href="/"><span class="topbar-logo-dot"></span>Connect the dots</a>
     <nav class="topbar-tabs">
       <button class="topbar-tab active" data-tab="stats">통계</button>
+      <button class="topbar-tab" data-tab="visitors">방문자</button>
       <button class="topbar-tab" data-tab="orders">주문</button>
       <button class="topbar-tab" data-tab="customers">고객</button>
       <button class="topbar-tab" data-tab="products">상품</button>
@@ -468,10 +478,13 @@
   <div class="dashboard">
     <div class="dashboard-head">
       <div class="dashboard-title">주문 관리 <small id="orders-count" style="color:var(--txt-3); font-size:14px; font-weight:600; margin-left:8px;">(0)</small></div>
-      <button class="btn btn-ghost" id="btn-refresh-orders">새로고침</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" id="btn-refresh-orders">새로고침</button>
+        <button class="btn btn-danger" id="btn-delete-all-orders">전체 삭제</button>
+      </div>
     </div>
     <table class="data-table">
-      <thead><tr><th style="width:130px;">주문일</th><th style="width:120px;">고객</th><th style="width:130px;">연락처</th><th>주소</th><th style="text-align:right; width:120px;">금액</th><th style="width:140px;">상태</th></tr></thead>
+      <thead><tr><th style="width:130px;">주문일</th><th style="width:120px;">고객</th><th style="width:130px;">연락처</th><th>주소</th><th style="text-align:right; width:120px;">금액</th><th style="width:140px;">상태</th><th style="width:48px;"></th></tr></thead>
       <tbody id="orders-body"></tbody>
     </table>
     <div id="orders-empty" class="empty-state" style="display:none;"><strong>주문이 없습니다</strong>아직 들어온 주문이 없습니다.</div>
@@ -490,6 +503,70 @@
       <tbody id="customers-body"></tbody>
     </table>
     <div id="customers-empty" class="empty-state" style="display:none;"><strong>고객 데이터가 없습니다</strong>주문이 들어오면 자동으로 집계됩니다.</div>
+  </div>
+</div>
+
+<!-- TAB: VISITORS -->
+<div class="tab-panel" id="tab-visitors">
+  <div class="dashboard">
+    <div class="dashboard-head">
+      <div class="dashboard-title">방문자 통계 <small style="color:var(--txt-3); font-size:12px; font-weight:600; margin-left:8px;">페이지뷰 기반</small></div>
+      <button class="btn btn-ghost" id="btn-refresh-visitors">새로고침</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card highlight"><div class="stat-label">총 방문자</div><div class="stat-value orange" id="v-total">—</div><div class="stat-sub">고유 방문자 누적</div></div>
+      <div class="stat-card highlight"><div class="stat-label">오늘 방문자</div><div class="stat-value orange" id="v-today">—</div><div class="stat-sub" id="v-today-sub">오늘 기준</div></div>
+      <div class="stat-card"><div class="stat-label">신규 방문자</div><div class="stat-value" id="v-new">—</div><div class="stat-sub">첫 방문</div></div>
+      <div class="stat-card"><div class="stat-label">재방문자</div><div class="stat-value" id="v-return">—</div><div class="stat-sub">재방문</div></div>
+      <div class="stat-card"><div class="stat-label">총 페이지뷰</div><div class="stat-value" id="v-pv">—</div><div class="stat-sub">모든 기록</div></div>
+      <div class="stat-card"><div class="stat-label">일평균 방문자</div><div class="stat-value" id="v-avg">—</div><div class="stat-sub">최근 14일</div></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">최근 14일 방문자 추이</div>
+      <div class="chart-bars" id="v-chart-daily"></div>
+      <div class="chart-x" id="v-chart-daily-x"></div>
+    </div>
+
+    <div class="vis-grid-2">
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">유입 경로</div>
+        <div id="v-referrers"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">기기 비율</div>
+        <div id="v-devices"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+    </div>
+
+    <div class="vis-grid-2" style="margin-top:16px;">
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">브라우저 TOP</div>
+        <div id="v-browsers"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">운영체제</div>
+        <div id="v-os"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:16px;">
+      <div class="chart-title">시간대별 방문 분포</div>
+      <div class="chart-bars" id="v-chart-hourly" style="height:140px;"></div>
+      <div class="chart-x" id="v-chart-hourly-x"></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">요일별 방문 분포</div>
+      <div class="chart-bars" id="v-chart-dow" style="height:140px;"></div>
+      <div class="chart-x" id="v-chart-dow-x"></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">페이지별 방문</div>
+      <div id="v-pages"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+    </div>
   </div>
 </div>
 
@@ -885,7 +962,7 @@
   // ── TAB SWITCHING ─────────────────────────────────────────────────
   const tabs = document.querySelectorAll('.topbar-tab');
   const panels = document.querySelectorAll('.tab-panel');
-  const tabLoaders = { products: null, stats: loadStats, orders: loadOrders, customers: loadCustomers };
+  const tabLoaders = { products: null, stats: loadStats, visitors: loadVisitors, orders: loadOrders, customers: loadCustomers };
   const tabsLoaded = { products: true };
 
   function setTab(name) {
@@ -1016,16 +1093,22 @@
         <td class="cell-truncate cell-muted" title="${escapeHtml(o.customer_address)}">${escapeHtml(o.customer_address)}</td>
         <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(o.total)}</td>
         <td>
-          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status}">
+          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status || 'pending'}">
             <option value="pending"${o.status === 'pending' ? ' selected' : ''}>대기</option>
             <option value="confirmed"${o.status === 'confirmed' ? ' selected' : ''}>확정</option>
             <option value="shipped"${o.status === 'shipped' ? ' selected' : ''}>발송됨</option>
             <option value="cancelled"${o.status === 'cancelled' ? ' selected' : ''}>취소</option>
           </select>
         </td>
+        <td>
+          <button class="icon-btn danger delete-order-btn" data-id="${escapeHtml(o.id)}" title="삭제">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </td>
       </tr>
     `).join('');
-    // Wire status updates
+
+    // 상태 변경
     body.querySelectorAll('.status-select').forEach(sel => {
       sel.addEventListener('change', async (e) => {
         const id = e.target.dataset.orderId;
@@ -1042,8 +1125,45 @@
         }
       });
     });
+
+    // 개별 삭제
+    body.querySelectorAll('.delete-order-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('이 주문을 삭제할까요?')) return;
+        const id = btn.dataset.id;
+        try {
+          const { error } = await CTDProducts.client().from('orders').delete().eq('id', id);
+          if (error) throw error;
+          toast('삭제됨');
+          tabsLoaded.orders = false;
+          loadOrders();
+          loadStats();
+        } catch (err) {
+          alert('삭제 실패: ' + (err.message || err));
+        }
+      });
+    });
   }
-  document.getElementById('btn-refresh-orders').addEventListener('click', () => { tabsLoaded.orders = true; loadOrders(); });
+
+  document.getElementById('btn-refresh-orders').addEventListener('click', () => { tabsLoaded.orders = false; loadOrders(); });
+
+  // 전체 삭제
+  document.getElementById('btn-delete-all-orders').addEventListener('click', async () => {
+    const orders = await fetchAllOrders();
+    if (!orders.length) { toast('삭제할 주문이 없습니다'); return; }
+    if (!confirm(`주문 ${orders.length}건을 전부 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`)) return;
+    try {
+      const ids = orders.map(o => o.id);
+      const { error } = await CTDProducts.client().from('orders').delete().in('id', ids);
+      if (error) throw error;
+      toast(`${ids.length}건 전체 삭제 완료`);
+      tabsLoaded.orders = false;
+      loadOrders();
+      loadStats();
+    } catch (err) {
+      alert('전체 삭제 실패: ' + (err.message || err));
+    }
+  });
 
   // ── CUSTOMERS ───────────────────────────────────────────────────
   async function loadCustomers() {
@@ -1082,6 +1202,158 @@
     `).join('');
   }
   document.getElementById('btn-refresh-customers').addEventListener('click', () => { tabsLoaded.customers = true; loadCustomers(); });
+
+  // ── VISITORS ────────────────────────────────────────────────────
+  function makeBarRows(entries, maxVal, color) {
+    if (!entries.length) return '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">데이터 없음</div>';
+    return entries.map(([label, count]) => `
+      <div class="bar-row">
+        <div class="bar-row-label" style="width:130px;">${escapeHtml(label)}</div>
+        <div class="bar-row-track"><div class="bar-row-fill" style="width:${Math.round((count/maxVal)*100)}%;background:${color};"></div></div>
+        <div class="bar-row-count">${count}</div>
+      </div>`).join('');
+  }
+
+  async function loadVisitors() {
+    if (!useSupabase) {
+      document.querySelector('#tab-visitors .dashboard').innerHTML =
+        '<div class="empty-state"><strong>Supabase 필요</strong>로컬 모드에서는 방문자 통계를 사용할 수 없습니다.</div>';
+      return;
+    }
+    const { data, error } = await CTDProducts.client()
+      .from('pageviews').select('*').order('created_at', { ascending: false }).limit(20000);
+
+    if (error) {
+      if (/relation.*pageviews.*does not exist/i.test(error.message) || error.code === '42P01') {
+        document.querySelector('#tab-visitors .dashboard').innerHTML =
+          `<div class="empty-state"><strong>pageviews 테이블이 없습니다</strong>
+           <p style="margin-top:8px;font-size:13px;line-height:1.7;">Supabase SQL Editor에서 아래 쿼리를 실행하세요:</p>
+           <pre style="text-align:left;background:#0A0A0A;border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;overflow:auto;margin-top:12px;">CREATE TABLE pageviews (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now() NOT NULL,
+  page text, referrer text, device text,
+  browser text, os text,
+  session_id text, visitor_id text, is_new boolean DEFAULT false
+);
+ALTER TABLE pageviews ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public_insert" ON pageviews FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (true);</pre></div>`;
+      } else {
+        console.error('[visitors]', error);
+      }
+      return;
+    }
+
+    const pvs = data || [];
+    const todayKey = dayKey(new Date());
+
+    // Unique visitor sets
+    const allVids   = new Set(pvs.map(r => r.visitor_id));
+    const todayPvs  = pvs.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+    const todayVids = new Set(todayPvs.map(r => r.visitor_id));
+    const newVids   = new Set(pvs.filter(r => r.is_new).map(r => r.visitor_id));
+    const retVids   = allVids.size - newVids.size;
+
+    // 14-day avg
+    const days14Keys = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+      days14Keys.push(dayKey(d));
+    }
+    const avg14 = Math.round(
+      days14Keys.reduce((s, dk) => {
+        return s + new Set(pvs.filter(r => (r.created_at || '').slice(0, 10) === dk).map(r => r.visitor_id)).size;
+      }, 0) / 14
+    );
+
+    // Stat cards
+    document.getElementById('v-total').textContent   = allVids.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-today').textContent   = todayVids.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-today-sub').textContent = '페이지뷰 ' + todayPvs.length + '건';
+    document.getElementById('v-new').textContent     = newVids.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-return').textContent  = Math.max(0, retVids).toLocaleString('ko-KR') + '명';
+    document.getElementById('v-pv').textContent      = pvs.length.toLocaleString('ko-KR');
+    document.getElementById('v-avg').textContent     = avg14.toLocaleString('ko-KR') + '명';
+
+    // Daily chart
+    const dailyData = days14Keys.map(dk => ({
+      key: dk,
+      count: new Set(pvs.filter(r => (r.created_at || '').slice(0, 10) === dk).map(r => r.visitor_id)).size
+    }));
+    const maxD = Math.max(1, ...dailyData.map(x => x.count));
+    document.getElementById('v-chart-daily').innerHTML = dailyData.map(x => `
+      <div class="chart-bar" style="height:${Math.max(2, (x.count/maxD)*100)}%;">
+        <span class="chart-bar-tip">${x.key.slice(5)} · ${x.count}명</span>
+      </div>`).join('');
+    document.getElementById('v-chart-daily-x').innerHTML = dailyData.map((x, i) =>
+      `<div class="chart-x-label">${i % 2 === 0 ? x.key.slice(5) : ''}</div>`).join('');
+
+    // Referrers
+    const refMap = new Map();
+    pvs.forEach(r => { const k = r.referrer || '직접'; refMap.set(k, (refMap.get(k) || 0) + 1); });
+    const refs = Array.from(refMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    document.getElementById('v-referrers').innerHTML = makeBarRows(refs, refs[0]?.[1] || 1, 'var(--orange)');
+
+    // Devices
+    const devMap = new Map();
+    pvs.forEach(r => { const k = r.device || 'desktop'; devMap.set(k, (devMap.get(k) || 0) + 1); });
+    const devTotal = pvs.length || 1;
+    const devColors = { mobile: '#FF7A00', desktop: '#007AFF', tablet: '#4CD964' };
+    const devLabels = { mobile: '모바일', desktop: '데스크탑', tablet: '태블릿' };
+    const devEntries = Array.from(devMap.entries()).sort((a, b) => b[1] - a[1]);
+    document.getElementById('v-devices').innerHTML = devEntries.length
+      ? devEntries.map(([d, c]) => `
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:13px;font-weight:700;color:${devColors[d]||'#fff'};">${devLabels[d]||d}</span>
+            <span style="font-size:12px;color:var(--txt-2);">${c}명 &nbsp;(${Math.round(c/devTotal*100)}%)</span>
+          </div>
+          <div class="bar-row-track"><div class="bar-row-fill" style="width:${Math.round(c/devTotal*100)}%;background:${devColors[d]||'var(--orange)'};"></div></div>
+        </div>`).join('')
+      : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">데이터 없음</div>';
+
+    // Browsers
+    const brMap = new Map();
+    pvs.forEach(r => { const k = r.browser || 'Other'; brMap.set(k, (brMap.get(k) || 0) + 1); });
+    const brs = Array.from(brMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    document.getElementById('v-browsers').innerHTML = makeBarRows(brs, brs[0]?.[1] || 1, 'var(--orange)');
+
+    // OS
+    const osMap = new Map();
+    pvs.forEach(r => { const k = r.os || 'Other'; osMap.set(k, (osMap.get(k) || 0) + 1); });
+    const oss = Array.from(osMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    document.getElementById('v-os').innerHTML = makeBarRows(oss, oss[0]?.[1] || 1, '#4CD964');
+
+    // Hourly distribution
+    const hourly = new Array(24).fill(0);
+    pvs.forEach(r => { if (r.created_at) hourly[new Date(r.created_at).getHours()]++; });
+    const maxH = Math.max(1, ...hourly);
+    document.getElementById('v-chart-hourly').innerHTML = hourly.map((c, h) => `
+      <div class="chart-bar" style="height:${Math.max(2, (c/maxH)*100)}%;">
+        <span class="chart-bar-tip">${h}시 · ${c}</span>
+      </div>`).join('');
+    document.getElementById('v-chart-hourly-x').innerHTML = hourly.map((_, h) =>
+      `<div class="chart-x-label">${h % 6 === 0 ? h + '시' : ''}</div>`).join('');
+
+    // Day-of-week distribution
+    const DOW = ['일', '월', '화', '수', '목', '금', '토'];
+    const dow = new Array(7).fill(0);
+    pvs.forEach(r => { if (r.created_at) dow[new Date(r.created_at).getDay()]++; });
+    const maxDow = Math.max(1, ...dow);
+    document.getElementById('v-chart-dow').innerHTML = dow.map((c, i) => `
+      <div class="chart-bar" style="height:${Math.max(2, (c/maxDow)*100)}%;">
+        <span class="chart-bar-tip">${DOW[i]}요일 · ${c}</span>
+      </div>`).join('');
+    document.getElementById('v-chart-dow-x').innerHTML = DOW.map(d =>
+      `<div class="chart-x-label">${d}</div>`).join('');
+
+    // Top pages
+    const pgMap = new Map();
+    pvs.forEach(r => { const k = r.page || '/'; pgMap.set(k, (pgMap.get(k) || 0) + 1); });
+    const pgs = Array.from(pgMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 12);
+    document.getElementById('v-pages').innerHTML = makeBarRows(pgs, pgs[0]?.[1] || 1, 'var(--orange)');
+  }
+  document.getElementById('btn-refresh-visitors').addEventListener('click', () => { tabsLoaded.visitors = false; loadVisitors(); });
 </script>
 
 </body>

@@ -79,16 +79,9 @@
     .mobile-nav-login { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.6); padding: 10px 20px; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; }
     .mobile-nav-cart { font-size: 14px; font-weight: 800; color: #fff; background: #FF7A00; padding: 10px 20px; border-radius: 6px; }
     @media (max-width: 700px) {
-      .hero { padding: 120px 20px 72px; }
       .hero::after { display: none; }
-      .hero-stats { gap: 16px; padding: 12px 16px; }
-      .hero-stat { min-width: 80px; }
-      .hero-ctas { flex-direction: column; align-items: center; width: 100%; }
+      .hero-ctas { flex-direction: column; align-items: stretch; width: 100%; }
       .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
-      .ot-frame { margin: 24px auto 0; }
-      .free-stat-num { font-size: 56px; }
-      .section { padding: 64px 20px; }
-      .final-cta { padding: 64px 20px; }
     }
 
     /* HERO */
@@ -383,10 +376,70 @@
     .footer-col a { font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
     .footer-col a:hover { color: #fff; }
     .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+    /* ═══ MOBILE ═══ */
     @media (max-width: 760px) {
       .footer-top { grid-template-columns: 1fr 1fr; }
-      .section { padding: 80px 24px; }
-      .hero { padding: 140px 24px 80px; }
+      .curri-grid { grid-template-columns: 1fr; }
+      .problem-cards { grid-template-columns: 1fr; }
+      .beyond-card { grid-template-columns: 1fr; padding: 32px 22px; gap: 22px; }
+      .outcome-grid { grid-template-columns: 1fr; }
+      .outcome-card { border-right: none; border-bottom: 1px solid var(--border); }
+      .outcome-card:last-child { border-bottom: none; }
+      .part-block { grid-template-columns: 1fr; padding: 28px 20px; gap: 12px; }
+      .solution-card { grid-template-columns: 1fr; gap: 10px; padding: 28px 22px; }
+      .special-card { grid-template-columns: 1fr; gap: 20px; padding: 32px 22px; }
+    }
+    @media (max-width: 640px) {
+      /* Spacing */
+      .hero { padding: 100px 20px 60px; }
+      .section { padding: 52px 20px; }
+      .final-cta { padding: 56px 20px; }
+      .chapter { margin-bottom: 32px; gap: 10px; }
+      .chapter-line { flex-basis: 20px; }
+
+      /* Hero */
+      .hero-stats { gap: 10px; padding: 12px 0; }
+      .hero-stat { min-width: 72px; }
+      .hero-stat-num { font-size: 17px; }
+      .hero-stat-label { font-size: 10px; }
+
+      /* Problem */
+      .problem-title { letter-spacing: -1.5px; }
+      .problem-body { font-size: 15px; }
+      .problem-cards { margin: 28px 0 20px; gap: 10px; }
+      .problem-card { padding: 20px 18px; }
+      .problem-card-title { font-size: 16px; }
+      .problem-card-desc { font-size: 12px; }
+      .problem-footer { font-size: 14px; padding-top: 20px; }
+
+      /* Solution */
+      .solution-grid { margin-top: 28px; gap: 10px; }
+      .solution-num { font-size: 40px; }
+      .solution-text { font-size: 16px; }
+
+      /* Parts */
+      .parts-stack { margin-top: 28px; gap: 10px; }
+      .part-num { font-size: 40px; }
+      .part-title { font-size: 20px; margin-bottom: 10px; }
+      .part-desc { font-size: 14px; margin-bottom: 14px; }
+      .part-sublist li { font-size: 13px; padding: 10px 0; gap: 10px; }
+
+      /* Beyond */
+      .beyond-title { font-size: 20px; }
+      .beyond-text { font-size: 13px; }
+
+      /* Outcome */
+      .outcome-card { padding: 28px 20px; }
+      .outcome-title { font-size: 17px; }
+
+      /* Curriculum */
+      .curri-grid { gap: 10px; margin-top: 28px; }
+      .curri-card { padding: 26px 22px; }
+      .curri-title { font-size: 18px; }
+
+      /* Section common */
+      .section-title { margin-bottom: 14px; }
+      .section-lead { font-size: 14px; line-height: 1.75; }
     }
     @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
   </style>

@@ -28,6 +28,17 @@
     .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
     @media (max-width: 960px) { .nav-menu { display: none; } .nav-hamburger { display: flex; align-items: center; } .nav { padding: 0 20px; } .nav-right a { display: none; } }
+    .mobile-nav { display: none; position: fixed; inset: 0; z-index: 400; background: #111; flex-direction: column; padding: 0 32px; opacity: 0; transition: opacity .25s ease; }
+    .mobile-nav.is-open { display: flex; } .mobile-nav.is-visible { opacity: 1; }
+    .mobile-nav-header { display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-close { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+    .mobile-nav-links { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .mobile-nav-links a { display: block; font-size: clamp(28px, 8vw, 40px); font-weight: 900; color: rgba(255,255,255,.9); letter-spacing: -1px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.07); transition: color .2s; }
+    .mobile-nav-links a:first-child { border-top: 1px solid rgba(255,255,255,.07); }
+    .mobile-nav-links a:hover { color: #FF7A00; }
+    .mobile-nav-bottom { padding: 28px 0; display: flex; gap: 12px; align-items: center; border-top: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-login { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.6); padding: 10px 20px; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; }
+    .mobile-nav-cart { font-size: 14px; font-weight: 800; color: #fff; background: #FF7A00; padding: 10px 20px; border-radius: 6px; }
 
     /* HEADER */
     .co-header { padding: 120px 40px 32px; text-align: center; border-bottom: 1px solid var(--border); }
@@ -126,6 +137,24 @@
     </button>
   </div>
 </nav>
+
+<!-- MOBILE NAV OVERLAY -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <a href="/" class="nav-logo-text"><span style="width:9px;height:9px;background:#FF7A00;border-radius:50%;display:inline-block;margin-right:7px;flex-shrink:0;"></span>Connect the dots</a>
+    <button class="mobile-nav-close" onclick="toggleNav()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <nav class="mobile-nav-links">
+    <a href="/shop.html">SHOP</a>
+    <a href="/inspire.html">INSPIRE</a>
+    <a href="/membership.html">Membership</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="mobile-nav-bottom">
+    <a href="/login.html" class="mobile-nav-login">로그인</a>
+    <a href="/cart.html" class="mobile-nav-cart">장바구니</a>
+  </div>
+</div>
 
 <header class="co-header">
   <h1 class="co-title">주문서 작성</h1>
@@ -290,9 +319,16 @@
     }
   });
   function toggleNav() {
-    const menu = document.querySelector('.nav-menu');
-    if (menu.style.display === 'flex') { menu.style.display = ''; }
-    else { menu.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:#111;padding:16px 20px;gap:4px;border-bottom:1px solid rgba(255,255,255,.1);z-index:199;height:auto;'; }
+    const nav = document.getElementById('mobileNav');
+    if (nav.classList.contains('is-open')) {
+      nav.classList.remove('is-visible');
+      setTimeout(() => nav.classList.remove('is-open'), 250);
+      document.body.style.overflow = '';
+    } else {
+      nav.classList.add('is-open');
+      requestAnimationFrame(() => nav.classList.add('is-visible'));
+      document.body.style.overflow = 'hidden';
+    }
   }
 </script>
 

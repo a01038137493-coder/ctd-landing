@@ -44,27 +44,45 @@
 
     // OS
     var os = 'Other';
-    if (/iPhone|iPad/i.test(ua))    os = 'iOS';
-    else if (/Android/i.test(ua))   os = 'Android';
+    if (/iPhone|iPad/i.test(ua))     os = 'iOS';
+    else if (/Android/i.test(ua))    os = 'Android';
     else if (/Windows NT/i.test(ua)) os = 'Windows';
-    else if (/Macintosh/i.test(ua)) os = 'macOS';
-    else if (/Linux/i.test(ua))     os = 'Linux';
+    else if (/Macintosh/i.test(ua))  os = 'macOS';
+    else if (/Linux/i.test(ua))      os = 'Linux';
 
-    // Referrer
+    // UTM parameters (광고 URL 추적 — referrer보다 우선)
+    var params = new URLSearchParams(location.search);
+    var utmSource   = params.get('utm_source');    // e.g. instagram
+    var utmMedium   = params.get('utm_medium');    // e.g. paid
+    var utmCampaign = params.get('utm_campaign');  // e.g. summer2025
+
+    // Referrer detection (UTM이 있으면 UTM 우선)
     var referrer = '직접';
-    try {
-      if (document.referrer) {
-        var rh = new URL(document.referrer).hostname;
-        if (/instagram/i.test(rh))            referrer = 'Instagram';
-        else if (/facebook|fb\.com/i.test(rh)) referrer = 'Facebook';
-        else if (/google/i.test(rh))           referrer = 'Google';
-        else if (/naver/i.test(rh))            referrer = 'Naver';
-        else if (/kakao/i.test(rh))            referrer = 'Kakao';
-        else if (/youtube/i.test(rh))          referrer = 'YouTube';
-        else if (/t\.co|twitter/i.test(rh))   referrer = 'Twitter/X';
-        else                                   referrer = rh;
-      }
-    } catch (e) {}
+    if (utmSource) {
+      // UTM source를 사람이 읽기 좋게 변환
+      var src = utmSource.toLowerCase();
+      if (src === 'instagram' || src === 'ig')       referrer = 'Instagram (광고)';
+      else if (src === 'facebook' || src === 'fb')   referrer = 'Facebook (광고)';
+      else if (src === 'google')                     referrer = 'Google (광고)';
+      else if (src === 'naver')                      referrer = 'Naver (광고)';
+      else if (src === 'kakao')                      referrer = 'Kakao (광고)';
+      else                                           referrer = utmSource;
+      if (utmCampaign) referrer += ' · ' + utmCampaign;
+    } else {
+      try {
+        if (document.referrer) {
+          var rh = new URL(document.referrer).hostname;
+          if (/instagram/i.test(rh))             referrer = 'Instagram';
+          else if (/facebook|fb\.com/i.test(rh)) referrer = 'Facebook';
+          else if (/google/i.test(rh))            referrer = 'Google';
+          else if (/naver/i.test(rh))             referrer = 'Naver';
+          else if (/kakao/i.test(rh))             referrer = 'Kakao';
+          else if (/youtube/i.test(rh))           referrer = 'YouTube';
+          else if (/t\.co|twitter/i.test(rh))    referrer = 'Twitter/X';
+          else                                    referrer = rh;
+        }
+      } catch (e) {}
+    }
 
     var page = location.pathname;
 

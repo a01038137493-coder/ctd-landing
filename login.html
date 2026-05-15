@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>로그인 — Connect the dots</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>濡쒓렇????Connect the dots</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,38 +106,38 @@
     <li><a href="/about.html">About</a></li>
   </ul>
   <div class="nav-right">
-    <a href="/login.html">로그인</a>
-    <a href="/cart.html" class="nav-cart">장바구니</a>
+    <a href="/login.html">濡쒓렇??/a>
+    <a href="/cart.html" class="nav-cart">?λ컮援щ땲</a>
   </div>
 </nav>
 
 <main class="auth-wrap">
   <form class="auth-box" id="login-form" autocomplete="on">
     <div class="auth-logo"><span class="auth-logo-dot"></span>Connect the dots</div>
-    <h1 class="auth-title">로그인</h1>
-    <p class="auth-sub">계정으로 로그인하고 학습을 이어가세요.</p>
+    <h1 class="auth-title">濡쒓렇??/h1>
+    <p class="auth-sub">怨꾩젙?쇰줈 濡쒓렇?명븯怨??숈뒿???댁뼱媛?몄슂.</p>
 
     <div class="field">
-      <label class="field-label" for="email">이메일</label>
+      <label class="field-label" for="email">?대찓??/label>
       <input class="input" id="email" type="email" autocomplete="username" required maxlength="80" placeholder="you@example.com" />
     </div>
 
     <div class="field">
-      <label class="field-label" for="password">비밀번호</label>
+      <label class="field-label" for="password">鍮꾨?踰덊샇</label>
       <input class="input" id="password" type="password" autocomplete="current-password" required minlength="6" maxlength="60" />
     </div>
 
-    <button class="auth-submit" type="submit" id="btn-submit">로그인 →</button>
+    <button class="auth-submit" type="submit" id="btn-submit">濡쒓렇????/button>
     <div class="auth-error" id="error"></div>
 
     <div class="auth-divider">OR</div>
-    <p class="auth-alt">아직 회원이 아니신가요?<a href="/signup.html">회원가입 →</a></p>
+    <p class="auth-alt">?꾩쭅 ?뚯썝???꾨땲?좉???<a href="/signup.html">?뚯썝媛????/a></p>
 
-    <a class="auth-back" href="/">← 홈으로 돌아가기</a>
+    <a class="auth-back" href="/">???덉쑝濡??뚯븘媛湲?/a>
   </form>
 </main>
 
-<footer>© 2024 Connect the dots</footer>
+<footer>짤 2024 Connect the dots</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
@@ -160,25 +160,26 @@
     const password = document.getElementById('password').value;
     if (!email || !password) return;
 
-    btn.disabled = true; btn.textContent = '로그인 중...';
+    btn.disabled = true; btn.textContent = '濡쒓렇??以?..';
     try {
       await CTDAuth.signIn(email, password);
       const next = new URLSearchParams(location.search).get('next') || '/';
       location.href = next;
     } catch (err) {
-      const msg = (err && err.message) || '로그인에 실패했습니다.';
+      const msg = (err && err.message) || '濡쒓렇?몄뿉 ?ㅽ뙣?덉뒿?덈떎.';
       // Map common Supabase errors to Korean
       if (/Invalid login credentials/i.test(msg)) {
-        errEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+        errEl.textContent = '?대찓???먮뒗 鍮꾨?踰덊샇媛 ?щ컮瑜댁? ?딆뒿?덈떎.';
       } else if (/Email not confirmed/i.test(msg)) {
-        errEl.textContent = '이메일 인증이 완료되지 않았습니다.';
+        errEl.textContent = '?대찓???몄쬆???꾨즺?섏? ?딆븯?듬땲??';
       } else {
         errEl.textContent = msg;
       }
-      btn.disabled = false; btn.textContent = '로그인 →';
+      btn.disabled = false; btn.textContent = '濡쒓렇????;
     }
   });
 </script>
 
 </body>
 </html>
+

@@ -27,7 +27,7 @@
     .nav-right a:hover { color: #fff; }
     .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-    @media (max-width: 960px) { .nav-menu { display: none; } .nav-hamburger { display: flex; align-items: center; } .nav { padding: 0 20px; } .nav-right a { display: none; } }
+    @media (max-width: 960px) { .nav-menu { display: none; } .nav-hamburger { display: flex; align-items: center; } .nav { padding: 0 20px; } .nav-right > *:not(.nav-hamburger) { display: none !important; } }
     .mobile-nav { display: none; position: fixed; inset: 0; z-index: 400; background: #111; flex-direction: column; padding: 0 32px; opacity: 0; transition: opacity .25s ease; }
     .mobile-nav.is-open { display: flex; } .mobile-nav.is-visible { opacity: 1; }
     .mobile-nav-header { display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.08); }

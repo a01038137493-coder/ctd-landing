@@ -86,6 +86,7 @@
 
     .auth-back { display: block; text-align: center; margin-top: 32px; font-size: 12px; color: rgba(255,255,255,.4); }
     .auth-back:hover { color: #fff; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     /* SUCCESS PANEL */
     .success-box { text-align: center; }
@@ -123,9 +124,15 @@
     <h1 class="auth-title">회원가입</h1>
     <p class="auth-sub">계정을 만들고 학습 시스템에 합류하세요.</p>
 
-    <div class="field">
-      <label class="field-label" for="name">이름</label>
-      <input class="input" id="name" type="text" autocomplete="name" maxlength="40" placeholder="홍길동" />
+    <div class="row2">
+      <div class="field">
+        <label class="field-label" for="name">이름 <span class="req">*</span></label>
+        <input class="input" id="name" type="text" autocomplete="name" required maxlength="40" placeholder="홍길동" />
+      </div>
+      <div class="field">
+        <label class="field-label" for="phone">연락처 <span class="req">*</span></label>
+        <input class="input" id="phone" type="tel" autocomplete="tel" required maxlength="20" placeholder="010-0000-0000" />
+      </div>
     </div>
 
     <div class="field">
@@ -189,6 +196,7 @@
     errEl.textContent = '';
 
     const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const password2 = document.getElementById('password2').value;
@@ -204,7 +212,7 @@
 
     btn.disabled = true; btn.textContent = '처리 중...';
     try {
-      const result = await CTDAuth.signUp(email, password, name ? { name } : undefined);
+      const result = await CTDAuth.signUp(email, password, { name: name || undefined, phone: phone || undefined });
       if (result.session) {
         // Auto-confirmed and logged in
         location.href = '/';

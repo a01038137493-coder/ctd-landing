@@ -54,46 +54,62 @@
     }
 
     /* ═══ MAIN VIDEO AREA ═══ */
-    .lecture-main {
-      padding: 28px 36px 80px;
-      min-width: 0;
-    }
+    .lecture-main { padding: 28px 36px 80px; min-width: 0; }
 
     .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
+      position: relative; padding-bottom: 56.25%;
+      background: #000; border-radius: 10px; overflow: hidden;
       box-shadow: 0 8px 40px rgba(0,0,0,.18);
     }
+    .video-container > div,
     .video-container iframe {
       position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; border: 0;
+      width: 100% !important; height: 100% !important; border: 0;
     }
 
+    /* ═══ VIDEO META ═══ */
     .video-meta { margin-top: 24px; }
-    .video-part-badge {
-      display: inline-flex; align-items: center;
-      font-size: 11px; font-weight: 800; color: var(--orange);
+    .video-part-badge { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; display: block; }
+    .video-title { font-size: clamp(18px, 2.4vw, 26px); font-weight: 900; letter-spacing: -1px; line-height: 1.3; color: var(--ink); margin-bottom: 10px; }
+    .video-desc { font-size: 15px; color: var(--ink-2); line-height: 1.8; max-width: 680px; }
+
+    /* ═══ TIMELINE ═══ */
+    .timeline { margin-top: 28px; }
+    .timeline-header {
+      font-size: 11px; font-weight: 800; color: var(--ink-3);
       letter-spacing: 2px; text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 10px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
-    .video-title {
-      font-size: clamp(18px, 2.4vw, 26px);
-      font-weight: 900; letter-spacing: -1px; line-height: 1.3;
-      color: var(--ink); margin-bottom: 12px;
+    .timeline-list { display: flex; flex-direction: column; }
+    .timeline-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 10px 12px; border-radius: 7px;
+      cursor: pointer; transition: background .15s;
+      position: relative;
     }
-    .video-desc {
-      font-size: 15px; color: var(--ink-2); line-height: 1.8;
-      max-width: 680px;
+    .timeline-item:hover { background: var(--bg-2); }
+    .timeline-item.tl-active { background: rgba(255,122,0,.08); }
+    .timeline-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+      transition: background .2s;
     }
+    .timeline-item.tl-active .timeline-dot { background: var(--orange); }
+    .timeline-time {
+      font-size: 12px; font-weight: 800; color: var(--orange);
+      min-width: 38px; font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .timeline-label {
+      font-size: 14px; color: var(--ink-2); line-height: 1.4;
+      transition: color .15s;
+    }
+    .timeline-item.tl-active .timeline-label { color: var(--ink); font-weight: 600; }
+    .timeline-empty { font-size: 13px; color: var(--ink-3); padding: 8px 0; }
 
-    .video-divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
-
-    .video-info-row {
-      display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
-    }
+    .video-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .video-info-row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
     .video-info-item { display: flex; flex-direction: column; gap: 3px; }
     .video-info-label { font-size: 10px; font-weight: 700; color: var(--ink-3); letter-spacing: 1.5px; text-transform: uppercase; }
     .video-info-value { font-size: 15px; font-weight: 800; color: var(--ink); }
@@ -102,8 +118,7 @@
     .lecture-sidebar {
       border-left: 1px solid var(--border);
       height: calc(100vh - 64px);
-      position: sticky;
-      top: 64px;
+      position: sticky; top: 64px;
       overflow-y: auto;
       background: var(--bg-2);
       scrollbar-width: thin;
@@ -118,85 +133,46 @@
       background: var(--bg-2);
       position: sticky; top: 0; z-index: 10;
     }
-    .sidebar-course-name {
-      font-size: 11px; font-weight: 800; color: var(--orange);
-      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;
-    }
-    .sidebar-title {
-      font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.4;
-    }
-    .sidebar-count {
-      font-size: 12px; color: var(--ink-3); margin-top: 4px; font-weight: 500;
-    }
+    .sidebar-course-name { font-size: 11px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .sidebar-title { font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.4; }
+    .sidebar-count { font-size: 12px; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
 
     .part-header {
-      padding: 18px 20px 10px;
+      padding: 16px 20px 10px;
       font-size: 11px; font-weight: 800; color: var(--ink);
       letter-spacing: 2px; text-transform: uppercase;
       border-bottom: 1px solid var(--border);
       background: var(--bg-2);
       display: flex; align-items: center; gap: 10px;
     }
-    .part-header-num {
-      background: var(--ink); color: #fff;
-      font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 3px;
-    }
+    .part-header-num { background: var(--ink); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 3px; }
     .part-header-name { color: var(--ink-2); font-weight: 600; font-size: 12px; letter-spacing: 0; text-transform: none; }
 
     .chapter-item {
       display: flex; align-items: flex-start; gap: 14px;
-      padding: 14px 20px;
-      cursor: pointer;
+      padding: 14px 20px; cursor: pointer;
       border-bottom: 1px solid rgba(0,0,0,.04);
       transition: background .15s;
     }
     .chapter-item:hover { background: rgba(0,0,0,.04); }
-    .chapter-item.active {
-      background: rgba(255,122,0,.08);
-      border-left: 3px solid var(--orange);
-      padding-left: 17px;
-    }
-
-    .chapter-num {
-      font-size: 11px; font-weight: 700; color: var(--ink-3);
-      min-width: 20px; padding-top: 2px; flex-shrink: 0;
-    }
+    .chapter-item.active { background: rgba(255,122,0,.08); border-left: 3px solid var(--orange); padding-left: 17px; }
+    .chapter-num { font-size: 11px; font-weight: 700; color: var(--ink-3); min-width: 20px; padding-top: 2px; flex-shrink: 0; }
     .chapter-item.active .chapter-num { color: var(--orange); }
-
     .chapter-info { flex: 1; min-width: 0; }
-    .chapter-title {
-      font-size: 13px; font-weight: 700; color: var(--ink);
-      line-height: 1.45; margin-bottom: 4px;
-    }
+    .chapter-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.45; margin-bottom: 4px; }
     .chapter-item.active .chapter-title { color: var(--orange); }
-    .chapter-meta { display: flex; align-items: center; gap: 8px; }
     .chapter-duration { font-size: 11px; color: var(--ink-3); font-weight: 500; }
-
-    .chapter-play {
-      flex-shrink: 0; width: 30px; height: 30px;
-      border-radius: 50%; background: transparent;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .15s;
-    }
+    .chapter-play { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .15s; }
     .chapter-item:hover .chapter-play { background: rgba(0,0,0,.07); }
     .chapter-item.active .chapter-play { background: rgba(255,122,0,.15); }
     .chapter-play svg { color: var(--ink-3); }
     .chapter-item.active .chapter-play svg { color: var(--orange); }
-    .chapter-item.playing .chapter-play svg { color: var(--orange); }
 
     /* ═══ MOBILE ═══ */
     @media (max-width: 900px) {
-      .lecture-wrap {
-        grid-template-columns: 1fr;
-      }
-      .lecture-main { padding: 20px 16px 40px; }
-      .lecture-sidebar {
-        position: static;
-        height: auto;
-        border-left: none;
-        border-top: 1px solid var(--border);
-      }
+      .lecture-wrap { grid-template-columns: 1fr; }
+      .lecture-main { padding: 16px 16px 40px; }
+      .lecture-sidebar { position: static; height: auto; border-left: none; border-top: 1px solid var(--border); }
     }
   </style>
 </head>
@@ -244,17 +220,20 @@
   <!-- MAIN VIDEO -->
   <main class="lecture-main">
     <div class="video-container">
-      <iframe
-        id="mainVideo"
-        src="https://www.youtube-nocookie.com/embed/YOUTUBE_ID_HERE?rel=0&modestbranding=1"
-        allowfullscreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      ></iframe>
+      <div id="ytPlayer"></div>
     </div>
+
     <div class="video-meta">
-      <div class="video-part-badge" id="videoPart">PART 1</div>
-      <h1 class="video-title" id="videoTitle">강의 제목이 여기에 표시됩니다</h1>
-      <p class="video-desc" id="videoDesc">강의 설명이 여기에 표시됩니다.</p>
+      <span class="video-part-badge" id="videoPart">PART 1</span>
+      <h1 class="video-title" id="videoTitle">강의 제목</h1>
+      <p class="video-desc" id="videoDesc"></p>
+
+      <!-- TIMELINE -->
+      <div class="timeline" id="timelineBlock">
+        <div class="timeline-header">타임라인</div>
+        <div class="timeline-list" id="timelineList"></div>
+      </div>
+
       <hr class="video-divider">
       <div class="video-info-row">
         <div class="video-info-item">
@@ -285,6 +264,8 @@
 
 </div>
 
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/auth.js"></script>
@@ -304,109 +285,194 @@
     }
   }
 
-  // ─── 강의 데이터 ───────────────────────────────────────────
-  // videoId: YouTube 영상 ID로 교체하세요 (예: "dQw4w9WgXcQ")
+  // ─── 강의 데이터 ───────────────────────────────────────────────────────────
+  // timeline: [{ time: 초, label: '섹션 이름' }, ...]
+  // time_continue 파라미터 무시 — videoId만 사용
   const PLAYLIST = [
     {
       part: 'PART 1',
       name: '독해의 기초',
       chapters: [
-        { id: 1,  title: '오리엔테이션 — 이 강의를 듣는 법',     duration: '00:00', videoId: 'XM5vjwYukkQ',   desc: '강의 전체 구성과 학습 방법을 안내합니다.' },
-        { id: 2,  title: '구문의 시작 — 영어 문장의 뼈대',       duration: '00:00', videoId: 'YOUTUBE_ID_2',  desc: '주어·동사·목적어를 빠르게 잡는 훈련입니다.' },
-        { id: 3,  title: '수식어 처리 — 길어도 흔들리지 않기',   duration: '00:00', videoId: 'YOUTUBE_ID_3',  desc: '관계사절·분사구문을 정확히 처리합니다.' },
+        {
+          id: 1,
+          title: '오리엔테이션 — 이 강의를 듣는 법',
+          duration: '00:00',
+          videoId: 'XM5vjwYukkQ',
+          desc: '강의 전체 구성과 학습 방법을 안내합니다.',
+          timeline: [
+            // 타임스탬프 추가 예시:
+            // { time: 0,   label: '인트로' },
+            // { time: 60,  label: '강의 소개' },
+            // { time: 180, label: '학습 방법' },
+          ]
+        },
+        { id: 2,  title: '구문의 시작 — 영어 문장의 뼈대',     duration: '00:00', videoId: 'YOUTUBE_ID_2',  desc: '주어·동사·목적어를 빠르게 잡는 훈련입니다.',       timeline: [] },
+        { id: 3,  title: '수식어 처리 — 길어도 흔들리지 않기', duration: '00:00', videoId: 'YOUTUBE_ID_3',  desc: '관계사절·분사구문을 정확히 처리합니다.',           timeline: [] },
       ]
     },
     {
       part: 'PART 2',
       name: '실전 독해',
       chapters: [
-        { id: 4,  title: '주제문 찾기 — 빠른 독해의 핵심',       duration: '00:00', videoId: 'YOUTUBE_ID_4',  desc: '글의 핵심을 빠르게 파악하는 방법을 연습합니다.' },
-        { id: 5,  title: '빈칸 추론 — 논리적 사고 훈련',         duration: '00:00', videoId: 'YOUTUBE_ID_5',  desc: '빈칸 유형 필살기 공략법을 다룹니다.' },
-        { id: 6,  title: '순서·삽입 — 문장 흐름 읽기',           duration: '00:00', videoId: 'YOUTUBE_ID_6',  desc: '담화 표지와 논리 흐름으로 순서를 맞춥니다.' },
-        { id: 7,  title: '어휘 추론 — 문맥으로 뜻 잡기',         duration: '00:00', videoId: 'YOUTUBE_ID_7',  desc: '어휘 유형을 문맥 중심으로 해결합니다.' },
+        { id: 4,  title: '주제문 찾기 — 빠른 독해의 핵심',     duration: '00:00', videoId: 'YOUTUBE_ID_4',  desc: '글의 핵심을 빠르게 파악하는 방법을 연습합니다.',   timeline: [] },
+        { id: 5,  title: '빈칸 추론 — 논리적 사고 훈련',       duration: '00:00', videoId: 'YOUTUBE_ID_5',  desc: '빈칸 유형 필살기 공략법을 다룹니다.',             timeline: [] },
+        { id: 6,  title: '순서·삽입 — 문장 흐름 읽기',         duration: '00:00', videoId: 'YOUTUBE_ID_6',  desc: '담화 표지와 논리 흐름으로 순서를 맞춥니다.',       timeline: [] },
+        { id: 7,  title: '어휘 추론 — 문맥으로 뜻 잡기',       duration: '00:00', videoId: 'YOUTUBE_ID_7',  desc: '어휘 유형을 문맥 중심으로 해결합니다.',           timeline: [] },
       ]
     },
     {
       part: 'PART 3',
       name: '고난도 실전',
       chapters: [
-        { id: 8,  title: '고난도 빈칸 — 오답을 없애는 전략',     duration: '00:00', videoId: 'YOUTUBE_ID_8',  desc: '3점짜리 빈칸 오답의 패턴을 완전 분석합니다.' },
-        { id: 9,  title: '장문 독해 — 시간 안에 끝내기',         duration: '00:00', videoId: 'YOUTUBE_ID_9',  desc: '41~45번 장문 유형 풀이 전략을 다룹니다.' },
-        { id: 10, title: '실전 모의고사 풀이 — 마무리 점검',     duration: '00:00', videoId: 'YOUTUBE_ID_10', desc: '실전 시험지를 함께 풀며 마무리합니다.' },
+        { id: 8,  title: '고난도 빈칸 — 오답을 없애는 전략',   duration: '00:00', videoId: 'YOUTUBE_ID_8',  desc: '3점짜리 빈칸 오답의 패턴을 완전 분석합니다.',     timeline: [] },
+        { id: 9,  title: '장문 독해 — 시간 안에 끝내기',       duration: '00:00', videoId: 'YOUTUBE_ID_9',  desc: '41~45번 장문 유형 풀이 전략을 다룹니다.',         timeline: [] },
+        { id: 10, title: '실전 모의고사 풀이 — 마무리 점검',   duration: '00:00', videoId: 'YOUTUBE_ID_10', desc: '실전 시험지를 함께 풀며 마무리합니다.',           timeline: [] },
       ]
     }
   ];
 
-  // ─── 렌더링 ─────────────────────────────────────────────────
-  let currentId = PLAYLIST[0].chapters[0].id;
+  // ─── 유틸 ──────────────────────────────────────────────────────────────────
+  function toMMSS(sec) {
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
 
-  function buildPlaylist() {
-    const container = document.getElementById('playlist');
-    let totalChapters = 0;
-    PLAYLIST.forEach(p => totalChapters += p.chapters.length);
-    document.getElementById('sidebarCount').textContent = `총 ${totalChapters}강`;
+  function findChapter(id) {
+    for (const part of PLAYLIST) {
+      for (const ch of part.chapters) {
+        if (ch.id === id) return { ch, partLabel: part.part };
+      }
+    }
+    return null;
+  }
 
-    PLAYLIST.forEach(part => {
-      // Part header
-      const ph = document.createElement('div');
-      ph.className = 'part-header';
-      ph.innerHTML = `<span class="part-header-num">${part.part}</span><span class="part-header-name">${part.name}</span>`;
-      container.appendChild(ph);
+  // ─── YouTube IFrame API ────────────────────────────────────────────────────
+  let player;
+  let currentChId = PLAYLIST[0].chapters[0].id;
+  let tlInterval = null;
 
-      // Chapters
-      part.chapters.forEach(ch => {
-        const el = document.createElement('div');
-        el.className = 'chapter-item' + (ch.id === currentId ? ' active' : '');
-        el.dataset.id = ch.id;
-        el.innerHTML = `
-          <span class="chapter-num">${ch.id}</span>
-          <div class="chapter-info">
-            <div class="chapter-title">${ch.title}</div>
-            <div class="chapter-meta">
-              <span class="chapter-duration">${ch.duration}</span>
-            </div>
-          </div>
-          <div class="chapter-play">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>`;
-        el.addEventListener('click', () => playChapter(ch, part.part));
-        container.appendChild(el);
-      });
+  function onYouTubeIframeAPIReady() {
+    const first = PLAYLIST[0].chapters[0];
+    player = new YT.Player('ytPlayer', {
+      videoId: first.videoId,
+      playerVars: { rel: 0, modestbranding: 1, origin: location.origin },
+      events: { onReady: () => startTimelineTracker() }
     });
   }
 
-  function playChapter(ch, partLabel) {
-    // update iframe
-    document.getElementById('mainVideo').src =
-      `https://www.youtube-nocookie.com/embed/${ch.videoId}?rel=0&modestbranding=1&autoplay=1`;
+  function startTimelineTracker() {
+    if (tlInterval) clearInterval(tlInterval);
+    tlInterval = setInterval(() => {
+      if (!player || typeof player.getCurrentTime !== 'function') return;
+      const cur = player.getCurrentTime();
+      updateActiveTimelineItem(cur);
+    }, 500);
+  }
 
-    // update meta
+  function updateActiveTimelineItem(currentSec) {
+    const items = document.querySelectorAll('.timeline-item');
+    let activeIdx = 0;
+    items.forEach((el, i) => {
+      if (parseFloat(el.dataset.time) <= currentSec) activeIdx = i;
+    });
+    items.forEach((el, i) => el.classList.toggle('tl-active', i === activeIdx));
+  }
+
+  // ─── 챕터 전환 ─────────────────────────────────────────────────────────────
+  function playChapter(chId) {
+    const found = findChapter(chId);
+    if (!found) return;
+    const { ch, partLabel } = found;
+    currentChId = chId;
+
+    if (player && player.loadVideoById) {
+      player.loadVideoById(ch.videoId);
+    }
+
     document.getElementById('videoPart').textContent = partLabel;
     document.getElementById('videoTitle').textContent = ch.title;
     document.getElementById('videoDesc').textContent = ch.desc;
 
-    // update active state
-    document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
-    document.querySelector(`[data-id="${ch.id}"]`).classList.add('active');
-    currentId = ch.id;
+    renderTimeline(ch.timeline);
 
-    // scroll to top on mobile
+    document.querySelectorAll('.chapter-item').forEach(el => {
+      el.classList.toggle('active', parseInt(el.dataset.id) === chId);
+    });
+
     if (window.innerWidth <= 900) {
       document.querySelector('.lecture-main').scrollIntoView({ behavior: 'smooth' });
     }
   }
 
-  function initFirst() {
+  // ─── 타임라인 렌더 ─────────────────────────────────────────────────────────
+  function renderTimeline(items) {
+    const list = document.getElementById('timelineList');
+    list.innerHTML = '';
+
+    if (!items || items.length === 0) {
+      list.innerHTML = '<p class="timeline-empty">타임라인이 없습니다.</p>';
+      return;
+    }
+
+    items.forEach((item, idx) => {
+      const el = document.createElement('div');
+      el.className = 'timeline-item' + (idx === 0 ? ' tl-active' : '');
+      el.dataset.time = item.time;
+      el.innerHTML = `
+        <div class="timeline-dot"></div>
+        <span class="timeline-time">${toMMSS(item.time)}</span>
+        <span class="timeline-label">${item.label}</span>`;
+      el.addEventListener('click', () => {
+        if (player && player.seekTo) player.seekTo(item.time, true);
+      });
+      list.appendChild(el);
+    });
+  }
+
+  // ─── 플레이리스트 렌더 ─────────────────────────────────────────────────────
+  function buildPlaylist() {
+    const container = document.getElementById('playlist');
+    let total = 0;
+    PLAYLIST.forEach(p => total += p.chapters.length);
+    document.getElementById('sidebarCount').textContent = `총 ${total}강`;
+
+    PLAYLIST.forEach(part => {
+      const ph = document.createElement('div');
+      ph.className = 'part-header';
+      ph.innerHTML = `<span class="part-header-num">${part.part}</span><span class="part-header-name">${part.name}</span>`;
+      container.appendChild(ph);
+
+      part.chapters.forEach(ch => {
+        const el = document.createElement('div');
+        el.className = 'chapter-item' + (ch.id === currentChId ? ' active' : '');
+        el.dataset.id = ch.id;
+        el.innerHTML = `
+          <span class="chapter-num">${ch.id}</span>
+          <div class="chapter-info">
+            <div class="chapter-title">${ch.title}</div>
+            <div class="chapter-duration">${ch.duration}</div>
+          </div>
+          <div class="chapter-play">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>`;
+        el.addEventListener('click', () => playChapter(ch.id));
+        container.appendChild(el);
+      });
+    });
+  }
+
+  // ─── 초기화 ────────────────────────────────────────────────────────────────
+  function init() {
     const first = PLAYLIST[0].chapters[0];
     document.getElementById('videoPart').textContent = PLAYLIST[0].part;
     document.getElementById('videoTitle').textContent = first.title;
     document.getElementById('videoDesc').textContent = first.desc;
-    document.getElementById('mainVideo').src =
-      `https://www.youtube-nocookie.com/embed/${first.videoId}?rel=0&modestbranding=1`;
+    renderTimeline(first.timeline);
+    buildPlaylist();
   }
 
-  buildPlaylist();
-  initFirst();
+  init();
 </script>
 </body>
 </html>

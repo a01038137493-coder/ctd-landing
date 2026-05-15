@@ -222,9 +222,15 @@
     .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
     @media (max-width: 760px) {
       .footer-top { grid-template-columns: 1fr 1fr; }
-      .section { padding: 80px 24px; }
-      .hero { padding: 140px 24px 70px; }
-      .price-section { padding: 60px 24px 80px; }
+      .section { padding: 64px 20px; }
+      .hero { padding: 120px 20px 64px; }
+      .price-section { padding: 60px 20px 72px; }
+      .final-cta { padding: 64px 20px; }
+      .final-cta-btn { width: 100%; justify-content: center; }
+    }
+    @media (max-width: 700px) {
+      .hero::after { display: none; }
+      .hero-title { letter-spacing: -1.5px; }
     }
     @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
   </style>

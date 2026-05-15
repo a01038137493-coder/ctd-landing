@@ -60,7 +60,8 @@
     .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
     .nav-right a:hover { color: #fff; }
     .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
-    @media (max-width: 960px) { .nav-menu { display: none; } }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    @media (max-width: 960px) { .nav-menu { display: none; } .nav-hamburger { display: flex; align-items: center; } .nav { padding: 0 20px; } }
 
     /* HERO */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
@@ -242,6 +243,9 @@
   <div class="nav-right">
     <a href="/login.html">로그인</a>
     <a href="/cart.html" class="nav-cart">장바구니</a>
+    <button class="nav-hamburger" onclick="toggleNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
   </div>
 </nav>
 
@@ -428,6 +432,11 @@
 <script>
   CTDCart.attachNavCount();
   CTDAuth.attachNav();
+  function toggleNav() {
+    const menu = document.querySelector('.nav-menu');
+    if (menu.style.display === 'flex') { menu.style.display = ''; }
+    else { menu.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:#111;padding:16px 20px;gap:4px;border-bottom:1px solid rgba(255,255,255,.1);z-index:199;height:auto;'; }
+  }
 </script>
 
 </body>

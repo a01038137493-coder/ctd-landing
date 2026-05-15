@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>주문서 작성 — Connect the dots</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --orange: #FF7A00; --bg: #000; --panel: #141414; --border: rgba(255,255,255,.08); --sale-red: #FF4D4F; }
@@ -116,6 +117,16 @@
     .footer-bottom { max-width: 1100px; margin: 28px auto 0; display: flex; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px; }
     @media (max-width: 760px) { .footer-top { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+
+    /* ADDRESS SEARCH */
+    .addr-row { display: flex; gap: 8px; }
+    .addr-row .input { flex: 1; min-width: 0; }
+    .addr-search-btn { flex-shrink: 0; padding: 11px 16px; background: var(--orange); color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: opacity .15s; }
+    .addr-search-btn:hover { opacity: .85; }
+    .addr-detail { margin-top: 8px; }
+
+    /* AUTH GUARD */
+    #wrap { visibility: hidden; }
   </style>
 </head>
 <body>
@@ -203,7 +214,12 @@
         </div>
         <div class="co-field">
           <label class="co-field-label">배송지 주소 <span class="req">*</span></label>
-          <input class="input" id="f-address" required maxlength="160" placeholder="우편번호 · 도로명 주소 · 상세 주소" />
+          <div class="addr-row">
+            <input class="input" id="f-zipcode" readonly placeholder="우편번호" style="max-width:120px;" />
+            <button type="button" class="addr-search-btn" onclick="searchAddress()">주소 찾기</button>
+          </div>
+          <input class="input" id="f-address1" readonly placeholder="도로명 주소" style="margin-top:8px;" />
+          <input class="input addr-detail" id="f-address2" placeholder="상세 주소 (동, 호수 등)" maxlength="80" />
         </div>
         <div class="co-field">
           <label class="co-field-label">주문 메모</label>
@@ -260,6 +276,37 @@
   CTDCart.attachNavCount();
   CTDAuth.attachNav();
 
+  // ── 로그인 가드 ──────────────────────────────────────────────────────────
+  let _userId = null;
+  (async function() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
+        return;
+      }
+      _userId = session.user.id;
+      const meta = session.user.user_metadata || {};
+      if (session.user.email) document.getElementById('f-email').value = session.user.email;
+      if (meta.full_name || meta.name) document.getElementById('f-name').value = meta.full_name || meta.name || '';
+      if (meta.phone) document.getElementById('f-phone').value = meta.phone;
+    } catch(e) {}
+    document.getElementById('wrap').style.visibility = '';
+    render();
+  })();
+
+  // ── 카카오 주소 검색 ──────────────────────────────────────────────────────
+  function searchAddress() {
+    new daum.Postcode({
+      oncomplete: function(data) {
+        document.getElementById('f-zipcode').value = data.zonecode;
+        document.getElementById('f-address1').value = data.roadAddress || data.jibunAddress;
+        document.getElementById('f-address2').focus();
+      }
+    }).open();
+  }
+
+  // ── 상품 렌더 ─────────────────────────────────────────────────────────────
   function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
   function render() {
@@ -283,24 +330,24 @@
     document.getElementById('sub-amount').textContent = CTDProducts.formatPrice(sub);
     document.getElementById('total-amount').textContent = CTDProducts.formatPrice(sub);
   }
-  render();
 
+  // ── 주문 제출 ─────────────────────────────────────────────────────────────
   document.getElementById('btn-place').addEventListener('click', async () => {
     const items = CTDCart.load();
     if (!items.length) { location.href = '/cart.html'; return; }
     const f = (id) => document.getElementById(id).value.trim();
-    const name = f('f-name'), phone = f('f-phone'), address = f('f-address');
+    const name = f('f-name'), phone = f('f-phone');
+    const address1 = f('f-address1'), address2 = f('f-address2'), zipcode = f('f-zipcode');
     const email = f('f-email'), memo = f('f-memo');
-    if (!name || !phone || !address) {
-      alert('이름, 연락처, 주소는 필수입니다.');
-      (!name ? 'f-name' : !phone ? 'f-phone' : 'f-address') &&
-        document.getElementById(!name ? 'f-name' : !phone ? 'f-phone' : 'f-address').focus();
-      return;
-    }
+    const address = [zipcode, address1, address2].filter(Boolean).join(' ');
+    if (!name) { alert('이름을 입력해주세요.'); document.getElementById('f-name').focus(); return; }
+    if (!phone) { alert('연락처를 입력해주세요.'); document.getElementById('f-phone').focus(); return; }
+    if (!address1) { alert('주소 찾기를 눌러 주소를 선택해주세요.'); return; }
     const btn = document.getElementById('btn-place');
     btn.disabled = true; btn.textContent = '처리 중...';
     try {
       const order = {
+        user_id: _userId || null,
         customer_name: name,
         customer_phone: phone,
         customer_email: email || null,
@@ -318,6 +365,7 @@
       btn.disabled = false; btn.textContent = '주문 완료';
     }
   });
+
   function toggleNav() {
     const nav = document.getElementById('mobileNav');
     if (nav.classList.contains('is-open')) {

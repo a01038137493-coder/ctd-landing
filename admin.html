@@ -499,7 +499,7 @@
       <button class="btn btn-ghost" id="btn-refresh-customers">새로고침</button>
     </div>
     <table class="data-table">
-      <thead><tr><th>이름</th><th style="width:140px;">연락처</th><th>이메일</th><th style="text-align:right; width:100px;">주문수</th><th style="text-align:right; width:140px;">총 결제액</th><th style="width:120px;">최근 주문일</th></tr></thead>
+      <thead><tr><th>이름</th><th style="width:140px;">연락처</th><th>이메일</th><th style="text-align:right; width:100px;">주문수</th><th style="text-align:right; width:140px;">총 결제액</th><th style="width:120px;">최근 주문일</th><th style="width:48px;"></th></tr></thead>
       <tbody id="customers-body"></tbody>
     </table>
     <div id="customers-empty" class="empty-state" style="display:none;"><strong>고객 데이터가 없습니다</strong>주문이 들어오면 자동으로 집계됩니다.</div>
@@ -1183,7 +1183,7 @@
     profiles.forEach(p => {
       const key = p.email || p.id;
       map.set(key, {
-        name: p.name || '', phone: p.phone || '', email: p.email || '',
+        uid: p.id, name: p.name || '', phone: p.phone || '', email: p.email || '',
         count: 0, total: 0, last: p.created_at, isMember: true,
       });
     });
@@ -1212,7 +1212,7 @@
     if (!list.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
     body.innerHTML = list.map(c => `
-      <tr>
+      <tr data-uid="${escapeHtml(c.uid || '')}">
         <td>
           <strong>${escapeHtml(c.name || '-')}</strong>
           ${c.isMember ? '<span style="font-size:10px;font-weight:700;color:var(--orange);background:rgba(255,122,0,.12);padding:2px 7px;border-radius:999px;margin-left:6px;">회원</span>' : ''}
@@ -1222,8 +1222,33 @@
         <td style="text-align:right;">${c.count ? c.count + '건' : '-'}</td>
         <td style="text-align:right;" class="cell-money">${c.total ? CTDProducts.formatPrice(c.total) : '-'}</td>
         <td class="cell-muted">${formatDay(c.last)}</td>
+        <td>
+          ${c.uid ? `<button class="icon-btn danger delete-member-btn" data-uid="${escapeHtml(c.uid)}" data-name="${escapeHtml(c.name||c.email||'')}" title="삭제">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>` : ''}
+        </td>
       </tr>
     `).join('');
+
+    // 회원 삭제
+    body.querySelectorAll('.delete-member-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const uid  = btn.dataset.uid;
+        const name = btn.dataset.name;
+        if (!confirm(`"${name}" 회원을 삭제할까요?\n로그인 계정과 프로필이 영구 삭제됩니다.`)) return;
+        try {
+          // profiles 삭제
+          await CTDProducts.client().from('profiles').delete().eq('id', uid);
+          // auth.users 삭제 (RPC)
+          await CTDProducts.client().rpc('delete_user', { user_id: uid });
+          toast('회원 삭제 완료');
+          tabsLoaded.customers = false;
+          loadCustomers();
+        } catch (err) {
+          alert('삭제 실패: ' + (err.message || err));
+        }
+      });
+    });
   }
   document.getElementById('btn-refresh-customers').addEventListener('click', () => { tabsLoaded.customers = true; loadCustomers(); });
 

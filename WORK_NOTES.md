@@ -20,6 +20,8 @@
 | `/admin.html` | 상품 관리 어드민 (Supabase 인증) | 다크 |
 | `/inspire.html` | INSPIRE 강의 랜딩 | **라이트** (흑백) |
 | `/membership.html` | 멤버십 판매 랜딩 | 라이트 + 오렌지 액센트 |
+| `/b2b.html` | 학원장 대상 교재 소개 랜딩 (`/b2b`) | **라이트** + 오렌지 |
+| `/25.html` | 위와 동일 내용 (`/25` 경로용 사본) | **라이트** + 오렌지 |
 
 ---
 
@@ -94,6 +96,7 @@
 | `product01~04.jpg` | 기본 상품 표지 (shop 시드 데이터) |
 | `book.png` | 멤버십 / 책 이미지 |
 | `목업2.png` | index 멘토 섹션 채팅 목업 |
+| `목업4.png` | 카카오 AI 멘토 채팅 목업 (b2b에서 제거됨) |
 | `책만*.png` | 미사용 (보관) |
 | `홈페이지 배너.jpg` | 미사용 (보관) |
 
@@ -108,6 +111,19 @@ shop.html → product.html?id=… → 장바구니 담기 / 바로구매 → car
 
 ### 어드민 흐름
 admin.html → Supabase Auth 로그인 → 상품 CRUD (드래그 정렬, 이미지 업로드 base64 또는 URL) → 결과는 shop.html에 **실시간 반영** (postgres_changes 구독)
+
+---
+
+## b2b 랜딩 (`/b2b.html`)
+
+- **타겟**: 학원 원장·강사 (교재 도매 구매 유도)
+- **포지셔닝**: 올인원 솔루션 X → "콘텐츠 많고, 수업하기 좋고, 숙제 내기도 좋은 교재"
+- **구성**: Hero → 교재 특징 → 목차 구성 → 구매 절차 → 교재 스펙 통계 → 원장 불만 멘트 → 공급 문의 CTA → FAQ
+- **CTA**: 카카오 채널 (`pf.kakao.com/_ixfTsX`) 문의
+- **특이사항**:
+  - 원장 불만 멘트 섹션 — 긍정 후기 대신 공감형 pain-point 카드 6개
+  - `/25.html`은 같은 내용의 사본 (초기 URL로 사용)
+  - `vercel.json`은 `cleanUrls: true`만 유지 (별도 rewrite 없음)
 
 ---
 

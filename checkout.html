@@ -278,11 +278,12 @@
 
   // ── 로그인 가드 ──────────────────────────────────────────────────────────
   let _userId = null;
-  CTDAuth.getUser().then(user => {
-    if (!user) {
+  CTDAuth.getSession().then(session => {
+    if (!session) {
       location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
       return;
     }
+    const user = session.user;
     _userId = user.id;
     const meta = user.user_metadata || {};
     if (user.email) document.getElementById('f-email').value = user.email;

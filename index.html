@@ -245,7 +245,8 @@
     .price-table-heading em { color: var(--orange); font-style: normal; }
     .price-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 80px; max-width: 860px; margin-left: auto; margin-right: auto; }
     @media (max-width: 680px) { .price-cards { grid-template-columns: 1fr; } }
-    .price-card { border-radius: 20px; padding: 44px 40px; background: #1A1A1A; border: 2px solid transparent; }
+    .price-card { border-radius: 20px; padding: 44px 40px; background: #1A1A1A; border: 2px solid transparent; display: flex; flex-direction: column; }
+    .price-card .price-btn-primary, .price-card .price-btn-secondary { margin-top: auto; }
     .price-card.featured { border-color: var(--orange); }
     .price-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
     .price-card-label { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.6); }
@@ -825,7 +826,7 @@
           <span class="price-card-label">INSPIRE 2027 교재</span>
         </div>
         <div class="price-amount">
-          <span class="price-amount-num">29,000원</span>
+          <span class="price-amount-num">8,900원</span>
           <span class="price-amount-unit"></span>
         </div>
         <p class="price-desc">수능영어 전 유형을 담은 교재.<br>콘텐츠가 많아 수업하기 좋습니다.</p>

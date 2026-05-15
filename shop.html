@@ -191,6 +191,24 @@
   </div>
 </nav>
 
+<!-- MOBILE NAV OVERLAY -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+    <button class="mobile-nav-close" onclick="toggleNav()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <nav class="mobile-nav-links">
+    <a href="/shop.html">SHOP</a>
+    <a href="/inspire.html">INSPIRE</a>
+    <a href="/membership.html">Membership</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="mobile-nav-bottom">
+    <a href="/login.html" class="mobile-nav-login">로그인</a>
+    <a href="/cart.html" class="mobile-nav-cart">장바구니</a>
+  </div>
+</div>
+
 <!-- ALL PRODUCTS -->
 <main class="shop-wrap">
   <h1 class="shop-title">All products</h1>
@@ -250,18 +268,15 @@
   CTDAuth.attachNav();
 
   function toggleNav() {
-    const menu = document.querySelector('.nav-menu');
-    if (menu.style.display === 'flex') {
-      menu.style.display = '';
+    const nav = document.getElementById('mobileNav');
+    if (nav.classList.contains('is-open')) {
+      nav.classList.remove('is-visible');
+      setTimeout(() => nav.classList.remove('is-open'), 250);
+      document.body.style.overflow = '';
     } else {
-      menu.style.display = 'flex';
-      menu.style.flexDirection = 'column';
-      menu.style.position = 'absolute';
-      menu.style.top = '64px';
-      menu.style.left = '0';
-      menu.style.right = '0';
-      menu.style.background = 'rgba(0,0,0,.92)';
-      menu.style.padding = '12px 0';
+      nav.classList.add('is-open');
+      requestAnimationFrame(() => nav.classList.add('is-visible'));
+      document.body.style.overflow = 'hidden';
     }
   }
 

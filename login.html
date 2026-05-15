@@ -148,9 +148,12 @@
   const errEl = document.getElementById('error');
   const btn = document.getElementById('btn-submit');
 
-  // If already logged in, redirect to home
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get('redirect') || params.get('next') || '/';
+
+  // If already logged in, redirect
   CTDAuth.getUser().then(user => {
-    if (user) location.href = '/';
+    if (user) location.href = redirectTo;
   });
 
   form.addEventListener('submit', async (e) => {
@@ -163,8 +166,7 @@
     btn.disabled = true; btn.textContent = '로그인 중...';
     try {
       await CTDAuth.signIn(email, password);
-      const next = new URLSearchParams(location.search).get('next') || '/';
-      location.href = next;
+      location.href = redirectTo;
     } catch (err) {
       const msg = (err && err.message) || '로그인에 실패했습니다.';
       // Map common Supabase errors to Korean

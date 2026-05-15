@@ -74,10 +74,9 @@
         || (user.email ? user.email.split('@')[0] : '회원');
       if (loginLink) {
         loginLink.textContent = handle + ' 님';
-        loginLink.href = '#';
+        loginLink.href = '/mypage';
         loginLink.title = user.email || '';
-        // Click on name does nothing for now; replace with /mypage.html later
-        loginLink.onclick = (e) => e.preventDefault();
+        loginLink.onclick = null;
       }
       if (!logoutLink) {
         logoutLink = document.createElement('a');

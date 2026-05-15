@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>마이페이지 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --orange: #FF7A00; --bg: #000; --panel: #141414; --panel-2: #1C1C1C; --border: rgba(255,255,255,.08); --border-2: rgba(255,255,255,.14); --txt: #fff; --txt-2: rgba(255,255,255,.6); --txt-3: rgba(255,255,255,.35); }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--txt); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; border-bottom: 1px solid var(--border); }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .nav-menu { display: flex; gap: 0; list-style: none; position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); }
+    .nav-menu li a { display: flex; align-items: center; height: 64px; padding: 0 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-menu li a:hover { color: #fff; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-right a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); transition: color .2s; }
+    .nav-right a:hover { color: #fff; }
+    .nav-cart { background: var(--orange); color: #fff !important; padding: 8px 18px; border-radius: 6px; font-weight: 700 !important; display: inline-flex; align-items: center; }
+    @media (max-width: 960px) { .nav-menu { display: none; } .nav { padding: 0 20px; } }
+
+    /* PAGE */
+    .page-header { padding: 108px 40px 32px; border-bottom: 1px solid var(--border); }
+    @media (max-width: 760px) { .page-header { padding: 88px 20px 24px; } }
+    .page-title { font-size: clamp(26px, 4vw, 38px); font-weight: 900; letter-spacing: -1px; }
+
+    .my-wrap { max-width: 860px; margin: 0 auto; padding: 48px 40px 100px; }
+    @media (max-width: 760px) { .my-wrap { padding: 32px 20px 80px; } }
+
+    /* PROFILE CARD */
+    .profile-card {
+      display: flex; align-items: center; gap: 24px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 32px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 600px) { .profile-card { flex-direction: column; align-items: flex-start; padding: 22px 20px; } }
+    .profile-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--orange); display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .profile-info { flex: 1; min-width: 0; }
+    .profile-name { font-size: 20px; font-weight: 900; letter-spacing: -.4px; margin-bottom: 4px; }
+    .profile-email { font-size: 13px; color: var(--txt-2); margin-bottom: 2px; }
+    .profile-phone { font-size: 13px; color: var(--txt-3); }
+    .profile-badge { font-size: 11px; font-weight: 700; color: var(--orange); background: rgba(255,122,0,.12); padding: 3px 10px; border-radius: 999px; margin-top: 10px; display: inline-block; }
+
+    /* SECTION */
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 16px; font-weight: 800; letter-spacing: -.3px; }
+    .section-count { font-size: 13px; color: var(--txt-3); font-weight: 600; }
+
+    /* ORDER CARDS */
+    .order-list { display: flex; flex-direction: column; gap: 12px; }
+    .order-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color .15s;
+    }
+    .order-card:hover { border-color: var(--border-2); }
+    .order-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      gap: 12px; flex-wrap: wrap;
+    }
+    .order-date { font-size: 12px; color: var(--txt-3); font-weight: 600; }
+    .order-id { font-size: 11px; color: var(--txt-3); font-family: 'SF Mono', Menlo, monospace; }
+    .order-status { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; letter-spacing: .4px; white-space: nowrap; }
+    .order-status.pending  { background: rgba(255,193,7,.12); color: #ffc107; }
+    .order-status.confirmed { background: rgba(76,217,100,.12); color: #4cd964; }
+    .order-status.shipped  { background: rgba(0,122,255,.12); color: #007aff; }
+    .order-status.cancelled { background: rgba(255,77,79,.12); color: #ff4d4f; }
+
+    .order-items { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .order-item { display: flex; align-items: center; gap: 12px; }
+    .order-item-thumb { width: 44px; height: 44px; border-radius: 6px; background: var(--panel-2, #1c1c1c); overflow: hidden; flex-shrink: 0; }
+    .order-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .order-item-name { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--txt); }
+    .order-item-qty { font-size: 12px; color: var(--txt-3); flex-shrink: 0; }
+    .order-item-price { font-size: 13px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+
+    .order-card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: rgba(255,255,255,.02);
+      border-top: 1px solid var(--border);
+    }
+    .order-total-label { font-size: 12px; color: var(--txt-3); font-weight: 600; }
+    .order-total-price { font-size: 17px; font-weight: 900; color: var(--orange); }
+
+    /* EMPTY */
+    .empty-state { text-align: center; padding: 80px 24px; color: var(--txt-3); }
+    .empty-state strong { display: block; color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 10px; }
+    .empty-state p { font-size: 14px; margin-bottom: 28px; line-height: 1.7; }
+    .empty-state a { display: inline-block; padding: 13px 28px; background: var(--orange); color: #fff; border-radius: 8px; font-weight: 800; font-size: 14px; }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 60px 24px; color: var(--txt-3); font-size: 14px; }
+
+    /* LOGOUT */
+    .logout-btn { display: block; margin-top: 48px; text-align: center; font-size: 13px; color: var(--txt-3); background: none; border: none; cursor: pointer; padding: 8px; }
+    .logout-btn:hover { color: #fff; }
+
+    /* Kakao float */
+    .kakao-btn{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:center;gap:5px;background:#FEE500;border-radius:14px;padding:12px 16px;box-shadow:0 4px 24px rgba(0,0,0,.28);transition:transform .2s,box-shadow .2s;text-decoration:none;}
+    .kakao-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.35);}
+    .kakao-btn span{font-size:10px;font-weight:800;color:#391B1B;letter-spacing:-.2px;white-space:nowrap;}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <ul class="nav-menu">
+    <li><a href="/shop.html">SHOP</a></li>
+    <li><a href="/inspire.html">INSPIRE</a></li>
+    <li><a href="/membership.html">Membership</a></li>
+    <li><a href="/about.html">About</a></li>
+  </ul>
+  <div class="nav-right" id="nav-right">
+    <a href="/login.html">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="page-title">마이페이지</div>
+</header>
+
+<main class="my-wrap" id="main-wrap">
+  <div class="loading" id="loading">불러오는 중...</div>
+</main>
+
+<a class="kakao-btn" href="http://pf.kakao.com/_ixfTsX" target="_blank" rel="noopener">
+  <svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#391B1B" d="M12 3C7.03 3 3 6.36 3 10.5c0 2.62 1.67 4.92 4.19 6.29l-.87 3.21 3.72-2.35C10.6 17.88 11.3 18 12 18c4.97 0 9-3.36 9-7.5S16.97 3 12 3z"/></svg>
+  <span>카카오 문의</span>
+</a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  CTDAuth.attachNav();
+
+  const STATUS_KO = { pending: '배송 대기', confirmed: '주문 확정', shipped: '배송 중', cancelled: '취소됨' };
+  const STATUS_CLS = { pending: 'pending', confirmed: 'confirmed', shipped: 'shipped', cancelled: 'cancelled' };
+
+  function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
+           d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderOrders(orders) {
+    if (!orders.length) {
+      return `<div class="empty-state">
+        <strong>주문 내역이 없습니다</strong>
+        <p>아직 주문하신 내역이 없어요.<br>마음에 드는 상품을 찾아보세요.</p>
+        <a href="/shop.html">SHOP 보러가기</a>
+      </div>`;
+    }
+    return `<div class="order-list">${orders.map(o => {
+      const items = Array.isArray(o.items) ? o.items : [];
+      const statusKey = o.status || 'pending';
+      return `
+        <div class="order-card">
+          <div class="order-card-head">
+            <div>
+              <div class="order-date">${formatDate(o.created_at)}</div>
+              <div class="order-id">주문번호 ${escapeHtml(String(o.id || '').slice(0,12))}</div>
+            </div>
+            <span class="order-status ${STATUS_CLS[statusKey] || 'pending'}">${STATUS_KO[statusKey] || statusKey}</span>
+          </div>
+          <div class="order-items">
+            ${items.map(it => `
+              <div class="order-item">
+                <div class="order-item-thumb">${it.image ? `<img src="${escapeHtml(it.image)}" alt="">` : ''}</div>
+                <div class="order-item-name">${escapeHtml(it.name || '')}</div>
+                <div class="order-item-qty">${it.qty || 1}개</div>
+                <div class="order-item-price">${CTDProducts.formatPrice((it.price||0) * (it.qty||1))}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="order-card-foot">
+            <span class="order-total-label">총 결제 금액</span>
+            <span class="order-total-price">${CTDProducts.formatPrice(o.total || 0)}</span>
+          </div>
+        </div>`;
+    }).join('')}</div>`;
+  }
+
+  (async function() {
+    const session = await CTDAuth.getSession();
+    if (!session) {
+      location.href = '/login.html?redirect=/mypage';
+      return;
+    }
+
+    const user = session.user;
+    const meta = user.user_metadata || {};
+    const displayName = meta.full_name || meta.name || user.email.split('@')[0];
+    const initial = (meta.name || displayName || '?')[0].toUpperCase();
+
+    // Load orders by email
+    let orders = [];
+    try {
+      const { data, error } = await CTDProducts.client()
+        .from('orders')
+        .select('*')
+        .eq('customer_email', user.email)
+        .order('created_at', { ascending: false });
+      if (!error) orders = data || [];
+    } catch(e) {}
+
+    const wrap = document.getElementById('main-wrap');
+    wrap.innerHTML = `
+      <div class="profile-card">
+        <div class="profile-avatar">${escapeHtml(initial)}</div>
+        <div class="profile-info">
+          <div class="profile-name">${escapeHtml(displayName)}</div>
+          <div class="profile-email">${escapeHtml(user.email)}</div>
+          ${meta.phone ? `<div class="profile-phone">${escapeHtml(meta.phone)}</div>` : ''}
+          <span class="profile-badge">회원</span>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="section-title">주문 내역</div>
+        <div class="section-count">총 ${orders.length}건</div>
+      </div>
+      ${renderOrders(orders)}
+
+      <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+    `;
+  })();
+
+  async function handleLogout() {
+    await CTDAuth.signOut();
+    location.href = '/';
+  }
+</script>
+
+</body>
+</html>

@@ -61,10 +61,9 @@
       background: #000; border-radius: 10px; overflow: hidden;
       box-shadow: 0 8px 40px rgba(0,0,0,.18);
     }
-    .video-container > div,
     .video-container iframe {
       position: absolute; top: 0; left: 0;
-      width: 100% !important; height: 100% !important; border: 0;
+      width: 100%; height: 100%; border: 0;
     }
 
     /* ═══ VIDEO META ═══ */
@@ -220,7 +219,9 @@
   <!-- MAIN VIDEO -->
   <main class="lecture-main">
     <div class="video-container">
-      <div id="ytPlayer"></div>
+      <iframe id="mainVideo" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+      </iframe>
     </div>
 
     <div class="video-meta">
@@ -264,8 +265,6 @@
 
 </div>
 
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/auth.js"></script>
@@ -287,7 +286,6 @@
 
   // ─── 강의 데이터 ───────────────────────────────────────────────────────────
   // timeline: [{ time: 초, label: '섹션 이름' }, ...]
-  // time_continue 파라미터 무시 — videoId만 사용
   const PLAYLIST = [
     {
       part: 'OT',
@@ -349,60 +347,41 @@
     return null;
   }
 
-  // ─── YouTube IFrame API ────────────────────────────────────────────────────
-  let player;
+  // ─── 플레이어 ──────────────────────────────────────────────────────────────
   let currentChId = PLAYLIST[0].chapters[0].id;
-  let tlInterval = null;
 
-  function onYouTubeIframeAPIReady() {
-    const first = PLAYLIST[0].chapters[0];
-    player = new YT.Player('ytPlayer', {
-      videoId: first.videoId,
-      playerVars: { rel: 0, modestbranding: 1, origin: location.origin },
-      events: { onReady: () => startTimelineTracker() }
-    });
+  function setVideo(videoId, autoplay) {
+    const iframe = document.getElementById('mainVideo');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1${autoplay ? '&autoplay=1' : ''}`;
   }
 
-  function startTimelineTracker() {
-    if (tlInterval) clearInterval(tlInterval);
-    tlInterval = setInterval(() => {
-      if (!player || typeof player.getCurrentTime !== 'function') return;
-      const cur = player.getCurrentTime();
-      updateActiveTimelineItem(cur);
-    }, 500);
-  }
-
-  function updateActiveTimelineItem(currentSec) {
-    const items = document.querySelectorAll('.timeline-item');
-    let activeIdx = 0;
-    items.forEach((el, i) => {
-      if (parseFloat(el.dataset.time) <= currentSec) activeIdx = i;
-    });
-    items.forEach((el, i) => el.classList.toggle('tl-active', i === activeIdx));
+  function seekTo(seconds) {
+    const iframe = document.getElementById('mainVideo');
+    iframe.contentWindow.postMessage(JSON.stringify({
+      event: 'command',
+      func: 'seekTo',
+      args: [seconds, true]
+    }), '*');
   }
 
   // ─── 챕터 전환 ─────────────────────────────────────────────────────────────
-  function playChapter(chId) {
+  function playChapter(chId, autoplay) {
     const found = findChapter(chId);
     if (!found) return;
     const { ch, partLabel } = found;
     currentChId = chId;
 
-    if (player && player.loadVideoById) {
-      player.loadVideoById(ch.videoId);
-    }
-
+    setVideo(ch.videoId, autoplay);
     document.getElementById('videoPart').textContent = partLabel;
     document.getElementById('videoTitle').textContent = ch.title;
     document.getElementById('videoDesc').textContent = ch.desc;
-
     renderTimeline(ch.timeline);
 
     document.querySelectorAll('.chapter-item').forEach(el => {
       el.classList.toggle('active', parseInt(el.dataset.id) === chId);
     });
 
-    if (window.innerWidth <= 900) {
+    if (autoplay && window.innerWidth <= 900) {
       document.querySelector('.lecture-main').scrollIntoView({ behavior: 'smooth' });
     }
   }
@@ -426,7 +405,9 @@
         <span class="timeline-time">${toMMSS(item.time)}</span>
         <span class="timeline-label">${item.label}</span>`;
       el.addEventListener('click', () => {
-        if (player && player.seekTo) player.seekTo(item.time, true);
+        seekTo(item.time);
+        document.querySelectorAll('.timeline-item').forEach(e => e.classList.remove('tl-active'));
+        el.classList.add('tl-active');
       });
       list.appendChild(el);
     });
@@ -458,23 +439,22 @@
           <div class="chapter-play">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>`;
-        el.addEventListener('click', () => playChapter(ch.id));
+        el.addEventListener('click', () => playChapter(ch.id, true));
         container.appendChild(el);
       });
     });
   }
 
   // ─── 초기화 ────────────────────────────────────────────────────────────────
-  function init() {
+  (function init() {
     const first = PLAYLIST[0].chapters[0];
+    setVideo(first.videoId, false);
     document.getElementById('videoPart').textContent = PLAYLIST[0].part;
     document.getElementById('videoTitle').textContent = first.title;
     document.getElementById('videoDesc').textContent = first.desc;
     renderTimeline(first.timeline);
     buildPlaylist();
-  }
-
-  init();
+  })();
 </script>
 </body>
 </html>

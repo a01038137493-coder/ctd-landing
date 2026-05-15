@@ -102,8 +102,8 @@
     // ── Mobile nav ──
     const mobileBottom = document.querySelector('.mobile-nav-bottom');
     if (mobileBottom) {
-      const mobileLogin = mobileBottom.querySelector('.mobile-nav-login');
-      let mobileLogout = mobileBottom.querySelector('.mobile-nav-logout');
+      const mobileLogin  = mobileBottom.querySelector('.mobile-nav-login:not(.mobile-nav-logout)');
+      let   mobileLogout = mobileBottom.querySelector('.mobile-nav-logout');
 
       if (user) {
         const handle = (user.user_metadata && user.user_metadata.name)
@@ -114,15 +114,16 @@
         }
         if (!mobileLogout) {
           mobileLogout = document.createElement('a');
-          mobileLogout.className = 'mobile-nav-login mobile-nav-logout';
+          mobileLogout.className = 'mobile-nav-logout';
           mobileLogout.href = '#';
           mobileLogout.textContent = '로그아웃';
+          mobileLogout.style.cssText = 'font-size:14px;font-weight:600;color:rgba(255,255,255,.5);padding:10px 0;';
           mobileLogout.addEventListener('click', async (e) => {
             e.preventDefault();
             await signOut();
             location.reload();
           });
-          mobileBottom.insertBefore(mobileLogout, mobileBottom.firstChild);
+          mobileBottom.appendChild(mobileLogout);
         }
       } else {
         if (mobileLogin) { mobileLogin.textContent = '로그인'; mobileLogin.href = '/login.html'; }
@@ -144,7 +145,8 @@
       }
       return;
     }
-    getUser().then(renderNav);
+    // getSession은 localStorage에서 즉시 읽음 (네트워크 없음)
+    getSession().then(session => renderNav(session ? session.user : null));
     onAuthChange((session) => renderNav(session ? session.user : null));
   }
 

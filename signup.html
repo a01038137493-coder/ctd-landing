@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>?뚯썝媛????Connect the dots</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원가입 — Connect the dots</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,64 +112,64 @@
     <li><a href="/about.html">About</a></li>
   </ul>
   <div class="nav-right">
-    <a href="/login.html">濡쒓렇??/a>
-    <a href="/cart.html" class="nav-cart">?λ컮援щ땲</a>
+    <a href="/login.html">로그인</a>
+    <a href="/cart.html" class="nav-cart">장바구니</a>
   </div>
 </nav>
 
 <main class="auth-wrap">
   <form class="auth-box" id="signup-form" autocomplete="on">
     <div class="auth-logo"><span class="auth-logo-dot"></span>Connect the dots</div>
-    <h1 class="auth-title">?뚯썝媛??/h1>
-    <p class="auth-sub">怨꾩젙??留뚮뱾怨??숈뒿 ?쒖뒪?쒖뿉 ?⑸쪟?섏꽭??</p>
+    <h1 class="auth-title">회원가입</h1>
+    <p class="auth-sub">계정을 만들고 학습 시스템에 합류하세요.</p>
 
     <div class="field">
-      <label class="field-label" for="name">?대쫫</label>
-      <input class="input" id="name" type="text" autocomplete="name" maxlength="40" placeholder="?띻만?? />
+      <label class="field-label" for="name">이름</label>
+      <input class="input" id="name" type="text" autocomplete="name" maxlength="40" placeholder="홍길동" />
     </div>
 
     <div class="field">
-      <label class="field-label" for="email">?대찓??<span class="req">*</span></label>
+      <label class="field-label" for="email">이메일 <span class="req">*</span></label>
       <input class="input" id="email" type="email" autocomplete="email" required maxlength="80" placeholder="you@example.com" />
     </div>
 
     <div class="field">
-      <label class="field-label" for="password">鍮꾨?踰덊샇 <span class="req">*</span></label>
+      <label class="field-label" for="password">비밀번호 <span class="req">*</span></label>
       <input class="input" id="password" type="password" autocomplete="new-password" required minlength="6" maxlength="60" />
-      <div class="field-hint">6???댁긽</div>
+      <div class="field-hint">6자 이상</div>
     </div>
 
     <div class="field">
-      <label class="field-label" for="password2">鍮꾨?踰덊샇 ?뺤씤 <span class="req">*</span></label>
+      <label class="field-label" for="password2">비밀번호 확인 <span class="req">*</span></label>
       <input class="input" id="password2" type="password" autocomplete="new-password" required minlength="6" maxlength="60" />
     </div>
 
-    <button class="auth-submit" type="submit" id="btn-submit">媛?낇븯湲???/button>
+    <button class="auth-submit" type="submit" id="btn-submit">가입하기 →</button>
     <div class="auth-error" id="error"></div>
 
     <div class="auth-divider">OR</div>
-    <p class="auth-alt">?대? 怨꾩젙???덉쑝?좉???<a href="/login.html">濡쒓렇????/a></p>
+    <p class="auth-alt">이미 계정이 있으신가요?<a href="/login.html">로그인 →</a></p>
 
-    <a class="auth-back" href="/">???덉쑝濡??뚯븘媛湲?/a>
+    <a class="auth-back" href="/">← 홈으로 돌아가기</a>
   </form>
 
   <!-- SUCCESS (email confirmation required) -->
   <div class="auth-box success-box" id="success-confirm" style="display:none;">
-    <div class="success-icon">??/div>
-    <h2 class="success-title">媛?낆씠 嫄곗쓽 ?꾨즺?섏뿀?듬땲??/h2>
+    <div class="success-icon">✓</div>
+    <h2 class="success-title">가입이 거의 완료되었습니다</h2>
     <p class="success-sub">
-      ?낅젰?섏떊 ?대찓?쇰줈 ?몄쬆 硫붿씪??蹂대깉?듬땲??<br>
-      硫붿씪???몄쬆 留곹겕瑜??대┃?섎㈃ 媛?낆씠 ?꾨즺?⑸땲??
+      입력하신 이메일로 인증 메일을 보냈습니다.<br>
+      메일의 인증 링크를 클릭하면 가입이 완료됩니다.
     </p>
     <div class="success-email" id="success-email"></div>
     <div class="success-btns">
-      <a href="/" class="ghost">?덉쑝濡?/a>
-      <a href="/login.html" class="primary">濡쒓렇????/a>
+      <a href="/" class="ghost">홈으로</a>
+      <a href="/login.html" class="primary">로그인 →</a>
     </div>
   </div>
 </main>
 
-<footer>짤 2024 Connect the dots</footer>
+<footer>© 2024 Connect the dots</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
@@ -194,15 +194,15 @@
     const password2 = document.getElementById('password2').value;
 
     if (password !== password2) {
-      errEl.textContent = '鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎.';
+      errEl.textContent = '비밀번호가 일치하지 않습니다.';
       return;
     }
     if (password.length < 6) {
-      errEl.textContent = '鍮꾨?踰덊샇??6???댁긽?댁뼱???⑸땲??';
+      errEl.textContent = '비밀번호는 6자 이상이어야 합니다.';
       return;
     }
 
-    btn.disabled = true; btn.textContent = '泥섎━ 以?..';
+    btn.disabled = true; btn.textContent = '처리 중...';
     try {
       const result = await CTDAuth.signUp(email, password, name ? { name } : undefined);
       if (result.session) {
@@ -215,21 +215,20 @@
         document.getElementById('success-confirm').style.display = 'block';
       }
     } catch (err) {
-      const msg = (err && err.message) || '媛?낆뿉 ?ㅽ뙣?덉뒿?덈떎.';
+      const msg = (err && err.message) || '가입에 실패했습니다.';
       if (/already.*registered/i.test(msg) || /already.*exist/i.test(msg) || /User already registered/i.test(msg)) {
-        errEl.textContent = '?대? 媛?낅맂 ?대찓?쇱엯?덈떎.';
+        errEl.textContent = '이미 가입된 이메일입니다.';
       } else if (/Password should be/i.test(msg)) {
-        errEl.textContent = '鍮꾨?踰덊샇媛 ?덈Т 吏㏃뒿?덈떎.';
+        errEl.textContent = '비밀번호가 너무 짧습니다.';
       } else if (/Unable to validate email/i.test(msg) || /invalid.*email/i.test(msg)) {
-        errEl.textContent = '?대찓???뺤떇???щ컮瑜댁? ?딆뒿?덈떎.';
+        errEl.textContent = '이메일 형식이 올바르지 않습니다.';
       } else {
         errEl.textContent = msg;
       }
-      btn.disabled = false; btn.textContent = '媛?낇븯湲???;
+      btn.disabled = false; btn.textContent = '가입하기 →';
     }
   });
 </script>
 
 </body>
 </html>
-

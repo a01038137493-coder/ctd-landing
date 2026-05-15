@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>강의 보기 — Connect the dots</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF7A00;
+      --bg: #FFFFFF;
+      --bg-2: #F8F6F3;
+      --ink: #111;
+      --ink-2: #555;
+      --ink-3: #999;
+      --border: #E8E5DF;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(0,0,0,.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .nav-logo-text { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .nav-logo-dot { width: 9px; height: 9px; background: var(--orange); border-radius: 50%; }
+    .nav-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .nav-course-label { font-size: 10px; font-weight: 700; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; }
+    .nav-course-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.85); }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-back { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6); display: flex; align-items: center; gap: 6px; transition: color .2s; }
+    .nav-back:hover { color: #fff; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    @media (max-width: 960px) { .nav { padding: 0 20px; } .nav-center { display: none; } .nav-hamburger { display: flex; align-items: center; } }
+    .mobile-nav { display: none; position: fixed; inset: 0; z-index: 400; background: #111; flex-direction: column; padding: 0 32px; opacity: 0; transition: opacity .25s ease; }
+    .mobile-nav.is-open { display: flex; } .mobile-nav.is-visible { opacity: 1; }
+    .mobile-nav-header { display: flex; align-items: center; justify-content: space-between; height: 64px; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-close { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+    .mobile-nav-links { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .mobile-nav-links a { display: block; font-size: clamp(28px, 8vw, 40px); font-weight: 900; color: rgba(255,255,255,.9); letter-spacing: -1px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.07); transition: color .2s; }
+    .mobile-nav-links a:first-child { border-top: 1px solid rgba(255,255,255,.07); }
+    .mobile-nav-links a:hover { color: #FF7A00; }
+    .mobile-nav-bottom { padding: 28px 0; display: flex; gap: 12px; align-items: center; border-top: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-login { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.6); padding: 10px 20px; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; }
+    .mobile-nav-cart { font-size: 14px; font-weight: 800; color: #fff; background: #FF7A00; padding: 10px 20px; border-radius: 6px; }
+
+    /* ═══ LAYOUT ═══ */
+    .lecture-wrap {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      min-height: 100vh;
+      padding-top: 64px;
+    }
+
+    /* ═══ MAIN VIDEO AREA ═══ */
+    .lecture-main {
+      padding: 28px 36px 80px;
+      min-width: 0;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,.18);
+    }
+    .video-container iframe {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; border: 0;
+    }
+
+    .video-meta { margin-top: 24px; }
+    .video-part-badge {
+      display: inline-flex; align-items: center;
+      font-size: 11px; font-weight: 800; color: var(--orange);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .video-title {
+      font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 900; letter-spacing: -1px; line-height: 1.3;
+      color: var(--ink); margin-bottom: 12px;
+    }
+    .video-desc {
+      font-size: 15px; color: var(--ink-2); line-height: 1.8;
+      max-width: 680px;
+    }
+
+    .video-divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+    .video-info-row {
+      display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    }
+    .video-info-item { display: flex; flex-direction: column; gap: 3px; }
+    .video-info-label { font-size: 10px; font-weight: 700; color: var(--ink-3); letter-spacing: 1.5px; text-transform: uppercase; }
+    .video-info-value { font-size: 15px; font-weight: 800; color: var(--ink); }
+
+    /* ═══ PLAYLIST SIDEBAR ═══ */
+    .lecture-sidebar {
+      border-left: 1px solid var(--border);
+      height: calc(100vh - 64px);
+      position: sticky;
+      top: 64px;
+      overflow-y: auto;
+      background: var(--bg-2);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .lecture-sidebar::-webkit-scrollbar { width: 4px; }
+    .lecture-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .sidebar-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .sidebar-course-name {
+      font-size: 11px; font-weight: 800; color: var(--orange);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .sidebar-title {
+      font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.4;
+    }
+    .sidebar-count {
+      font-size: 12px; color: var(--ink-3); margin-top: 4px; font-weight: 500;
+    }
+
+    .part-header {
+      padding: 18px 20px 10px;
+      font-size: 11px; font-weight: 800; color: var(--ink);
+      letter-spacing: 2px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .part-header-num {
+      background: var(--ink); color: #fff;
+      font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 3px;
+    }
+    .part-header-name { color: var(--ink-2); font-weight: 600; font-size: 12px; letter-spacing: 0; text-transform: none; }
+
+    .chapter-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,.04);
+      transition: background .15s;
+    }
+    .chapter-item:hover { background: rgba(0,0,0,.04); }
+    .chapter-item.active {
+      background: rgba(255,122,0,.08);
+      border-left: 3px solid var(--orange);
+      padding-left: 17px;
+    }
+
+    .chapter-num {
+      font-size: 11px; font-weight: 700; color: var(--ink-3);
+      min-width: 20px; padding-top: 2px; flex-shrink: 0;
+    }
+    .chapter-item.active .chapter-num { color: var(--orange); }
+
+    .chapter-info { flex: 1; min-width: 0; }
+    .chapter-title {
+      font-size: 13px; font-weight: 700; color: var(--ink);
+      line-height: 1.45; margin-bottom: 4px;
+    }
+    .chapter-item.active .chapter-title { color: var(--orange); }
+    .chapter-meta { display: flex; align-items: center; gap: 8px; }
+    .chapter-duration { font-size: 11px; color: var(--ink-3); font-weight: 500; }
+
+    .chapter-play {
+      flex-shrink: 0; width: 30px; height: 30px;
+      border-radius: 50%; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .chapter-item:hover .chapter-play { background: rgba(0,0,0,.07); }
+    .chapter-item.active .chapter-play { background: rgba(255,122,0,.15); }
+    .chapter-play svg { color: var(--ink-3); }
+    .chapter-item.active .chapter-play svg { color: var(--orange); }
+    .chapter-item.playing .chapter-play svg { color: var(--orange); }
+
+    /* ═══ MOBILE ═══ */
+    @media (max-width: 900px) {
+      .lecture-wrap {
+        grid-template-columns: 1fr;
+      }
+      .lecture-main { padding: 20px 16px 40px; }
+      .lecture-sidebar {
+        position: static;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+  <div class="nav-center">
+    <span class="nav-course-label">INSPIRE</span>
+    <span class="nav-course-title">수능 영어 독해 완성</span>
+  </div>
+  <div class="nav-right">
+    <a href="/inspire.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      강의 소개
+    </a>
+    <button class="nav-hamburger" onclick="toggleNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <a href="/" class="nav-logo-text"><span class="nav-logo-dot"></span>Connect the dots</a>
+    <button class="mobile-nav-close" onclick="toggleNav()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <nav class="mobile-nav-links">
+    <a href="/shop.html">SHOP</a>
+    <a href="/inspire.html">INSPIRE</a>
+    <a href="/membership.html">Membership</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="mobile-nav-bottom">
+    <a href="/login.html" class="mobile-nav-login">로그인</a>
+    <a href="/cart.html" class="mobile-nav-cart">장바구니</a>
+  </div>
+</div>
+
+<!-- LECTURE LAYOUT -->
+<div class="lecture-wrap">
+
+  <!-- MAIN VIDEO -->
+  <main class="lecture-main">
+    <div class="video-container">
+      <iframe
+        id="mainVideo"
+        src="https://www.youtube-nocookie.com/embed/YOUTUBE_ID_HERE?rel=0&modestbranding=1"
+        allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      ></iframe>
+    </div>
+    <div class="video-meta">
+      <div class="video-part-badge" id="videoPart">PART 1</div>
+      <h1 class="video-title" id="videoTitle">강의 제목이 여기에 표시됩니다</h1>
+      <p class="video-desc" id="videoDesc">강의 설명이 여기에 표시됩니다.</p>
+      <hr class="video-divider">
+      <div class="video-info-row">
+        <div class="video-info-item">
+          <span class="video-info-label">총 분량</span>
+          <span class="video-info-value">8시간 미만</span>
+        </div>
+        <div class="video-info-item">
+          <span class="video-info-label">구성</span>
+          <span class="video-info-value">3 PARTS</span>
+        </div>
+        <div class="video-info-item">
+          <span class="video-info-label">완강 목표</span>
+          <span class="video-info-value">27학년 6월</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PLAYLIST SIDEBAR -->
+  <aside class="lecture-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-course-name">INSPIRE</div>
+      <div class="sidebar-title">수능 영어 독해 완성을 위한<br>짧고 단단한 강의</div>
+      <div class="sidebar-count" id="sidebarCount"></div>
+    </div>
+    <div id="playlist"></div>
+  </aside>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  if (typeof CTDAuth !== 'undefined') CTDAuth.attachNav();
+
+  function toggleNav() {
+    const nav = document.getElementById('mobileNav');
+    if (nav.classList.contains('is-open')) {
+      nav.classList.remove('is-visible');
+      setTimeout(() => nav.classList.remove('is-open'), 250);
+      document.body.style.overflow = '';
+    } else {
+      nav.classList.add('is-open');
+      requestAnimationFrame(() => nav.classList.add('is-visible'));
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  // ─── 강의 데이터 ───────────────────────────────────────────
+  // videoId: YouTube 영상 ID로 교체하세요 (예: "dQw4w9WgXcQ")
+  const PLAYLIST = [
+    {
+      part: 'PART 1',
+      name: '독해의 기초',
+      chapters: [
+        { id: 1,  title: '오리엔테이션 — 이 강의를 듣는 법',     duration: '00:00', videoId: 'YOUTUBE_ID_1',  desc: '강의 전체 구성과 학습 방법을 안내합니다.' },
+        { id: 2,  title: '구문의 시작 — 영어 문장의 뼈대',       duration: '00:00', videoId: 'YOUTUBE_ID_2',  desc: '주어·동사·목적어를 빠르게 잡는 훈련입니다.' },
+        { id: 3,  title: '수식어 처리 — 길어도 흔들리지 않기',   duration: '00:00', videoId: 'YOUTUBE_ID_3',  desc: '관계사절·분사구문을 정확히 처리합니다.' },
+      ]
+    },
+    {
+      part: 'PART 2',
+      name: '실전 독해',
+      chapters: [
+        { id: 4,  title: '주제문 찾기 — 빠른 독해의 핵심',       duration: '00:00', videoId: 'YOUTUBE_ID_4',  desc: '글의 핵심을 빠르게 파악하는 방법을 연습합니다.' },
+        { id: 5,  title: '빈칸 추론 — 논리적 사고 훈련',         duration: '00:00', videoId: 'YOUTUBE_ID_5',  desc: '빈칸 유형 필살기 공략법을 다룹니다.' },
+        { id: 6,  title: '순서·삽입 — 문장 흐름 읽기',           duration: '00:00', videoId: 'YOUTUBE_ID_6',  desc: '담화 표지와 논리 흐름으로 순서를 맞춥니다.' },
+        { id: 7,  title: '어휘 추론 — 문맥으로 뜻 잡기',         duration: '00:00', videoId: 'YOUTUBE_ID_7',  desc: '어휘 유형을 문맥 중심으로 해결합니다.' },
+      ]
+    },
+    {
+      part: 'PART 3',
+      name: '고난도 실전',
+      chapters: [
+        { id: 8,  title: '고난도 빈칸 — 오답을 없애는 전략',     duration: '00:00', videoId: 'YOUTUBE_ID_8',  desc: '3점짜리 빈칸 오답의 패턴을 완전 분석합니다.' },
+        { id: 9,  title: '장문 독해 — 시간 안에 끝내기',         duration: '00:00', videoId: 'YOUTUBE_ID_9',  desc: '41~45번 장문 유형 풀이 전략을 다룹니다.' },
+        { id: 10, title: '실전 모의고사 풀이 — 마무리 점검',     duration: '00:00', videoId: 'YOUTUBE_ID_10', desc: '실전 시험지를 함께 풀며 마무리합니다.' },
+      ]
+    }
+  ];
+
+  // ─── 렌더링 ─────────────────────────────────────────────────
+  let currentId = PLAYLIST[0].chapters[0].id;
+
+  function buildPlaylist() {
+    const container = document.getElementById('playlist');
+    let totalChapters = 0;
+    PLAYLIST.forEach(p => totalChapters += p.chapters.length);
+    document.getElementById('sidebarCount').textContent = `총 ${totalChapters}강`;
+
+    PLAYLIST.forEach(part => {
+      // Part header
+      const ph = document.createElement('div');
+      ph.className = 'part-header';
+      ph.innerHTML = `<span class="part-header-num">${part.part}</span><span class="part-header-name">${part.name}</span>`;
+      container.appendChild(ph);
+
+      // Chapters
+      part.chapters.forEach(ch => {
+        const el = document.createElement('div');
+        el.className = 'chapter-item' + (ch.id === currentId ? ' active' : '');
+        el.dataset.id = ch.id;
+        el.innerHTML = `
+          <span class="chapter-num">${ch.id}</span>
+          <div class="chapter-info">
+            <div class="chapter-title">${ch.title}</div>
+            <div class="chapter-meta">
+              <span class="chapter-duration">${ch.duration}</span>
+            </div>
+          </div>
+          <div class="chapter-play">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>`;
+        el.addEventListener('click', () => playChapter(ch, part.part));
+        container.appendChild(el);
+      });
+    });
+  }
+
+  function playChapter(ch, partLabel) {
+    // update iframe
+    document.getElementById('mainVideo').src =
+      `https://www.youtube-nocookie.com/embed/${ch.videoId}?rel=0&modestbranding=1&autoplay=1`;
+
+    // update meta
+    document.getElementById('videoPart').textContent = partLabel;
+    document.getElementById('videoTitle').textContent = ch.title;
+    document.getElementById('videoDesc').textContent = ch.desc;
+
+    // update active state
+    document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active'));
+    document.querySelector(`[data-id="${ch.id}"]`).classList.add('active');
+    currentId = ch.id;
+
+    // scroll to top on mobile
+    if (window.innerWidth <= 900) {
+      document.querySelector('.lecture-main').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function initFirst() {
+    const first = PLAYLIST[0].chapters[0];
+    document.getElementById('videoPart').textContent = PLAYLIST[0].part;
+    document.getElementById('videoTitle').textContent = first.title;
+    document.getElementById('videoDesc').textContent = first.desc;
+    document.getElementById('mainVideo').src =
+      `https://www.youtube-nocookie.com/embed/${first.videoId}?rel=0&modestbranding=1`;
+  }
+
+  buildPlaylist();
+  initFirst();
+</script>
+</body>
+</html>

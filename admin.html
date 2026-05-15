@@ -68,9 +68,13 @@
     .dashboard-title { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
 
     /* Stats cards */
-    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
     @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card.highlight { border-color: rgba(255,122,0,.35); background: rgba(255,122,0,.06); }
+    .stat-value.orange { color: var(--orange); }
+    .stat-up { font-size: 11px; color: #4cd964; margin-top: 6px; }
+    .stat-down { font-size: 11px; color: #ff4d4f; margin-top: 6px; }
     .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; }
     .stat-label { font-size: 11px; font-weight: 800; color: var(--txt-3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
     .stat-value { font-size: 30px; font-weight: 900; letter-spacing: -1px; color: #fff; line-height: 1; }
@@ -327,10 +331,10 @@
   <div class="topbar-left">
     <a class="topbar-logo" href="/"><span class="topbar-logo-dot"></span>Connect the dots</a>
     <nav class="topbar-tabs">
-      <button class="topbar-tab" data-tab="stats">통계</button>
+      <button class="topbar-tab active" data-tab="stats">통계</button>
       <button class="topbar-tab" data-tab="orders">주문</button>
       <button class="topbar-tab" data-tab="customers">고객</button>
-      <button class="topbar-tab active" data-tab="products">상품</button>
+      <button class="topbar-tab" data-tab="products">상품</button>
     </nav>
   </div>
   <div class="topbar-right">
@@ -344,7 +348,7 @@
 </header>
 
 <!-- TAB: PRODUCTS (existing layout) -->
-<div class="tab-panel layout-panel active" id="tab-products">
+<div class="tab-panel layout-panel" id="tab-products">
   <!-- LIST PANE -->
   <section class="list-pane">
     <div class="list-head">
@@ -427,7 +431,7 @@
 </div>
 
 <!-- TAB: STATS -->
-<div class="tab-panel" id="tab-stats">
+<div class="tab-panel active" id="tab-stats">
   <div class="dashboard">
     <div class="dashboard-head">
       <div class="dashboard-title">통계 <small style="color:var(--txt-3); font-size:12px; font-weight:600; margin-left:8px;">주문 데이터 기반</small></div>
@@ -435,6 +439,8 @@
     </div>
 
     <div class="stat-grid" id="stat-cards">
+      <div class="stat-card highlight"><div class="stat-label">오늘 주문</div><div class="stat-value orange" id="stat-today">—</div><div class="stat-sub" id="stat-today-sub">로딩 중...</div></div>
+      <div class="stat-card highlight"><div class="stat-label">이번 달 매출</div><div class="stat-value orange" id="stat-month">—</div><div class="stat-sub" id="stat-month-sub">로딩 중...</div></div>
       <div class="stat-card"><div class="stat-label">총 주문수</div><div class="stat-value" id="stat-orders">—</div><div class="stat-sub">전체 누적</div></div>
       <div class="stat-card"><div class="stat-label">총 매출</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-sub">전체 누적</div></div>
       <div class="stat-card"><div class="stat-label">고객수</div><div class="stat-value" id="stat-customers">—</div><div class="stat-sub">고유 연락처 기준</div></div>
@@ -857,7 +863,11 @@
   (async () => {
     if (useSupabase) {
       const session = await CTDProducts.getSession();
-      if (session) await refreshFromServer();
+      if (session) {
+        await refreshFromServer();
+        loadStats(); // 통계 자동 로드
+        tabsLoaded.stats = true;
+      }
     } else {
       if (!CTDProducts.loadLocal()) {
         products = CTDProducts.defaultProducts.map(p => ({ ...p }));
@@ -890,11 +900,9 @@
     }
   }
   tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
-  // Init body class so products-only buttons show by default
-  document.body.classList.add('tab-products');
-  // Read initial tab from hash
-  const initialTab = (location.hash || '').replace('#', '');
-  if (initialTab) setTab(initialTab);
+  // Read initial tab from hash, default to stats
+  const initialTab = (location.hash || '').replace('#', '') || 'stats';
+  setTab(initialTab);
 
   // ── DATA HELPERS ──────────────────────────────────────────────────
   async function fetchAllOrders() {
@@ -921,15 +929,26 @@
   async function loadStats() {
     const orders = await fetchAllOrders();
 
+    const todayKey = dayKey(new Date());
+    const monthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    const todayOrders = orders.filter(o => (o.created_at || '').slice(0, 10) === todayKey);
+    const monthOrders = orders.filter(o => (o.created_at || '').slice(0, 7) === monthKey);
+
+    document.getElementById('stat-today').textContent = todayOrders.length + '건';
+    document.getElementById('stat-today-sub').textContent = '매출 ' + CTDProducts.formatPrice(todayOrders.reduce((s,o) => s+(o.total||0), 0));
+    document.getElementById('stat-month').textContent = CTDProducts.formatPrice(monthOrders.reduce((s,o) => s+(o.total||0), 0));
+    document.getElementById('stat-month-sub').textContent = monthOrders.length + '건 주문';
+
     // Cards
     const totalOrders = orders.length;
     const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
     const phones = new Set(orders.map(o => o.customer_phone).filter(Boolean));
     const customers = phones.size;
     const aov = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
-    document.getElementById('stat-orders').textContent = totalOrders.toLocaleString('ko-KR');
+    document.getElementById('stat-orders').textContent = totalOrders.toLocaleString('ko-KR') + '건';
     document.getElementById('stat-revenue').textContent = CTDProducts.formatPrice(totalRevenue);
-    document.getElementById('stat-customers').textContent = customers.toLocaleString('ko-KR');
+    document.getElementById('stat-customers').textContent = customers.toLocaleString('ko-KR') + '명';
     document.getElementById('stat-aov').textContent = CTDProducts.formatPrice(aov);
 
     // Daily chart — last 14 days

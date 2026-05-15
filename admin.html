@@ -1237,10 +1237,16 @@
         const name = btn.dataset.name;
         if (!confirm(`"${name}" 회원을 삭제할까요?\n로그인 계정과 프로필이 영구 삭제됩니다.`)) return;
         try {
-          const { error: e1 } = await CTDProducts.client().from('profiles').delete().eq('id', uid);
+          // profiles 삭제 (select로 실제 삭제 확인)
+          const { data: deleted, error: e1 } = await CTDProducts.client()
+            .from('profiles').delete().eq('id', uid).select();
           if (e1) throw new Error('프로필 삭제 실패: ' + e1.message);
+          if (!deleted || deleted.length === 0) throw new Error('profiles 삭제 안됨 — RLS 정책 확인 필요');
+
+          // auth.users 삭제
           const { error: e2 } = await CTDProducts.client().rpc('delete_user', { user_id: uid });
           if (e2) throw new Error('계정 삭제 실패: ' + e2.message);
+
           toast('회원 삭제 완료');
           tabsLoaded.customers = false;
           loadCustomers();

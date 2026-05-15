@@ -62,45 +62,72 @@
 
   // ── Nav state swap ────────────────────────────────────────────────
   function renderNav(user) {
+    // ── Desktop nav ──
     const navRight = document.querySelector('.nav-right');
-    if (!navRight) return;
-    // Find the existing login anchor (any <a> that's not .nav-cart or .nav-logout)
-    const loginLink = Array.from(navRight.querySelectorAll('a'))
-      .find(a => !a.classList.contains('nav-cart') && !a.classList.contains('nav-logout'));
-    let logoutLink = navRight.querySelector('.nav-logout');
+    if (navRight) {
+      const loginLink = Array.from(navRight.querySelectorAll('a'))
+        .find(a => !a.classList.contains('nav-cart') && !a.classList.contains('nav-logout'));
+      let logoutLink = navRight.querySelector('.nav-logout');
 
-    if (user) {
-      const handle = (user.user_metadata && user.user_metadata.name)
-        || (user.email ? user.email.split('@')[0] : '회원');
-      if (loginLink) {
-        loginLink.textContent = handle + ' 님';
-        loginLink.href = '/mypage';
-        loginLink.title = user.email || '';
-        loginLink.onclick = null;
+      if (user) {
+        const handle = (user.user_metadata && user.user_metadata.name)
+          || (user.email ? user.email.split('@')[0] : '회원');
+        if (loginLink) {
+          loginLink.textContent = handle + ' 님';
+          loginLink.href = '/mypage';
+          loginLink.title = user.email || '';
+          loginLink.onclick = null;
+        }
+        if (!logoutLink) {
+          logoutLink = document.createElement('a');
+          logoutLink.className = 'nav-logout';
+          logoutLink.href = '#';
+          logoutLink.textContent = '로그아웃';
+          logoutLink.style.cursor = 'pointer';
+          logoutLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut();
+            location.reload();
+          });
+          const cart = navRight.querySelector('.nav-cart');
+          if (cart) navRight.insertBefore(logoutLink, cart);
+          else navRight.appendChild(logoutLink);
+        }
+      } else {
+        if (loginLink) { loginLink.textContent = '로그인'; loginLink.href = '/login.html'; loginLink.onclick = null; }
+        if (logoutLink) logoutLink.remove();
       }
-      if (!logoutLink) {
-        logoutLink = document.createElement('a');
-        logoutLink.className = 'nav-logout';
-        logoutLink.href = '#';
-        logoutLink.textContent = '로그아웃';
-        logoutLink.style.cursor = 'pointer';
-        logoutLink.addEventListener('click', async (e) => {
-          e.preventDefault();
-          await signOut();
-          location.reload();
-        });
-        // Insert before the cart button
-        const cart = navRight.querySelector('.nav-cart');
-        if (cart) navRight.insertBefore(logoutLink, cart);
-        else navRight.appendChild(logoutLink);
+    }
+
+    // ── Mobile nav ──
+    const mobileBottom = document.querySelector('.mobile-nav-bottom');
+    if (mobileBottom) {
+      const mobileLogin = mobileBottom.querySelector('.mobile-nav-login');
+      let mobileLogout = mobileBottom.querySelector('.mobile-nav-logout');
+
+      if (user) {
+        const handle = (user.user_metadata && user.user_metadata.name)
+          || (user.email ? user.email.split('@')[0] : '회원');
+        if (mobileLogin) {
+          mobileLogin.textContent = handle + ' 님';
+          mobileLogin.href = '/mypage';
+        }
+        if (!mobileLogout) {
+          mobileLogout = document.createElement('a');
+          mobileLogout.className = 'mobile-nav-login mobile-nav-logout';
+          mobileLogout.href = '#';
+          mobileLogout.textContent = '로그아웃';
+          mobileLogout.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut();
+            location.reload();
+          });
+          mobileBottom.insertBefore(mobileLogout, mobileBottom.firstChild);
+        }
+      } else {
+        if (mobileLogin) { mobileLogin.textContent = '로그인'; mobileLogin.href = '/login.html'; }
+        if (mobileLogout) mobileLogout.remove();
       }
-    } else {
-      if (loginLink) {
-        loginLink.textContent = '로그인';
-        loginLink.href = '/login.html';
-        loginLink.onclick = null;
-      }
-      if (logoutLink) logoutLink.remove();
     }
   }
 

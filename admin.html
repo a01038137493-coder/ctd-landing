@@ -1168,36 +1168,59 @@
 
   // ── CUSTOMERS ───────────────────────────────────────────────────
   async function loadCustomers() {
-    const orders = await fetchAllOrders();
-    const map = new Map(); // phone → { name, phone, email, count, total, last }
+    const [orders, profilesRes] = await Promise.all([
+      fetchAllOrders(),
+      useSupabase
+        ? CTDProducts.client().from('profiles').select('*').order('created_at', { ascending: false })
+        : Promise.resolve({ data: [] }),
+    ]);
+    const profiles = profilesRes.data || [];
+
+    // email → customer record
+    const map = new Map();
+
+    // 1) 회원가입 프로필 먼저 채움
+    profiles.forEach(p => {
+      const key = p.email || p.id;
+      map.set(key, {
+        name: p.name || '', phone: p.phone || '', email: p.email || '',
+        count: 0, total: 0, last: p.created_at, isMember: true,
+      });
+    });
+
+    // 2) 주문 데이터 병합
     orders.forEach(o => {
-      const key = o.customer_phone || o.customer_email || o.customer_name;
+      const key = o.customer_email || o.customer_phone || o.customer_name;
       if (!key) return;
       const cur = map.get(key) || {
-        name: o.customer_name, phone: o.customer_phone, email: o.customer_email,
-        count: 0, total: 0, last: o.created_at,
+        name: o.customer_name || '', phone: o.customer_phone || '', email: o.customer_email || '',
+        count: 0, total: 0, last: o.created_at, isMember: false,
       };
       cur.count += 1;
       cur.total += (o.total || 0);
       if (new Date(o.created_at) > new Date(cur.last)) cur.last = o.created_at;
-      // Keep latest non-empty email/name
       if (o.customer_email && !cur.email) cur.email = o.customer_email;
-      if (o.customer_name && !cur.name) cur.name = o.customer_name;
+      if (o.customer_name  && !cur.name)  cur.name  = o.customer_name;
+      if (o.customer_phone && !cur.phone) cur.phone = o.customer_phone;
       map.set(key, cur);
     });
+
     const list = Array.from(map.values()).sort((a, b) => new Date(b.last) - new Date(a.last));
     document.getElementById('customers-count').textContent = `(${list.length})`;
-    const body = document.getElementById('customers-body');
+    const body  = document.getElementById('customers-body');
     const empty = document.getElementById('customers-empty');
     if (!list.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
     body.innerHTML = list.map(c => `
       <tr>
-        <td><strong>${escapeHtml(c.name)}</strong></td>
+        <td>
+          <strong>${escapeHtml(c.name || '-')}</strong>
+          ${c.isMember ? '<span style="font-size:10px;font-weight:700;color:var(--orange);background:rgba(255,122,0,.12);padding:2px 7px;border-radius:999px;margin-left:6px;">회원</span>' : ''}
+        </td>
         <td class="cell-muted">${escapeHtml(c.phone || '-')}</td>
         <td class="cell-muted">${escapeHtml(c.email || '-')}</td>
-        <td style="text-align:right;">${c.count}건</td>
-        <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(c.total)}</td>
+        <td style="text-align:right;">${c.count ? c.count + '건' : '-'}</td>
+        <td style="text-align:right;" class="cell-money">${c.total ? CTDProducts.formatPrice(c.total) : '-'}</td>
         <td class="cell-muted">${formatDay(c.last)}</td>
       </tr>
     `).join('');

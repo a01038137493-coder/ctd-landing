@@ -215,7 +215,15 @@
     try {
       const result = await CTDAuth.signUp(email, password, { name: name || undefined, phone: phone || undefined });
       if (result.session) {
-        // Auto-confirmed and logged in
+        // profiles 테이블에 저장
+        try {
+          await CTDProducts.client().from('profiles').upsert({
+            id: result.user.id,
+            email: email,
+            name: name || null,
+            phone: phone || null,
+          });
+        } catch(e) {}
         location.href = '/';
       } else {
         // Email confirmation required

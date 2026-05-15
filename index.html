@@ -871,7 +871,7 @@
 
     // GPU hints
     heroText.style.willChange = 'transform, opacity, filter';
-    if (heroTagline) heroTagline.style.willChange = 'transform, opacity';
+    if (heroTagline) heroTagline.style.willChange = 'transform, opacity, filter';
     if (heroScroll) heroScroll.style.willChange = 'opacity';
 
     let heroH = hero.offsetHeight;
@@ -891,8 +891,9 @@
       heroText.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
 
       if (heroTagline) {
-        heroTagline.style.opacity = Math.max(1 - p * 3.5, 0);
-        heroTagline.style.transform = `translateY(${scrollY * 0.15}px)`;
+        heroTagline.style.opacity = Math.max(1 - p * 2.2, 0);
+        heroTagline.style.transform = `translateY(-${tx}px)`;
+        heroTagline.style.filter = p > 0.04 ? `blur(${p * 24}px)` : '';
       }
       if (heroScroll) {
         heroScroll.style.opacity = Math.max(1 - p * 6, 0);

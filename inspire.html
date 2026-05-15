@@ -782,6 +782,12 @@
 <script>
   CTDCart.attachNavCount();
   CTDAuth.attachNav();
+
+  // PDF 다운로드 클릭 추적
+  document.querySelector('a[download]')?.addEventListener('click', function () {
+    if (window.CTDTrack) CTDTrack.event('/event/pdf-download');
+  });
+
   function toggleNav() {
     const nav = document.getElementById('mobileNav');
     if (nav.classList.contains('is-open')) {

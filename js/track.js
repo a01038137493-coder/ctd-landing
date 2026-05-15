@@ -86,15 +86,20 @@
 
     var page = location.pathname;
 
-    function doTrack() {
+    function getClient() {
+      var cfg = window.SUPABASE_CONFIG;
+      if (!cfg || !cfg.url || !window.supabase) return null;
+      return (window.CTDProducts && window.CTDProducts.client)
+        ? window.CTDProducts.client()
+        : window.supabase.createClient(cfg.url, cfg.anonKey);
+    }
+
+    function insertRow(pagePath) {
       try {
-        var cfg = window.SUPABASE_CONFIG;
-        if (!cfg || !cfg.url || !window.supabase) return;
-        var client = (window.CTDProducts && window.CTDProducts.client)
-          ? window.CTDProducts.client()
-          : window.supabase.createClient(cfg.url, cfg.anonKey);
-        client.from('pageviews').insert({
-          page:       page,
+        var cl = getClient();
+        if (!cl) return;
+        cl.from('pageviews').insert({
+          page:       pagePath,
           referrer:   referrer,
           device:     device,
           browser:    browser,
@@ -106,11 +111,20 @@
       } catch (e) {}
     }
 
+    function doTrack() { insertRow(page); }
+
     // Defer so tracking never blocks page render
     if (typeof requestIdleCallback !== 'undefined') {
       requestIdleCallback(function () { doTrack(); });
     } else {
       setTimeout(doTrack, 800);
     }
+
+    // Public API: log a custom event (e.g. button click) as a virtual page path
+    window.CTDTrack = {
+      event: function (eventPath) {
+        try { insertRow(eventPath); } catch (e) {}
+      }
+    };
   } catch (e) {}
 })();

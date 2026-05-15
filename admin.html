@@ -521,6 +521,7 @@
       <div class="stat-card"><div class="stat-label">재방문자</div><div class="stat-value" id="v-return">—</div><div class="stat-sub">재방문</div></div>
       <div class="stat-card"><div class="stat-label">총 페이지뷰</div><div class="stat-value" id="v-pv">—</div><div class="stat-sub">모든 기록</div></div>
       <div class="stat-card"><div class="stat-label">일평균 방문자</div><div class="stat-value" id="v-avg">—</div><div class="stat-sub">최근 14일</div></div>
+      <div class="stat-card highlight"><div class="stat-label">교안 PDF 다운로드</div><div class="stat-value orange" id="v-pdf">—</div><div class="stat-sub" id="v-pdf-sub">오늘 0건</div></div>
     </div>
 
     <div class="chart-card">
@@ -1267,6 +1268,10 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     );
 
     // Stat cards
+    // PDF download events
+    const pdfRows      = pvs.filter(r => r.page === '/event/pdf-download');
+    const pdfToday     = pdfRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+
     document.getElementById('v-total').textContent   = allVids.size.toLocaleString('ko-KR') + '명';
     document.getElementById('v-today').textContent   = todayVids.size.toLocaleString('ko-KR') + '명';
     document.getElementById('v-today-sub').textContent = '페이지뷰 ' + todayPvs.length + '건';
@@ -1274,6 +1279,8 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     document.getElementById('v-return').textContent  = Math.max(0, retVids).toLocaleString('ko-KR') + '명';
     document.getElementById('v-pv').textContent      = pvs.length.toLocaleString('ko-KR');
     document.getElementById('v-avg').textContent     = avg14.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-pdf').textContent     = pdfRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-pdf-sub').textContent = '오늘 ' + pdfToday.length + '건';
 
     // Daily chart
     const dailyData = days14Keys.map(dk => ({

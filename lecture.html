@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>강의 보기 — Connect the dots</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  <!-- Meta Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','PIXEL_ID_HERE');fbq('track','PageView');</script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID_HERE&ev=PageView&noscript=1"/></noscript>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -199,6 +205,9 @@
     .chapter-play svg { color: var(--ink-3); }
     .chapter-item.active .chapter-play svg { color: var(--orange); }
 
+    .chapter-item.coming-soon { opacity: 0.42; cursor: default; pointer-events: none; }
+    .coming-soon-badge { font-size: 10px; font-weight: 700; color: var(--ink-3); background: var(--border); padding: 2px 8px; border-radius: 3px; flex-shrink: 0; white-space: nowrap; }
+
     /* ═══ MOBILE ═══ */
     @media (max-width: 900px) {
       .lecture-wrap { grid-template-columns: 1fr; }
@@ -352,9 +361,22 @@
     },
     {
       part: 'PART 1',
-      name: '강의명 추가 예정',
+      name: '읽기 습관 점검',
       chapters: [
-        { id: 2, title: 'PART 1', duration: '2:00:00', videoId: 'YOUTUBE_ID_PART1', desc: '', timeline: [] },
+        {
+          id: 2,
+          title: 'PART 1 읽기 습관 점검',
+          duration: '1:22:22',
+          videoId: '3PYTQG-PNm8',
+          desc: '대명사/대동사 꼼꼼히 읽기, 문장 연결관계, 긴 문장 처리법, 단어 해상도까지 — 독해의 기초 읽기 습관을 점검합니다.',
+          timeline: [
+            { time: 0,    label: 'PART 1 읽기 습관 점검 수업 시작 및 안내' },
+            { time: 156,  label: '[01. 대명사/대동사 꼼꼼히 읽기]' },
+            { time: 2201, label: '[02. 문장끼리의 연결관계]' },
+            { time: 4397, label: '[03. 긴 문장 날리지 않기]' },
+            { time: 4942, label: '[04. 단어 해상도 높이기]' },
+          ]
+        },
       ]
     },
     {
@@ -366,25 +388,27 @@
     },
     {
       part: 'PART 3',
-      name: '강의명 추가 예정',
+      name: '업로드 예정',
       chapters: [
-        { id: 4, title: 'PART 3', duration: '2:00:00', videoId: 'YOUTUBE_ID_PART3', desc: '', timeline: [] },
+        { id: 4, title: 'PART 3', duration: '--:--', videoId: '', desc: '', comingSoon: true, timeline: [] },
       ]
     },
     {
       part: 'PART 4',
-      name: '강의명 추가 예정',
+      name: '업로드 예정',
       chapters: [
-        { id: 5, title: 'PART 4', duration: '2:00:00', videoId: 'YOUTUBE_ID_PART4', desc: '', timeline: [] },
+        { id: 5, title: 'PART 4', duration: '--:--', videoId: '', desc: '', comingSoon: true, timeline: [] },
       ]
     },
   ];
 
   // ─── 유틸 ──────────────────────────────────────────────────────────────────
   function toMMSS(sec) {
-    const m = Math.floor(sec / 60);
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
     const s = Math.floor(sec % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
+    if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    return `${m}:${s.toString().padStart(2,'0')}`;
   }
 
   function findChapter(id) {
@@ -487,7 +511,7 @@
 
       part.chapters.forEach(ch => {
         const el = document.createElement('div');
-        el.className = 'chapter-item' + (ch.id === currentChId ? ' active' : '');
+        el.className = 'chapter-item' + (ch.id === currentChId ? ' active' : '') + (ch.comingSoon ? ' coming-soon' : '');
         el.dataset.id = ch.id;
         el.innerHTML = `
           <span class="chapter-num">${ch.id}</span>
@@ -495,10 +519,11 @@
             <div class="chapter-title">${ch.title}</div>
             <div class="chapter-duration">${ch.duration}</div>
           </div>
-          <div class="chapter-play">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>`;
-        el.addEventListener('click', () => playChapter(ch.id, true));
+          ${ch.comingSoon
+            ? '<span class="coming-soon-badge">업로드 예정</span>'
+            : '<div class="chapter-play"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
+          }`;
+        if (!ch.comingSoon) el.addEventListener('click', () => playChapter(ch.id, true));
         container.appendChild(el);
       });
     });

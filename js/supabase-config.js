@@ -12,3 +12,12 @@ window.SUPABASE_CONFIG = {
   // Storage bucket name for product images (create as Public in Supabase Storage UI)
   bucket: 'product-images',
 };
+
+// Telegram bot for real-time notifications
+// 1) @BotFather 에서 /newbot → token 발급
+// 2) 봇과 대화 후 https://api.telegram.org/bot{TOKEN}/getUpdates 에서 chat_id 확인
+// 3) 아래에 붙여넣기
+window.TELEGRAM_CONFIG = {
+  token: '',    // 예: '7123456789:AAFxxxxxxxxxxxxxxxxxxxxxxxxxx'
+  chatId: '',   // 예: '123456789'
+};

@@ -426,6 +426,63 @@
       .calc-right { width: 100%; }
       .calc-card { flex: 1; }
     }
+
+    /* ── INQUIRY MODAL ── */
+    .inq-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+    }
+    .inq-overlay.open { opacity: 1; visibility: visible; }
+    .inq-modal {
+      background: #fff; border-radius: 22px;
+      width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
+      padding: 40px 36px 32px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.22);
+      position: relative;
+      transform: translateY(14px) scale(.98);
+      transition: transform .28s cubic-bezier(.34,1.2,.64,1);
+    }
+    .inq-overlay.open .inq-modal { transform: none; }
+    .inq-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #f0f0f0; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: #666; transition: background .15s;
+    }
+    .inq-close:hover { background: #e0e0e0; color: #333; }
+    .inq-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+    .inq-title { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: #111; margin-bottom: 6px; }
+    .inq-sub { font-size: 14px; color: #999; margin-bottom: 28px; line-height: 1.6; }
+    .inq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .inq-field { margin-bottom: 14px; }
+    .inq-label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; }
+    .inq-input, .inq-textarea {
+      width: 100%; padding: 11px 14px; border-radius: 10px;
+      border: 1.5px solid #e4e4e4; background: #fafafa;
+      font-family: 'Pretendard', sans-serif; font-size: 15px; color: #111;
+      outline: none; transition: border-color .15s, background .15s;
+    }
+    .inq-input:focus, .inq-textarea:focus { border-color: var(--orange); background: #fff; }
+    .inq-textarea { resize: vertical; min-height: 78px; }
+    .inq-qty-wrap { display: flex; align-items: center; gap: 8px; }
+    .inq-qty-wrap .inq-input { width: 120px; }
+    .inq-submit {
+      width: 100%; margin-top: 6px; padding: 16px;
+      border-radius: 12px; background: var(--orange); color: #fff;
+      font-family: 'Pretendard', sans-serif; font-size: 16px; font-weight: 800;
+      border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .inq-submit:hover { opacity: .88; transform: translateY(-1px); }
+    .inq-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .inq-err { color: #e55; font-size: 13px; margin-top: 8px; min-height: 18px; }
+    .inq-success { display: none; text-align: center; padding: 12px 0 8px; }
+    .inq-success-icon { font-size: 52px; margin-bottom: 14px; }
+    .inq-success-title { font-size: 21px; font-weight: 900; color: #111; margin-bottom: 10px; letter-spacing: -.5px; }
+    .inq-success-desc { font-size: 14px; color: #888; line-height: 1.75; }
+    @media (max-width: 500px) { .inq-modal { padding: 28px 18px 24px; } .inq-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -436,7 +493,7 @@
   <div class="nav-right">
     <span class="nav-badge">학원장 전용</span>
     <a href="/ambassador" class="nav-link-subtle" style="font-size:13px;color:var(--orange);font-weight:600;margin-right:4px;">앰베서더 프로젝트 →</a>
-    <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="nav-cta">도입 상담 →</a>
+    <button onclick="openInquiry()" class="nav-cta" style="cursor:pointer;">교재 문의 →</button>
   </div>
 </nav>
 
@@ -457,9 +514,9 @@
         커닥 교재는 수능기출을 다루는 수업에서 본교재로 활용하기도 좋고, 혹은 학생들에게 주기적으로 숙제 컨텐츠로 제공하기도 좋습니다. 상세한 해설과 이해가 어려운 지문은 하이라이트 영상 해설을 제공하여 선생님들의 설명 부담을 낮춥니다.
       </p>
       <div class="hero-btns">
-        <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="btn-primary">
+        <button onclick="openInquiry()" class="btn-primary">
           교재 문의하기 →
-        </a>
+        </button>
         <a href="/inspire.html" target="_blank" class="btn-ghost" style="background:#fff;color:#111;border-color:#fff;">
           샘플 교안 보기
         </a>
@@ -742,9 +799,9 @@
         <div class="partner-inc-item"><span class="partner-inc-check">✓</span> 수능 반영 개정판 우선 안내</div>
       </div>
       <div class="partner-cta-group">
-        <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="btn-primary" style="font-size:16px; padding:18px 40px;">
-          카카오로 문의하기 →
-        </a>
+        <button onclick="openInquiry()" class="btn-primary" style="font-size:16px; padding:18px 40px;">
+          교재 문의하기 →
+        </button>
         <a href="/inspire.html" target="_blank" class="btn-ghost" style="font-size:15px; padding:18px 32px;">
           샘플 교안 먼저 보기
         </a>
@@ -828,9 +885,9 @@
   <h2 class="final-cta-title">교재 문의,<br><em>편하게 연락주세요.</em></h2>
   <p class="final-cta-desc">수량, 가격, 샘플 뭐든 물어보세요. 카카오 채널로 빠르게 답변드립니다.</p>
   <div class="final-cta-btns">
-    <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="btn-primary" style="font-size:16px; padding:18px 44px;">
-      카카오로 문의하기 →
-    </a>
+    <button onclick="openInquiry()" class="btn-primary" style="font-size:16px; padding:18px 44px;">
+      교재 문의하기 →
+    </button>
     <a href="/inspire.html" target="_blank" class="btn-ghost" style="font-size:15px; padding:18px 32px;">
       샘플 교안 보기
     </a>
@@ -856,6 +913,53 @@
     <div class="footer-copy">© 2024 Connect the dots. All rights reserved. · 학원 파트너십 문의: 카카오 채널</div>
   </div>
 </footer>
+
+<!-- INQUIRY MODAL -->
+<div class="inq-overlay" id="inqOverlay" onclick="if(event.target===this)closeInquiry()">
+  <div class="inq-modal">
+    <button class="inq-close" onclick="closeInquiry()" aria-label="닫기">✕</button>
+    <div id="inqForm">
+      <div class="inq-eyebrow">교재 도입 문의</div>
+      <h2 class="inq-title">편하게 물어보세요.</h2>
+      <p class="inq-sub">수량·가격·샘플 모두 빠르게 답변드립니다.</p>
+      <div class="inq-row">
+        <div class="inq-field">
+          <label class="inq-label">학원명 *</label>
+          <input class="inq-input" id="inqAcademy" placeholder="강남영어학원">
+        </div>
+        <div class="inq-field">
+          <label class="inq-label">담당자명 *</label>
+          <input class="inq-input" id="inqName" placeholder="홍길동">
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">연락처 *</label>
+        <input class="inq-input" id="inqPhone" type="tel" placeholder="010-0000-0000">
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">예상 수량</label>
+        <div class="inq-qty-wrap">
+          <input class="inq-input" id="inqQty" type="number" min="10" placeholder="30">
+          <span style="font-size:14px;color:#999;">권</span>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">문의 내용 (선택)</label>
+        <textarea class="inq-textarea" id="inqMsg" placeholder="샘플 교안 먼저 확인하고 싶습니다."></textarea>
+      </div>
+      <button class="inq-submit" id="inqSubmit" onclick="submitInquiry()">문의 보내기 →</button>
+      <p class="inq-err" id="inqError"></p>
+    </div>
+    <div class="inq-success" id="inqSuccess">
+      <div class="inq-success-icon">✅</div>
+      <div class="inq-success-title">문의가 접수되었습니다!</div>
+      <p class="inq-success-desc">빠르게 검토 후 연락드리겠습니다.<br>보통 1 영업일 내에 답변드립니다.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
 
 <!-- KAKAO FLOAT -->
 <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="kakao-btn" aria-label="카카오 상담">
@@ -889,6 +993,75 @@
     var inp = document.getElementById('calc-qty');
     inp.value = Math.max(10, Math.min(1000, (parseInt(inp.value) || 10) + d));
     calcUpdate();
+  }
+
+  // ── INQUIRY MODAL ──
+  function openInquiry(qty) {
+    var overlay = document.getElementById('inqOverlay');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('inqForm').style.display = '';
+    document.getElementById('inqSuccess').style.display = 'none';
+    document.getElementById('inqError').textContent = '';
+    document.getElementById('inqSubmit').disabled = false;
+    document.getElementById('inqSubmit').textContent = '문의 보내기 →';
+    if (qty) document.getElementById('inqQty').value = qty;
+  }
+  function closeInquiry() {
+    document.getElementById('inqOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeInquiry(); });
+
+  async function submitInquiry() {
+    var academy = document.getElementById('inqAcademy').value.trim();
+    var name = document.getElementById('inqName').value.trim();
+    var phone = document.getElementById('inqPhone').value.trim();
+    var qty = parseInt(document.getElementById('inqQty').value) || null;
+    var msg = document.getElementById('inqMsg').value.trim();
+    var errEl = document.getElementById('inqError');
+    errEl.textContent = '';
+    if (!academy) { errEl.textContent = '학원명을 입력해주세요.'; return; }
+    if (!name)    { errEl.textContent = '담당자명을 입력해주세요.'; return; }
+    if (!phone)   { errEl.textContent = '연락처를 입력해주세요.'; return; }
+
+    var btn = document.getElementById('inqSubmit');
+    btn.disabled = true; btn.textContent = '전송 중...';
+
+    var data = { academy_name: academy, contact_name: name, phone: phone, quantity: qty, message: msg || null, status: 'new' };
+
+    // 1. Supabase 저장
+    try {
+      var cfg = window.SUPABASE_CONFIG;
+      if (cfg && cfg.url && cfg.anonKey) {
+        var client = supabase.createClient(cfg.url, cfg.anonKey);
+        var res = await client.from('b2b_inquiries').insert([data]);
+        if (res.error) console.error('[inquiry]', res.error);
+      }
+    } catch(e) { console.error('[inquiry supabase]', e); }
+
+    // 2. Telegram 알림
+    try {
+      var tg = window.TELEGRAM_CONFIG;
+      if (tg && tg.token && tg.chatId) {
+        var now = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        var lines = ['🏫 *교재 문의 접수*', ''];
+        lines.push('📌 학원명: ' + academy);
+        lines.push('👤 담당자: ' + name);
+        lines.push('📞 연락처: ' + phone);
+        if (qty) lines.push('📦 수량: ' + qty + '권');
+        if (msg) lines.push('💬 내용: ' + msg);
+        lines.push(''); lines.push('⏰ ' + now);
+        await fetch('https://api.telegram.org/bot' + tg.token + '/sendMessage', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: tg.chatId, text: lines.join('\n'), parse_mode: 'Markdown' })
+        });
+      }
+    } catch(e) { console.error('[inquiry telegram]', e); }
+
+    // 3. 성공 화면
+    document.getElementById('inqForm').style.display = 'none';
+    document.getElementById('inqSuccess').style.display = 'block';
   }
 
   // FAQ accordion

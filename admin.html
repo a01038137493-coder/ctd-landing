@@ -345,6 +345,7 @@
       <button class="topbar-tab" data-tab="orders">주문</button>
       <button class="topbar-tab" data-tab="customers">고객</button>
       <button class="topbar-tab" data-tab="products">상품</button>
+      <button class="topbar-tab" data-tab="inquiries">문의 <span id="inq-badge" style="display:none;background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;"></span></button>
     </nav>
   </div>
   <div class="topbar-right">
@@ -580,6 +581,42 @@
     <div class="chart-card">
       <div class="chart-title">페이지별 방문</div>
       <div id="v-pages"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: INQUIRIES -->
+<div class="tab-panel" id="tab-inquiries">
+  <div class="dashboard">
+    <div class="dashboard-head">
+      <div class="dashboard-title">교재 문의 <small id="inq-count"></small></div>
+      <div style="display:flex;gap:8px;">
+        <select id="inq-filter" class="status-select" onchange="renderInquiries()">
+          <option value="">전체</option>
+          <option value="new">신규</option>
+          <option value="read">확인</option>
+          <option value="replied">답변완료</option>
+        </select>
+        <button class="btn btn-ghost" onclick="loadInquiries()">↻ 새로고침</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="inq-table">
+        <thead>
+          <tr>
+            <th>접수일시</th>
+            <th>학원명</th>
+            <th>담당자</th>
+            <th>연락처</th>
+            <th>수량</th>
+            <th>문의내용</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody id="inq-tbody">
+          <tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">불러오는 중...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -976,7 +1013,7 @@
   // ── TAB SWITCHING ─────────────────────────────────────────────────
   const tabs = document.querySelectorAll('.topbar-tab');
   const panels = document.querySelectorAll('.tab-panel');
-  const tabLoaders = { products: null, stats: loadStats, visitors: loadVisitors, orders: loadOrders, customers: loadCustomers };
+  const tabLoaders = { products: null, stats: loadStats, visitors: loadVisitors, orders: loadOrders, customers: loadCustomers, inquiries: loadInquiries };
   const tabsLoaded = { products: true };
 
   function setTab(name) {
@@ -1478,6 +1515,72 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     const d = new Date(p.value); d.setDate(d.getDate() + 1);
     renderDateDetail(d.toISOString().slice(0, 10));
   });
+
+  // ── INQUIRIES ────────────────────────────────────────────────────
+  let _inquiries = [];
+
+  async function loadInquiries() {
+    if (!useSupabase) {
+      document.getElementById('inq-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">Supabase 연결 필요</td></tr>';
+      return;
+    }
+    document.getElementById('inq-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">불러오는 중...</td></tr>';
+    const { data, error } = await CTDProducts.client()
+      .from('b2b_inquiries')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) { console.error('[inquiries]', error); return; }
+    _inquiries = data || [];
+    updateInqBadge();
+    renderInquiries();
+  }
+
+  function updateInqBadge() {
+    const newCount = _inquiries.filter(i => i.status === 'new').length;
+    const badge = document.getElementById('inq-badge');
+    if (newCount > 0) { badge.textContent = newCount; badge.style.display = ''; }
+    else badge.style.display = 'none';
+    document.getElementById('inq-count').textContent = '총 ' + _inquiries.length + '건';
+  }
+
+  function renderInquiries() {
+    const filter = document.getElementById('inq-filter').value;
+    const rows = filter ? _inquiries.filter(i => i.status === filter) : _inquiries;
+    const tbody = document.getElementById('inq-tbody');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">문의가 없습니다.</td></tr>';
+      return;
+    }
+    const statusLabel = { new: '신규', read: '확인', replied: '답변완료' };
+    const statusClass = { new: 'pending', read: 'shipped', replied: 'confirmed' };
+    tbody.innerHTML = rows.map(r => {
+      const dt = new Date(r.created_at).toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+      return `<tr>
+        <td class="cell-muted">${dt}</td>
+        <td style="font-weight:700;">${r.academy_name || '-'}</td>
+        <td>${r.contact_name || '-'}</td>
+        <td><a href="tel:${r.phone}" style="color:var(--orange);">${r.phone || '-'}</a></td>
+        <td class="cell-money">${r.quantity ? r.quantity + '권' : '-'}</td>
+        <td class="cell-truncate" style="max-width:220px;color:var(--txt-2);">${r.message || '-'}</td>
+        <td>
+          <select class="status-select" onchange="updateInqStatus('${r.id}', this.value)">
+            <option value="new"      ${r.status==='new'?'selected':''}>신규</option>
+            <option value="read"     ${r.status==='read'?'selected':''}>확인</option>
+            <option value="replied"  ${r.status==='replied'?'selected':''}>답변완료</option>
+          </select>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function updateInqStatus(id, status) {
+    if (!useSupabase) return;
+    await CTDProducts.client().from('b2b_inquiries').update({ status }).eq('id', id);
+    const row = _inquiries.find(i => i.id === id);
+    if (row) row.status = status;
+    updateInqBadge();
+    toast('상태 업데이트 완료');
+  }
 </script>
 
 </body>

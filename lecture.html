@@ -291,12 +291,12 @@
   <aside class="lecture-sidebar">
     <!-- Tabs -->
     <div class="sidebar-tabs">
-      <div class="sidebar-tab tab-active" data-tab="timeline" onclick="switchTab('timeline')">타임라인</div>
-      <div class="sidebar-tab" data-tab="playlist" onclick="switchTab('playlist')">강의 목록</div>
+      <div class="sidebar-tab" data-tab="timeline" onclick="switchTab('timeline')">타임라인</div>
+      <div class="sidebar-tab tab-active" data-tab="playlist" onclick="switchTab('playlist')">강의 목록</div>
     </div>
 
     <!-- Timeline Panel -->
-    <div class="sidebar-panel panel-active" id="panelTimeline">
+    <div class="sidebar-panel" id="panelTimeline">
       <div class="tl-panel-header">
         현재 강의
         <div class="tl-now-playing" id="tlNowPlaying"></div>
@@ -305,7 +305,7 @@
     </div>
 
     <!-- Playlist Panel -->
-    <div class="sidebar-panel" id="panelPlaylist">
+    <div class="sidebar-panel panel-active" id="panelPlaylist">
       <div class="sidebar-list-header">
         <div class="sidebar-course-name">INSPIRE</div>
         <div class="sidebar-count" id="sidebarCount"></div>

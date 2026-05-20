@@ -864,7 +864,7 @@
 <script>
   // Pricing calculator
   function calcPrice(x) {
-    var raw = Math.round(8973.68 - 7.3684 * x);
+    var raw = Math.round((8973.68 - 7.3684 * x) / 100) * 100;
     return Math.max(3300, raw);
   }
   function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }

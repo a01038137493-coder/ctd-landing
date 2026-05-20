@@ -125,6 +125,7 @@
       width: clamp(260px, 28vw, 420px);
       filter: drop-shadow(-20px 40px 60px rgba(0,0,0,.35));
       animation: float 4s ease-in-out infinite;
+      will-change: transform;
     }
     .hero-tagline {
       position: relative;
@@ -140,7 +141,7 @@
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px;
       color: rgba(255,255,255,.5); font-size: 11px; font-weight: 600; letter-spacing: 1px;
     }
-    .hero-scroll-hint svg { animation: bounce 1.8s ease-in-out infinite; }
+    .hero-scroll-hint svg { animation: bounce 1.8s ease-in-out infinite; will-change: transform; }
     @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -480,12 +481,12 @@
     }
 
     /* ── FADE ── */
-    .fu { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
-    .fu.vis { opacity: 1; transform: none; }
+    .fu { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; will-change: opacity, transform; }
+    .fu.vis { opacity: 1; transform: none; will-change: auto; }
 
     /* ── MOBILE ── */
     @media (max-width: 960px) {
-      .nav { padding: 0 20px; }
+      .nav { padding: 0 20px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(0,0,0,.82); }
       .nav-menu { display: none; }
       .nav-mobile { display: block; }
       .hero-inner { grid-template-columns: 1fr; padding: 60px 20px; }

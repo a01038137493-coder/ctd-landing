@@ -19,5 +19,5 @@ window.SUPABASE_CONFIG = {
 // 3) 아래에 붙여넣기
 window.TELEGRAM_CONFIG = {
   token: '8911991608:AAFBBAI8Bx1jJilSTCUSJfkIjLdW0FXTpJY',
-  chatId: '8292603012',
+  chatId: '-5133600362',  // ctd_관리자 그룹
 };

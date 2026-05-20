@@ -18,6 +18,6 @@ window.SUPABASE_CONFIG = {
 // 2) 봇과 대화 후 https://api.telegram.org/bot{TOKEN}/getUpdates 에서 chat_id 확인
 // 3) 아래에 붙여넣기
 window.TELEGRAM_CONFIG = {
-  token: '',    // 예: '7123456789:AAFxxxxxxxxxxxxxxxxxxxxxxxxxx'
-  chatId: '',   // 예: '123456789'
+  token: '8911991608:AAFBBAI8Bx1jJilSTCUSJfkIjLdW0FXTpJY',
+  chatId: '8292603012',
 };

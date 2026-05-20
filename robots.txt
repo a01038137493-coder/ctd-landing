@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 
-Disallow: /b2b
-Disallow: /ambassador
-Disallow: /admin
+Disallow: /b2b.html
+Disallow: /ambassador.html
+Disallow: /admin.html
+
+Sitemap: https://ctdenglish.co.kr/sitemap.xml

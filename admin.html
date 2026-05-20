@@ -530,6 +530,19 @@
       <div class="chart-x" id="v-chart-daily-x"></div>
     </div>
 
+    <div class="chart-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;">
+        <div class="chart-title" style="margin-bottom:0;">날짜별 방문 상세</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn btn-ghost" id="v-date-prev" style="padding:7px 12px;font-size:16px;line-height:1;">‹</button>
+          <input type="date" id="v-date-picker" class="input" style="width:150px;padding:7px 10px;font-size:13px;" />
+          <button class="btn btn-ghost" id="v-date-next" style="padding:7px 12px;font-size:16px;line-height:1;">›</button>
+        </div>
+      </div>
+      <div id="v-date-summary" style="margin-bottom:14px;"></div>
+      <div id="v-date-detail"></div>
+    </div>
+
     <div class="vis-grid-2">
       <div class="chart-card" style="margin-bottom:0;">
         <div class="chart-title">유입 경로</div>
@@ -1259,6 +1272,41 @@
   document.getElementById('btn-refresh-customers').addEventListener('click', () => { tabsLoaded.customers = true; loadCustomers(); });
 
   // ── VISITORS ────────────────────────────────────────────────────
+  let visitorPvs = [];
+
+  function renderDateDetail(dk) {
+    const picker = document.getElementById('v-date-picker');
+    if (picker && picker.value !== dk) picker.value = dk;
+    const dayPvs = visitorPvs.filter(r => (r.created_at || '').slice(0, 10) === dk);
+    const uniqV = new Set(dayPvs.map(r => r.visitor_id)).size;
+    const summaryEl = document.getElementById('v-date-summary');
+    const detailEl  = document.getElementById('v-date-detail');
+    if (!summaryEl || !detailEl) return;
+    summaryEl.innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <span style="font-size:13px;color:var(--txt-2);">방문자 <strong style="color:#fff;">${uniqV}명</strong></span>
+      <span style="font-size:13px;color:var(--txt-2);">페이지뷰 <strong style="color:#fff;">${dayPvs.length}건</strong></span>
+    </div>`;
+    if (!dayPvs.length) {
+      detailEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--txt-3);font-size:13px;">이 날 방문 기록이 없습니다</div>';
+      return;
+    }
+    const sorted = dayPvs.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    detailEl.innerHTML = `<table class="data-table"><thead><tr>
+      <th style="width:72px;">시간</th><th>페이지</th>
+      <th style="width:80px;">기기</th><th style="width:92px;">브라우저</th>
+      <th style="width:160px;">유입경로</th>
+    </tr></thead><tbody>${sorted.map(r => {
+      const t = r.created_at ? new Date(r.created_at).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) : '';
+      return `<tr>
+        <td class="cell-muted">${t}</td>
+        <td class="cell-truncate">${escapeHtml(r.page || '/')}</td>
+        <td class="cell-muted">${escapeHtml(r.device || '-')}</td>
+        <td class="cell-muted">${escapeHtml(r.browser || '-')}</td>
+        <td class="cell-muted cell-truncate">${escapeHtml(r.referrer || '직접')}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+  }
+
   function makeBarRows(entries, maxVal, color) {
     if (!entries.length) return '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">데이터 없음</div>';
     return entries.map(([label, count]) => `
@@ -1300,6 +1348,7 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     }
 
     const pvs = data || [];
+    visitorPvs = pvs;
     const todayKey = dayKey(new Date());
 
     // Unique visitor sets
@@ -1343,11 +1392,12 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     }));
     const maxD = Math.max(1, ...dailyData.map(x => x.count));
     document.getElementById('v-chart-daily').innerHTML = dailyData.map(x => `
-      <div class="chart-bar" style="height:${Math.max(2, (x.count/maxD)*100)}%;">
+      <div class="chart-bar" style="height:${Math.max(2, (x.count/maxD)*100)}%;cursor:pointer;" onclick="renderDateDetail('${x.key}')">
         <span class="chart-bar-tip">${x.key.slice(5)} · ${x.count}명</span>
       </div>`).join('');
     document.getElementById('v-chart-daily-x').innerHTML = dailyData.map((x, i) =>
       `<div class="chart-x-label">${i % 2 === 0 ? x.key.slice(5) : ''}</div>`).join('');
+    renderDateDetail(todayKey);
 
     // Referrers
     const refMap = new Map();
@@ -1415,6 +1465,19 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     document.getElementById('v-pages').innerHTML = makeBarRows(pgs, pgs[0]?.[1] || 1, 'var(--orange)');
   }
   document.getElementById('btn-refresh-visitors').addEventListener('click', () => { tabsLoaded.visitors = false; loadVisitors(); });
+  document.getElementById('v-date-picker')?.addEventListener('change', e => renderDateDetail(e.target.value));
+  document.getElementById('v-date-prev')?.addEventListener('click', () => {
+    const p = document.getElementById('v-date-picker');
+    if (!p?.value) return;
+    const d = new Date(p.value); d.setDate(d.getDate() - 1);
+    renderDateDetail(d.toISOString().slice(0, 10));
+  });
+  document.getElementById('v-date-next')?.addEventListener('click', () => {
+    const p = document.getElementById('v-date-picker');
+    if (!p?.value) return;
+    const d = new Date(p.value); d.setDate(d.getDate() + 1);
+    renderDateDetail(d.toISOString().slice(0, 10));
+  });
 </script>
 
 </body>

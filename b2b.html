@@ -762,7 +762,7 @@
         <div class="calc-lbl">주문 수량 직접 입력</div>
         <div class="calc-qty-row">
           <button class="calc-qty-btn" onclick="adjustQty(-10)">−</button>
-          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="500" value="10" oninput="calcUpdate()">
+          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="1000" value="10" oninput="calcUpdate()">
           <button class="calc-qty-btn" onclick="adjustQty(10)">+</button>
           <span class="calc-qty-unit">권</span>
         </div>
@@ -863,32 +863,30 @@
 
 <script>
   // Pricing calculator
-  var PTIERS = [10, 20, 30, 50, 70, 100, 150, 200, 300, 400, 500];
-  function calcPrice(x) { return Math.round((8973.68 - 7.3684 * x) / 100) * 100; }
+  function calcPrice(x) {
+    var raw = Math.round((8973.68 - 7.3684 * x) / 100) * 100;
+    return Math.max(3300, raw);
+  }
   function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }
   function calcUpdate() {
-    var qty = Math.max(10, Math.min(500, parseInt(document.getElementById('calc-qty').value) || 10));
-    var u = calcPrice(qty), t = u * qty;
-    document.getElementById('calc-unit').textContent = fmtWon(u);
-    document.getElementById('calc-total').textContent = fmtWon(t);
+    var qty = Math.max(10, Math.min(1000, parseInt(document.getElementById('calc-qty').value) || 10));
+    document.getElementById('calc-qty').value = qty;
+    var unitEl = document.getElementById('calc-unit');
+    var totalEl = document.getElementById('calc-total');
+    if (qty >= 1000) {
+      unitEl.textContent = '별도 견적';
+      totalEl.textContent = '문의 필요';
+    } else {
+      var u = calcPrice(qty), t = u * qty;
+      unitEl.textContent = fmtWon(u);
+      totalEl.textContent = fmtWon(t);
+    }
   }
   function adjustQty(d) {
     var inp = document.getElementById('calc-qty');
-    inp.value = Math.max(10, Math.min(500, (parseInt(inp.value) || 10) + d));
+    inp.value = Math.max(10, Math.min(1000, (parseInt(inp.value) || 10) + d));
     calcUpdate();
   }
-  (function renderPTable() {
-    var body = document.getElementById('ptable-body');
-    if (!body) return;
-    body.innerHTML = PTIERS.map(function(q) {
-      var u = calcPrice(q), t = u * q;
-      return '<div class="ptable-row">' +
-        '<span class="c-qty">' + q + '권</span>' +
-        '<span class="c-unit">' + fmtWon(u) + '</span>' +
-        '<span class="c-total">' + fmtWon(t) + '</span>' +
-        '</div>';
-    }).join('');
-  })();
 
   // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(btn => {

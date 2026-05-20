@@ -832,7 +832,7 @@
         <div class="calc-lbl">주문 수량 직접 입력</div>
         <div class="calc-qty-row">
           <button class="calc-qty-btn" onclick="adjustQty(-10)">−</button>
-          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="1000" value="10" oninput="calcUpdate()">
+          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="1000" value="10" oninput="calcUpdateLive()" onblur="calcUpdate()">
           <button class="calc-qty-btn" onclick="adjustQty(10)">+</button>
           <span class="calc-qty-unit">권</span>
         </div>
@@ -988,6 +988,21 @@
     return Math.max(3300, raw);
   }
   function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }
+  function calcUpdateLive() {
+    var raw = parseInt(document.getElementById('calc-qty').value);
+    if (!raw || raw < 1) return;
+    var qty = Math.min(1000, raw);
+    var unitEl = document.getElementById('calc-unit');
+    var totalEl = document.getElementById('calc-total');
+    if (qty >= 1000) {
+      unitEl.textContent = '별도 견적';
+      totalEl.textContent = '문의 필요';
+    } else {
+      var u = calcPrice(qty), t = u * qty;
+      unitEl.textContent = fmtWon(u);
+      totalEl.textContent = fmtWon(t);
+    }
+  }
   function calcUpdate() {
     var qty = Math.max(10, Math.min(1000, parseInt(document.getElementById('calc-qty').value) || 10));
     document.getElementById('calc-qty').value = qty;

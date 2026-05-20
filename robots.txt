@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /b2b
+Disallow: /ambassador
+Disallow: /admin

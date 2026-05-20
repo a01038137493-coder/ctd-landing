@@ -762,7 +762,7 @@
         <div class="calc-lbl">주문 수량 직접 입력</div>
         <div class="calc-qty-row">
           <button class="calc-qty-btn" onclick="adjustQty(-10)">−</button>
-          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="9999" value="10" oninput="calcUpdate()">
+          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="500" value="10" oninput="calcUpdate()">
           <button class="calc-qty-btn" onclick="adjustQty(10)">+</button>
           <span class="calc-qty-unit">권</span>
         </div>
@@ -867,14 +867,14 @@
   function calcPrice(x) { return Math.round((8973.68 - 7.3684 * x) / 100) * 100; }
   function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }
   function calcUpdate() {
-    var qty = Math.max(10, parseInt(document.getElementById('calc-qty').value) || 10);
+    var qty = Math.max(10, Math.min(500, parseInt(document.getElementById('calc-qty').value) || 10));
     var u = calcPrice(qty), t = u * qty;
     document.getElementById('calc-unit').textContent = fmtWon(u);
     document.getElementById('calc-total').textContent = fmtWon(t);
   }
   function adjustQty(d) {
     var inp = document.getElementById('calc-qty');
-    inp.value = Math.max(10, (parseInt(inp.value) || 10) + d);
+    inp.value = Math.max(10, Math.min(500, (parseInt(inp.value) || 10) + d));
     calcUpdate();
   }
   (function renderPTable() {

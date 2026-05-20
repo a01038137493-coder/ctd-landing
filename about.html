@@ -187,6 +187,73 @@
     .contact-value a:hover { color: var(--orange); }
     .contact-value .small { display: block; font-size: 12px; color: var(--ink-3); font-weight: 500; margin-top: 4px; }
 
+    /* ═══ INQUIRY CTA ═══ */
+    .contact-inq-strip {
+      margin-top: 12px;
+      background: #111; border-radius: 10px; padding: 24px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .contact-inq-left .contact-inq-badge { font-size: 10px; font-weight: 800; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+    .contact-inq-left p { font-size: 14px; color: rgba(255,255,255,.5); }
+    .contact-inq-btn {
+      background: var(--orange); color: #fff;
+      padding: 12px 24px; border-radius: 8px;
+      font-size: 14px; font-weight: 800; font-family: inherit;
+      border: none; cursor: pointer; white-space: nowrap; transition: opacity .15s;
+    }
+    .contact-inq-btn:hover { opacity: .85; }
+    /* ═══ INQUIRY MODAL ═══ */
+    .inq-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+    }
+    .inq-overlay.open { opacity: 1; visibility: visible; }
+    .inq-modal {
+      background: #fff; border-radius: 22px; width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
+      padding: 40px 36px 32px; box-shadow: 0 28px 80px rgba(0,0,0,.22); position: relative;
+      transform: translateY(14px) scale(.98); transition: transform .28s cubic-bezier(.34,1.2,.64,1);
+    }
+    .inq-overlay.open .inq-modal { transform: none; }
+    .inq-close {
+      position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%;
+      background: #f0f0f0; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: #666; transition: background .15s;
+    }
+    .inq-close:hover { background: #e0e0e0; }
+    .inq-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+    .inq-title { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: #111; margin-bottom: 6px; }
+    .inq-sub { font-size: 14px; color: #999; margin-bottom: 28px; }
+    .inq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .inq-field { margin-bottom: 14px; }
+    .inq-label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; }
+    .inq-input, .inq-textarea {
+      width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e4e4e4;
+      background: #fafafa; font-family: inherit; font-size: 15px; color: #111;
+      outline: none; transition: border-color .15s, background .15s;
+    }
+    .inq-input:focus, .inq-textarea:focus { border-color: var(--orange); background: #fff; }
+    .inq-textarea { resize: vertical; min-height: 78px; }
+    .inq-qty-wrap { display: flex; align-items: center; gap: 8px; }
+    .inq-qty-wrap .inq-input { width: 120px; }
+    .inq-submit {
+      width: 100%; margin-top: 6px; padding: 16px; border-radius: 12px;
+      background: var(--orange); color: #fff; font-family: inherit;
+      font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .inq-submit:hover { opacity: .88; transform: translateY(-1px); }
+    .inq-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .inq-err { color: #e55; font-size: 13px; margin-top: 8px; min-height: 18px; }
+    .inq-success { display: none; text-align: center; padding: 12px 0 8px; }
+    .inq-success-title { font-size: 21px; font-weight: 900; color: #111; margin-bottom: 10px; letter-spacing: -.5px; }
+    .inq-success-desc { font-size: 14px; color: #888; line-height: 1.75; }
+    .inq-check-svg { width: 72px; height: 72px; margin: 0 auto 20px; display: block; }
+    .inq-check-circle { stroke-dasharray: 145; stroke-dashoffset: 145; animation: inq-circle .55s cubic-bezier(.65,0,.45,1) .05s forwards; }
+    .inq-check-mark { stroke-dasharray: 48; stroke-dashoffset: 48; animation: inq-check .32s cubic-bezier(.65,0,.45,1) .6s forwards; }
+    @keyframes inq-circle { to { stroke-dashoffset: 0; } }
+    @keyframes inq-check  { to { stroke-dashoffset: 0; } }
+    @media (max-width: 500px) { .inq-modal { padding: 28px 18px 24px; } .inq-row { grid-template-columns: 1fr; } }
     /* ═══ FOOTER ═══ */
     footer { background: #111; color: rgba(255,255,255,.45); padding: 60px 40px 36px; }
     .footer-top { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08); }
@@ -370,9 +437,63 @@
           <div class="contact-value"><a href="https://www.youtube.com/@ctdenglish" target="_blank">@ctdenglish</a><span class="small">강의 · 인사이트 · 소식</span></div>
         </div>
       </div>
+      <div class="contact-inq-strip">
+        <div class="contact-inq-left">
+          <div class="contact-inq-badge">학원 · 강사 단체 도입</div>
+          <p>교재 공급가 및 샘플 교안 문의는 아래 버튼으로 접수해주세요.</p>
+        </div>
+        <button class="contact-inq-btn" onclick="openInquiry()">도입 문의하기 →</button>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- INQUIRY MODAL -->
+<div class="inq-overlay" id="inqOverlay" onclick="if(event.target===this)closeInquiry()">
+  <div class="inq-modal">
+    <button class="inq-close" onclick="closeInquiry()">✕</button>
+    <div id="inqForm">
+      <div class="inq-eyebrow">교재 도입 문의</div>
+      <h2 class="inq-title">편하게 물어보세요.</h2>
+      <p class="inq-sub">수량·가격·샘플 모두 빠르게 답변드립니다.</p>
+      <div class="inq-row">
+        <div class="inq-field">
+          <label class="inq-label">학원명 *</label>
+          <input class="inq-input" id="inqAcademy" placeholder="학원명을 입력하세요">
+        </div>
+        <div class="inq-field">
+          <label class="inq-label">담당자명 *</label>
+          <input class="inq-input" id="inqName" placeholder="담당자명을 입력하세요">
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">연락처 *</label>
+        <input class="inq-input" id="inqPhone" type="tel" placeholder="전화번호를 입력하세요">
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">예상 수량</label>
+        <div class="inq-qty-wrap">
+          <input class="inq-input" id="inqQty" type="number" min="10" placeholder="수량">
+          <span style="font-size:14px;color:#999;">권</span>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">문의 내용 (선택)</label>
+        <textarea class="inq-textarea" id="inqMsg" placeholder="샘플 교안 먼저 확인하고 싶습니다."></textarea>
+      </div>
+      <button class="inq-submit" id="inqSubmit" onclick="submitInquiry()">문의 보내기 →</button>
+      <p class="inq-err" id="inqError"></p>
+    </div>
+    <div class="inq-success" id="inqSuccess">
+      <svg class="inq-check-svg" viewBox="0 0 52 52" fill="none">
+        <circle class="inq-check-circle" cx="26" cy="26" r="23" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+        <path class="inq-check-mark" d="M14 26l8 8 16-16" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="inq-success-title">문의가 접수되었습니다!</div>
+      <p class="inq-success-desc">빠르게 검토 후 연락드리겠습니다.<br>보통 1 영업일 내에 답변드립니다.</p>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -419,6 +540,59 @@
       nav.classList.add('is-open');
       requestAnimationFrame(() => nav.classList.add('is-visible'));
       document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function openInquiry() {
+    const ov = document.getElementById('inqOverlay');
+    document.getElementById('inqForm').style.display = '';
+    document.getElementById('inqSuccess').style.display = 'none';
+    document.getElementById('inqSubmit').style.display = '';
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeInquiry() {
+    document.getElementById('inqOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  async function submitInquiry() {
+    const academy = document.getElementById('inqAcademy').value.trim();
+    const contact = document.getElementById('inqContact').value.trim();
+    const phone   = document.getElementById('inqPhone').value.trim();
+    const qty     = parseInt(document.getElementById('inqQty').value) || null;
+    const msg     = document.getElementById('inqMsg').value.trim();
+    if (!academy || !contact || !phone) { alert('학원명, 담당자명, 전화번호는 필수입니다.'); return; }
+    const btn = document.getElementById('inqSubmit');
+    btn.disabled = true; btn.textContent = '전송 중…';
+    try {
+      const { error } = await window._supabase
+        .from('b2b_inquiries')
+        .insert({ academy_name: academy, contact_name: contact, phone, quantity: qty, message: msg });
+      if (error) throw error;
+      const tg = window.TELEGRAM_CONFIG;
+      if (tg && tg.token && tg.chatId) {
+        const now = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        const lines = [
+          '📋 *B2B 교재 문의 (어바웃)*', '',
+          `🏫 학원명: ${academy}`,
+          `👤 담당자: ${contact}`,
+          `📞 연락처: ${phone}`,
+          qty ? `📦 수량: ${qty}권` : null,
+          msg ? `💬 내용: ${msg}` : null,
+          '', `🕐 ${now}`
+        ].filter(l => l !== null).join('\n');
+        fetch(`https://api.telegram.org/bot${tg.token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: tg.chatId, text: lines, parse_mode: 'Markdown' })
+        }).catch(() => {});
+      }
+      document.getElementById('inqForm').style.display = 'none';
+      document.getElementById('inqSubmit').style.display = 'none';
+      document.getElementById('inqSuccess').style.display = '';
+    } catch (e) {
+      alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+      btn.disabled = false; btn.textContent = '문의 보내기 →';
     }
   }
 </script>

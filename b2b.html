@@ -757,6 +757,28 @@
     <div class="pricing-eyebrow">권수별 공급가</div>
     <h2 class="pricing-title">수량이 많을수록<br>권당 가격이 낮아집니다.</h2>
     <p class="pricing-sub">최소 주문 10권부터 가능합니다.</p>
+    <div class="calc-box">
+      <div class="calc-left">
+        <div class="calc-lbl">주문 수량 직접 입력</div>
+        <div class="calc-qty-row">
+          <button class="calc-qty-btn" onclick="adjustQty(-10)">−</button>
+          <input type="number" id="calc-qty" class="calc-qty-input" min="10" max="9999" value="10" oninput="calcUpdate()">
+          <button class="calc-qty-btn" onclick="adjustQty(10)">+</button>
+          <span class="calc-qty-unit">권</span>
+        </div>
+      </div>
+      <div class="calc-right">
+        <div class="calc-card">
+          <div class="calc-card-lbl">권당 가격</div>
+          <div class="calc-card-val" id="calc-unit">8,900원</div>
+        </div>
+        <div class="calc-card highlight">
+          <div class="calc-card-lbl">총 금액</div>
+          <div class="calc-card-val" id="calc-total">89,000원</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ptable">
       <div class="ptable-row hd"><span>수량</span><span>권당 가격</span><span>총 금액</span></div>
       <div id="ptable-body"></div>
@@ -844,22 +866,32 @@
 </a>
 
 <script>
-  // Pricing table
-  (function() {
-    var TIERS = [10, 20, 30, 50, 70, 100, 150, 200, 300, 400, 500];
-    function calcPrice(x) { return Math.round((8973.68 - 7.3684 * x) / 100) * 100; }
-    function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }
+  // Pricing calculator
+  var PTIERS = [10, 20, 30, 50, 70, 100, 150, 200, 300, 400, 500];
+  function calcPrice(x) { return Math.round((8973.68 - 7.3684 * x) / 100) * 100; }
+  function fmtWon(n) { return n.toLocaleString('ko-KR') + '원'; }
+  function calcUpdate() {
+    var qty = Math.max(10, parseInt(document.getElementById('calc-qty').value) || 10);
+    var u = calcPrice(qty), t = u * qty;
+    document.getElementById('calc-unit').textContent = fmtWon(u);
+    document.getElementById('calc-total').textContent = fmtWon(t);
+  }
+  function adjustQty(d) {
+    var inp = document.getElementById('calc-qty');
+    inp.value = Math.max(10, (parseInt(inp.value) || 10) + d);
+    calcUpdate();
+  }
+  (function renderPTable() {
     var body = document.getElementById('ptable-body');
-    if (body) {
-      body.innerHTML = TIERS.map(function(q) {
-        var u = calcPrice(q), t = u * q;
-        return '<div class="ptable-row">' +
-          '<span class="c-qty">' + q + '권</span>' +
-          '<span class="c-unit">' + fmtWon(u) + '</span>' +
-          '<span class="c-total">' + fmtWon(t) + '</span>' +
-          '</div>';
-      }).join('');
-    }
+    if (!body) return;
+    body.innerHTML = PTIERS.map(function(q) {
+      var u = calcPrice(q), t = u * q;
+      return '<div class="ptable-row">' +
+        '<span class="c-qty">' + q + '권</span>' +
+        '<span class="c-unit">' + fmtWon(u) + '</span>' +
+        '<span class="c-total">' + fmtWon(t) + '</span>' +
+        '</div>';
+    }).join('');
   })();
 
   // FAQ accordion

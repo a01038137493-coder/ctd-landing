@@ -117,7 +117,11 @@
 
     /* ── PAIN / PROBLEMS ── */
     .pain-sec {
-      background: var(--bg); padding: 96px 40px;
+      background:
+        radial-gradient(ellipse 70% 60% at 5% 40%, rgba(255,122,0,.06) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 95% 80%, rgba(255,122,0,.05) 0%, transparent 50%),
+        var(--bg);
+      padding: 96px 40px;
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
     .pain-inner { max-width: 1100px; margin: 0 auto; }
@@ -148,7 +152,12 @@
     .solution-strip-sub { font-size: 16px; color: rgba(255,255,255,.85); margin-top: 10px; }
 
     /* ── FEATURES GRID ── */
-    .features-sec { background: var(--bg2); padding: 96px 40px; }
+    .features-sec {
+      background:
+        url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%23FF7A00' fill-opacity='0.07'/%3E%3C/svg%3E"),
+        var(--bg2);
+      padding: 96px 40px;
+    }
     .features-inner { max-width: 1100px; margin: 0 auto; }
     .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 56px; }
     .feat-card {
@@ -171,7 +180,10 @@
     @media (max-width: 500px) { .features-sec { padding: 72px 24px; } }
 
     /* ── CURRICULUM ── */
-    .curriculum-sec { background: var(--bg); padding: 96px 40px; }
+    .curriculum-sec {
+      background: linear-gradient(160deg, #fff 0%, #FFF5EC 45%, #FFF0E0 100%);
+      padding: 96px 40px;
+    }
     .curriculum-inner { max-width: 1100px; margin: 0 auto; }
     .curriculum-list { display: flex; flex-direction: column; gap: 0; margin-top: 56px; }
     .curriculum-item {
@@ -203,7 +215,12 @@
     }
 
     /* ── HOW IT WORKS ── */
-    .how-sec { background: var(--bg2); padding: 96px 40px; }
+    .how-sec {
+      background:
+        url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 48L48 0' stroke='%23FF7A00' stroke-opacity='0.04' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
+        linear-gradient(135deg, #fff 0%, #FFF8F4 100%);
+      padding: 96px 40px;
+    }
     .how-inner { max-width: 1100px; margin: 0 auto; }
     .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 60px; }
     .how-step {
@@ -255,7 +272,13 @@
     }
 
     /* ── TESTIMONIALS ── */
-    .testi-sec { background: var(--bg); padding: 96px 40px; }
+    .testi-sec {
+      background:
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23FF7A00' fill-opacity='0.05'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 70% 50% at 50% 110%, rgba(255,122,0,.06) 0%, transparent 60%),
+        var(--bg);
+      padding: 96px 40px;
+    }
     .testi-inner { max-width: 1100px; margin: 0 auto; }
     .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
     .testi-card {
@@ -297,7 +320,13 @@
     @media (max-width: 600px) { .partner-card { padding: 36px 24px; } .partner-includes { grid-template-columns: 1fr; } .partner-sec { padding: 72px 24px; } }
 
     /* ── FAQ ── */
-    .faq-sec { background: var(--bg); padding: 96px 40px; border-top: 1px solid var(--border); }
+    .faq-sec {
+      background:
+        url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='15' y='0' width='1' height='32' fill='%23FF7A00' fill-opacity='0.03'/%3E%3Crect x='0' y='15' width='32' height='1' fill='%23FF7A00' fill-opacity='0.03'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+      padding: 96px 40px;
+      border-top: 1px solid var(--border);
+    }
     .faq-inner { max-width: 800px; margin: 0 auto; }
     .faq-list { margin-top: 52px; display: flex; flex-direction: column; gap: 0; }
     .faq-item { border-bottom: 1px solid var(--border); }
@@ -353,7 +382,12 @@
     .kakao-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,0,0,.25); }
 
     /* ── PRICING CALCULATOR ── */
-    .pricing-sec { background: var(--bg); padding: 96px 40px; border-top: 1px solid var(--border); }
+    .pricing-sec {
+      background:
+        radial-gradient(ellipse 60% 70% at 90% 50%, rgba(255,122,0,.07) 0%, transparent 55%),
+        linear-gradient(170deg, #FFF8F2 0%, #fff 60%);
+      padding: 96px 40px; border-top: 1px solid var(--border);
+    }
     .pricing-inner { max-width: 860px; margin: 0 auto; }
     .pricing-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 14px; }
     .pricing-title { font-size: clamp(26px, 3.5vw, 42px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.2; color: var(--black); margin-bottom: 12px; }

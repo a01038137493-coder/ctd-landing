@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SHOP — Connect the dots</title>
+  <title>커닥 샵 | 수능영어 교재</title>
+  <meta name="description" content="커닥 수능영어 교재 쇼핑몰. 기출 주간지, 실전모의고사 등 수능영어 완성을 위한 교재를 만나보세요." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://ctdenglish.co.kr/shop.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="커닥 | Connect the dots" />
+  <meta property="og:url" content="https://ctdenglish.co.kr/shop.html" />
+  <meta property="og:title" content="커닥 샵 | 수능영어 교재" />
+  <meta property="og:description" content="커닥 수능영어 교재 쇼핑몰. 기출 주간지, 실전모의고사 등 수능영어 완성을 위한 교재를 만나보세요." />
+  <meta property="og:image" content="https://ctdenglish.co.kr/image/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80%20%EB%B0%B0%EB%84%88.jpg" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="커닥 샵 | 수능영어 교재" />
+  <meta name="twitter:description" content="커닥 수능영어 교재 쇼핑몰. 기출 주간지, 실전모의고사 등." />
+  <meta name="twitter:image" content="https://ctdenglish.co.kr/image/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80%20%EB%B0%B0%EB%84%88.jpg" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -180,9 +194,52 @@
       .shop-subtitle { margin-bottom: 56px; }
     }
     @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+
+    /* ── PAGE LOADER ── */
+    #page-loader {
+      position: fixed; inset: 0; z-index: 9999; background: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 22px; transition: opacity .35s ease, visibility .35s ease;
+    }
+    #page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-svg { width: 148px; height: 148px; overflow: visible; }
+    .ld-line { stroke-dasharray: 130; stroke-dashoffset: 130; animation: ld-draw .2s cubic-bezier(.4,0,.2,1) both; }
+    .ld-dot { transform-box: fill-box; transform-origin: center; animation: ld-pop .18s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes ld-draw { to { stroke-dashoffset: 0; } }
+    @keyframes ld-pop  { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .loader-logo {
+      display: flex; align-items: center; gap: 7px;
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: .5px; color: rgba(0,0,0,.3);
+      animation: ld-fade .3s .22s ease both;
+    }
+    .loader-logo-dot { width: 6px; height: 6px; background: #FF7A00; border-radius: 50%; }
+    @keyframes ld-fade { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
 <body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <svg class="loader-svg" viewBox="0 0 200 200" fill="none">
+    <line class="ld-line" x1="100" y1="42"  x2="150" y2="71"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.26s"/>
+    <line class="ld-line" x1="150" y1="71"  x2="150" y2="129" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.35s"/>
+    <line class="ld-line" x1="150" y1="129" x2="100" y2="158" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.44s"/>
+    <line class="ld-line" x1="100" y1="158" x2="50"  y2="129" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.53s"/>
+    <line class="ld-line" x1="50"  y1="129" x2="50"  y2="71"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.62s"/>
+    <line class="ld-line" x1="50"  y1="71"  x2="100" y2="42"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.71s"/>
+    <circle class="ld-dot" cx="100" cy="42"  r="4.5" fill="#FF7A00" style="animation-delay:.02s"/>
+    <circle class="ld-dot" cx="150" cy="71"  r="4.5" fill="#FF7A00" style="animation-delay:.06s"/>
+    <circle class="ld-dot" cx="150" cy="129" r="4.5" fill="#FF7A00" style="animation-delay:.10s"/>
+    <circle class="ld-dot" cx="100" cy="158" r="4.5" fill="#FF7A00" style="animation-delay:.14s"/>
+    <circle class="ld-dot" cx="50"  cy="129" r="4.5" fill="#FF7A00" style="animation-delay:.18s"/>
+    <circle class="ld-dot" cx="50"  cy="71"  r="4.5" fill="#FF7A00" style="animation-delay:.22s"/>
+  </svg>
+  <div class="loader-logo">
+    <span class="loader-logo-dot"></span>
+    Connect the dots
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -339,6 +396,23 @@
 
   // Supabase mode: realtime push from server (admin edits visible to everyone)
   if (CTDProducts.hasSupabase()) CTDProducts.subscribeChanges(refresh);
+
+  // ── PAGE LOADER ──
+  (function() {
+    var loader = document.getElementById('page-loader');
+    if (!loader) return;
+    if (document.readyState === 'complete') { loader.parentNode && loader.parentNode.removeChild(loader); return; }
+    var start = Date.now(), MIN = 900;
+    function hide() {
+      var w = Math.max(0, MIN - (Date.now() - start));
+      setTimeout(function() {
+        loader.classList.add('hidden');
+        setTimeout(function() { loader.parentNode && loader.parentNode.removeChild(loader); }, 400);
+      }, w);
+    }
+    window.addEventListener('load', hide);
+    setTimeout(hide, 4000);
+  })();
 </script>
 
 <style>.kakao-btn{position:fixed;bottom:28px;right:28px;z-index:999;width:52px;height:52px;border-radius:50%;background:#FEE500;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s;text-decoration:none;}.kakao-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.35);}</style>

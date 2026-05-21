@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Connect the dots — 수능영어 멤버십</title>
+  <title>커닥 | 수능영어 주간지 · 기출 완전정복</title>
+  <meta name="description" content="커닥(Connect the dots) — 수능영어 기출 주간지·멤버십·온라인 강의. 매주 도착하는 분석 자료로 수능영어 1등급을 완성하세요." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://ctdenglish.co.kr/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="커닥 | Connect the dots" />
+  <meta property="og:url" content="https://ctdenglish.co.kr/" />
+  <meta property="og:title" content="커닥 | 수능영어 주간지 · 기출 완전정복" />
+  <meta property="og:description" content="커닥(Connect the dots) — 수능영어 기출 주간지·멤버십·온라인 강의. 매주 도착하는 분석 자료로 수능영어 1등급을 완성하세요." />
+  <meta property="og:image" content="https://ctdenglish.co.kr/image/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80%20%EB%B0%B0%EB%84%88.jpg" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="커닥 | 수능영어 주간지 · 기출 완전정복" />
+  <meta name="twitter:description" content="커닥(Connect the dots) — 수능영어 기출 주간지·멤버십·온라인 강의." />
+  <meta name="twitter:image" content="https://ctdenglish.co.kr/image/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80%20%EB%B0%B0%EB%84%88.jpg" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -125,6 +139,7 @@
       width: clamp(260px, 28vw, 420px);
       filter: drop-shadow(-20px 40px 60px rgba(0,0,0,.35));
       animation: float 4s ease-in-out infinite;
+      will-change: transform;
     }
     .hero-tagline {
       position: relative;
@@ -140,7 +155,7 @@
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px;
       color: rgba(255,255,255,.5); font-size: 11px; font-weight: 600; letter-spacing: 1px;
     }
-    .hero-scroll-hint svg { animation: bounce 1.8s ease-in-out infinite; }
+    .hero-scroll-hint svg { animation: bounce 1.8s ease-in-out infinite; will-change: transform; }
     @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -293,7 +308,7 @@
     .pitch-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1px 1fr; gap: 80px; align-items: center; }
     .pitch-divider { background: rgba(255,255,255,.1); align-self: stretch; }
     .pitch-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 24px; }
-    .pitch-price { font-size: clamp(40px, 8vw, 108px); font-weight: 900; color: #fff; letter-spacing: -4px; line-height: 1; display: flex; align-items: flex-end; flex-wrap: nowrap; }
+    .pitch-price { font-size: clamp(40px, 8vw, 108px); font-weight: 900; color: #fff; letter-spacing: -4px; line-height: 1; display: flex; align-items: flex-end; flex-wrap: nowrap; padding-right: 8px; }
     .pitch-price sup { font-size: .35em; font-weight: 600; color: rgba(255,255,255,.35); letter-spacing: 0; margin-left: 0.3em; align-self: flex-start; line-height: 1.2; }
     .pitch-tagline { font-size: 17px; font-weight: 500; color: rgba(255,255,255,.4); margin-top: 24px; line-height: 1.6; }
     .pitch-sub-title { font-size: clamp(22px, 2.5vw, 32px); font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1.35; margin-bottom: 36px; }
@@ -480,12 +495,12 @@
     }
 
     /* ── FADE ── */
-    .fu { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
-    .fu.vis { opacity: 1; transform: none; }
+    .fu { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; will-change: opacity, transform; }
+    .fu.vis { opacity: 1; transform: none; will-change: auto; }
 
     /* ── MOBILE ── */
     @media (max-width: 960px) {
-      .nav { padding: 0 20px; }
+      .nav { padding: 0 20px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(0,0,0,.82); }
       .nav-menu { display: none; }
       .nav-mobile { display: block; }
       .hero-inner { grid-template-columns: 1fr; padding: 60px 20px; }
@@ -526,9 +541,132 @@
       .video-sec { padding: 56px 20px; }
       .video-banner { min-height: 280px; padding: 28px 20px; }
     }
+
+    /* ── PAGE LOADER ── */
+    #page-loader {
+      position: fixed; inset: 0; z-index: 9999; background: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 22px; transition: opacity .35s ease, visibility .35s ease;
+    }
+    #page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-svg { width: 148px; height: 148px; overflow: visible; }
+    .ld-line { stroke-dasharray: 130; stroke-dashoffset: 130; animation: ld-draw .2s cubic-bezier(.4,0,.2,1) both; }
+    .ld-dot { transform-box: fill-box; transform-origin: center; animation: ld-pop .18s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes ld-draw { to { stroke-dashoffset: 0; } }
+    @keyframes ld-pop  { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .loader-logo {
+      display: flex; align-items: center; gap: 7px;
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: .5px; color: rgba(0,0,0,.3);
+      animation: ld-fade .3s .22s ease both;
+    }
+    .loader-logo-dot { width: 6px; height: 6px; background: #FF7A00; border-radius: 50%; }
+    @keyframes ld-fade { from { opacity: 0; } to { opacity: 1; } }
+    /* ── B2B CTA STRIP ── */
+    .b2b-cta-strip {
+      max-width: 860px; margin: 0 auto 56px;
+      background: rgba(255,122,0,.07); border: 1px solid rgba(255,122,0,.2);
+      border-radius: 14px; padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .b2b-cta-badge { font-size: 10px; font-weight: 800; color: var(--orange); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 3px; display: block; }
+    .b2b-cta-text { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.5; }
+    .b2b-cta-btn {
+      background: var(--orange); color: #fff;
+      padding: 11px 22px; border-radius: 8px;
+      font-size: 14px; font-weight: 800; font-family: 'Pretendard', sans-serif;
+      border: none; cursor: pointer; white-space: nowrap; transition: opacity .15s;
+    }
+    .b2b-cta-btn:hover { opacity: .85; }
+    /* ── INQUIRY MODAL (index) ── */
+    .inq-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+    }
+    .inq-overlay.open { opacity: 1; visibility: visible; }
+    .inq-modal {
+      background: #fff; border-radius: 22px; width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
+      padding: 40px 36px 32px; box-shadow: 0 28px 80px rgba(0,0,0,.22); position: relative;
+      transform: translateY(14px) scale(.98); transition: transform .28s cubic-bezier(.34,1.2,.64,1);
+    }
+    .inq-overlay.open .inq-modal { transform: none; }
+    .inq-close {
+      position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%;
+      background: #f0f0f0; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: #666; transition: background .15s;
+    }
+    .inq-close:hover { background: #e0e0e0; }
+    .inq-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #FF7A00; margin-bottom: 6px; }
+    .inq-title { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: #111; margin-bottom: 6px; }
+    .inq-sub { font-size: 14px; color: #999; margin-bottom: 28px; }
+    .inq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .inq-field { margin-bottom: 14px; }
+    .inq-label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; }
+    .inq-input, .inq-textarea {
+      width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e4e4e4;
+      background: #fafafa; font-family: 'Pretendard', sans-serif; font-size: 15px; color: #111;
+      outline: none; transition: border-color .15s, background .15s;
+    }
+    .inq-input:focus, .inq-textarea:focus { border-color: #FF7A00; background: #fff; }
+    .inq-textarea { resize: vertical; min-height: 78px; }
+    .inq-qty-wrap { display: flex; align-items: center; gap: 8px; }
+    .inq-qty-wrap .inq-input { width: 120px; }
+    .inq-submit {
+      width: 100%; margin-top: 6px; padding: 16px; border-radius: 12px;
+      background: #FF7A00; color: #fff; font-family: 'Pretendard', sans-serif;
+      font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .inq-submit:hover { opacity: .88; transform: translateY(-1px); }
+    .inq-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .inq-err { color: #e55; font-size: 13px; margin-top: 8px; min-height: 18px; }
+    .inq-success { display: none; text-align: center; padding: 12px 0 8px; }
+    .inq-success-title { font-size: 21px; font-weight: 900; color: #111; margin-bottom: 10px; letter-spacing: -.5px; }
+    .inq-success-desc { font-size: 14px; color: #888; line-height: 1.75; }
+    .inq-check-svg { width: 72px; height: 72px; margin: 0 auto 20px; display: block; }
+    .inq-check-circle {
+      stroke-dasharray: 145; stroke-dashoffset: 145;
+      animation: inq-circle .55s cubic-bezier(.65,0,.45,1) .05s forwards;
+    }
+    .inq-check-mark {
+      stroke-dasharray: 48; stroke-dashoffset: 48;
+      animation: inq-check .32s cubic-bezier(.65,0,.45,1) .6s forwards;
+    }
+    @keyframes inq-circle { to { stroke-dashoffset: 0; } }
+    @keyframes inq-check  { to { stroke-dashoffset: 0; } }
+    @media (max-width: 500px) { .inq-modal { padding: 28px 18px 24px; } .inq-row { grid-template-columns: 1fr; } }
   </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"EducationalOrganization","name":"커닥 (Connect the dots)","url":"https://ctdenglish.co.kr","logo":"https://ctdenglish.co.kr/favicon.svg","description":"수능영어 기출 주간지, 멤버십, 온라인 강의. 매주 이어지는 학습 시스템.","address":{"@type":"PostalAddress","streetAddress":"달구벌대로 2528, 7층","addressLocality":"대구 수성구","addressCountry":"KR"},"contactPoint":{"@type":"ContactPoint","email":"soul3785@naver.com","contactType":"customer service"},"sameAs":["https://www.youtube.com/@ctdenglish"]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebSite","name":"커닥","url":"https://ctdenglish.co.kr","potentialAction":{"@type":"SearchAction","target":"https://ctdenglish.co.kr/shop.html?q={search_term_string}","query-input":"required name=search_term_string"}}
+  </script>
 </head>
 <body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <svg class="loader-svg" viewBox="0 0 200 200" fill="none">
+    <line class="ld-line" x1="100" y1="42"  x2="150" y2="71"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.26s"/>
+    <line class="ld-line" x1="150" y1="71"  x2="150" y2="129" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.35s"/>
+    <line class="ld-line" x1="150" y1="129" x2="100" y2="158" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.44s"/>
+    <line class="ld-line" x1="100" y1="158" x2="50"  y2="129" stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.53s"/>
+    <line class="ld-line" x1="50"  y1="129" x2="50"  y2="71"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.62s"/>
+    <line class="ld-line" x1="50"  y1="71"  x2="100" y2="42"  stroke="#FF7A00" stroke-width="1.5" stroke-opacity=".45" style="animation-delay:.71s"/>
+    <circle class="ld-dot" cx="100" cy="42"  r="4.5" fill="#FF7A00" style="animation-delay:.02s"/>
+    <circle class="ld-dot" cx="150" cy="71"  r="4.5" fill="#FF7A00" style="animation-delay:.06s"/>
+    <circle class="ld-dot" cx="150" cy="129" r="4.5" fill="#FF7A00" style="animation-delay:.10s"/>
+    <circle class="ld-dot" cx="100" cy="158" r="4.5" fill="#FF7A00" style="animation-delay:.14s"/>
+    <circle class="ld-dot" cx="50"  cy="129" r="4.5" fill="#FF7A00" style="animation-delay:.18s"/>
+    <circle class="ld-dot" cx="50"  cy="71"  r="4.5" fill="#FF7A00" style="animation-delay:.22s"/>
+  </svg>
+  <div class="loader-logo">
+    <span class="loader-logo-dot"></span>
+    Connect the dots
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -603,7 +741,7 @@
         <li><span class="pitch-dot"></span>약점을 채우는 멤버십 콘텐츠</li>
         <li><span class="pitch-dot"></span>조교·집필진이 답변하는 초고속 학습 관리</li>
       </ul>
-      <a href="#" class="pitch-cta">멤버십 시작하기 →</a>
+      <a href="/membership.html" class="pitch-cta">멤버십 시작하기 →</a>
     </div>
   </div>
 </section>
@@ -733,7 +871,7 @@
             <li>수능 필수 기출 핵심/고난이도 구문 연습</li>
             <li>독학이 가능한 상세한 해설</li>
           </ul>
-          <a href="#" class="product-btn">상품으로 바로가기 →</a>
+          <a href="/shop.html" class="product-btn">상품으로 바로가기 →</a>
         </div>
       </div>
       <div class="product-item">
@@ -749,7 +887,7 @@
             <li>반복 패턴으로 감각 자동화</li>
             <li>매일 부담 없는 분량 구성</li>
           </ul>
-          <a href="#" class="product-btn">상품으로 바로가기 →</a>
+          <a href="/shop.html" class="product-btn">상품으로 바로가기 →</a>
         </div>
       </div>
       <div class="product-item">
@@ -765,7 +903,7 @@
             <li>29번 대비 핵심 기출 선별</li>
             <li>틀리는 패턴 집중 공략</li>
           </ul>
-          <a href="#" class="product-btn">상품으로 바로가기 →</a>
+          <a href="/shop.html" class="product-btn">상품으로 바로가기 →</a>
         </div>
       </div>
       <div class="product-item">
@@ -781,11 +919,11 @@
             <li>빠른 채점표 및 해설지 제공</li>
             <li>짧은 시간, 최대 실전 감각 유지</li>
           </ul>
-          <a href="#" class="product-btn">상품으로 바로가기 →</a>
+          <a href="/shop.html" class="product-btn">상품으로 바로가기 →</a>
         </div>
       </div>
       <div class="product-item">
-        <div class="product-cover"><div class="product-cover-empty">표지 준비중</div></div>
+        <div class="product-cover"><img src="/image/모의고사.png" alt="실전모의고사" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"></div>
         <div class="product-info">
           <div class="product-num">05</div>
           <div class="product-name">실전모의고사</div>
@@ -797,7 +935,7 @@
             <li>시간 관리 전략 훈련</li>
             <li>문항별 상세 해설 제공</li>
           </ul>
-          <a href="#" class="product-btn">상품으로 바로가기 →</a>
+          <a href="/shop.html" class="product-btn">상품으로 바로가기 →</a>
         </div>
       </div>
     </div>
@@ -856,6 +994,14 @@
         </ul>
         <a href="/membership.html" class="price-btn-primary">멤버십 시작하기</a>
       </div>
+    </div>
+
+    <div class="b2b-cta-strip">
+      <div>
+        <span class="b2b-cta-badge">학원·강사 선생님</span>
+        <p class="b2b-cta-text">단체 도입은 별도 공급가로 안내드립니다. 문의 주시면 도메인과 함께 상세 안내를 보내드립니다.</p>
+      </div>
+      <button class="b2b-cta-btn" onclick="openInquiry()">도입 문의하기 →</button>
     </div>
 
     <p class="price-table-tagline">수능영어,<br><strong>이제 혼자 고민하지 않아도 됩니다.</strong></p>
@@ -1057,6 +1203,126 @@
       items.forEach(i => i.classList.remove('is-expanded', 'is-shrunk'));
     });
   })();
+</script>
+
+<script>
+(function() {
+  var loader = document.getElementById('page-loader');
+  if (!loader) return;
+  if (document.readyState === 'complete') { loader.parentNode && loader.parentNode.removeChild(loader); return; }
+  var start = Date.now(), MIN = 900;
+  function hide() {
+    var w = Math.max(0, MIN - (Date.now() - start));
+    setTimeout(function() {
+      loader.classList.add('hidden');
+      setTimeout(function() { loader.parentNode && loader.parentNode.removeChild(loader); }, 400);
+    }, w);
+  }
+  window.addEventListener('load', hide);
+  setTimeout(hide, 4000);
+})();
+</script>
+
+<!-- INQUIRY MODAL -->
+<div class="inq-overlay" id="inqOverlay" onclick="if(event.target===this)closeInquiry()">
+  <div class="inq-modal">
+    <button class="inq-close" onclick="closeInquiry()">✕</button>
+    <div id="inqForm">
+      <div class="inq-eyebrow">교재 도입 문의</div>
+      <h2 class="inq-title">편하게 물어보세요.</h2>
+      <p class="inq-sub">수량·가격·샘플 모두 빠르게 답변드립니다.</p>
+      <div class="inq-row">
+        <div class="inq-field">
+          <label class="inq-label">학원명 *</label>
+          <input class="inq-input" id="inqAcademy" placeholder="학원명을 입력하세요">
+        </div>
+        <div class="inq-field">
+          <label class="inq-label">담당자명 *</label>
+          <input class="inq-input" id="inqName" placeholder="담당자명을 입력하세요">
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">연락처 *</label>
+        <input class="inq-input" id="inqPhone" type="tel" placeholder="전화번호를 입력하세요">
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">예상 수량</label>
+        <div class="inq-qty-wrap">
+          <input class="inq-input" id="inqQty" type="number" min="10" placeholder="수량">
+          <span style="font-size:14px;color:#999;">권</span>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">문의 내용 (선택)</label>
+        <textarea class="inq-textarea" id="inqMsg" placeholder="샘플 교안 먼저 확인하고 싶습니다."></textarea>
+      </div>
+      <button class="inq-submit" id="inqSubmit" onclick="submitInquiry()">문의 보내기 →</button>
+      <p class="inq-err" id="inqError"></p>
+    </div>
+    <div class="inq-success" id="inqSuccess">
+      <svg class="inq-check-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="inq-check-circle" cx="26" cy="26" r="23" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+        <path class="inq-check-mark" d="M14 26l8 8 16-16" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="inq-success-title">문의가 접수되었습니다!</div>
+      <p class="inq-success-desc">빠르게 검토 후 연락드리겠습니다.<br>보통 1 영업일 내에 답변드립니다.</p>
+    </div>
+  </div>
+</div>
+<script>
+  function openInquiry(qty) {
+    document.getElementById('inqOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('inqForm').style.display = '';
+    document.getElementById('inqSuccess').style.display = 'none';
+    document.getElementById('inqError').textContent = '';
+    document.getElementById('inqSubmit').disabled = false;
+    document.getElementById('inqSubmit').textContent = '문의 보내기 →';
+    if (qty) document.getElementById('inqQty').value = qty;
+  }
+  function closeInquiry() {
+    document.getElementById('inqOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeInquiry(); });
+  async function submitInquiry() {
+    var academy = document.getElementById('inqAcademy').value.trim();
+    var name    = document.getElementById('inqName').value.trim();
+    var phone   = document.getElementById('inqPhone').value.trim();
+    var qty     = parseInt(document.getElementById('inqQty').value) || null;
+    var msg     = document.getElementById('inqMsg').value.trim();
+    var errEl   = document.getElementById('inqError');
+    errEl.textContent = '';
+    if (!academy) { errEl.textContent = '학원명을 입력해주세요.'; return; }
+    if (!name)    { errEl.textContent = '담당자명을 입력해주세요.'; return; }
+    if (!phone)   { errEl.textContent = '연락처를 입력해주세요.'; return; }
+    var btn = document.getElementById('inqSubmit');
+    btn.disabled = true; btn.textContent = '전송 중...';
+    var data = { academy_name: academy, contact_name: name, phone: phone, quantity: qty, message: msg || null, status: 'new' };
+    try {
+      var cfg = window.SUPABASE_CONFIG;
+      if (cfg && cfg.url && cfg.anonKey) {
+        var client = supabase.createClient(cfg.url, cfg.anonKey);
+        await client.from('b2b_inquiries').insert([data]);
+      }
+    } catch(e) { console.error(e); }
+    try {
+      var tg = window.TELEGRAM_CONFIG;
+      if (tg && tg.token && tg.chatId) {
+        var now = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        var lines = ['🏫 *교재 문의 접수 (메인)*', '', '📌 학원명: '+academy, '👤 담당자: '+name, '📞 연락처: '+phone];
+        if (qty) lines.push('📦 수량: '+qty+'권');
+        if (msg) lines.push('💬 내용: '+msg);
+        lines.push('', '⏰ '+now);
+        fetch('https://api.telegram.org/bot'+tg.token+'/sendMessage', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({chat_id: tg.chatId, text: lines.join('\n'), parse_mode:'Markdown'})
+        }).catch(()=>{});
+      }
+    } catch(e) {}
+    document.getElementById('inqForm').style.display = 'none';
+    document.getElementById('inqSuccess').style.display = 'block';
+  }
 </script>
 
 <style>.kakao-btn{position:fixed;bottom:28px;right:28px;z-index:999;width:52px;height:52px;border-radius:50%;background:#FEE500;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s;text-decoration:none;}.kakao-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.35);}</style>

@@ -113,7 +113,36 @@
     const row = { id, ...order };
     const { error } = await client().from('orders').insert(row);
     if (error) throw error;
-    return { ...row, status: 'pending', created_at: new Date().toISOString() };
+    const result = { ...row, status: 'pending', created_at: new Date().toISOString() };
+
+    // Telegram 알림
+    try {
+      const tg = window.TELEGRAM_CONFIG;
+      if (tg && tg.token && tg.chatId) {
+        const now = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        const itemList = (order.items || []).map(i => `  • ${i.name} × ${i.qty}`).join('\n');
+        const lines = [
+          '🛒 *주문 접수*',
+          '',
+          `👤 이름: ${order.customer_name}`,
+          `📞 연락처: ${order.customer_phone}`,
+          order.customer_email ? `📧 이메일: ${order.customer_email}` : '',
+          `📦 상품:\n${itemList}`,
+          `💰 총액: ${Number(order.total).toLocaleString('ko-KR')}원`,
+          order.customer_address ? `🏠 주소: ${order.customer_address}` : '',
+          order.memo ? `📝 메모: ${order.memo}` : '',
+          '',
+          `⏰ ${now}`,
+        ].filter(Boolean).join('\n');
+        fetch(`https://api.telegram.org/bot${tg.token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: tg.chatId, text: lines, parse_mode: 'Markdown' }),
+        }).catch(() => {});
+      }
+    } catch (_) {}
+
+    return result;
   }
 
   async function loadProducts() {

@@ -522,7 +522,12 @@
       <div class="stat-card"><div class="stat-label">재방문자</div><div class="stat-value" id="v-return">—</div><div class="stat-sub">재방문</div></div>
       <div class="stat-card"><div class="stat-label">총 페이지뷰</div><div class="stat-value" id="v-pv">—</div><div class="stat-sub">모든 기록</div></div>
       <div class="stat-card"><div class="stat-label">일평균 방문자</div><div class="stat-value" id="v-avg">—</div><div class="stat-sub">최근 14일</div></div>
+      <div class="stat-card"><div class="stat-label">세션당 페이지</div><div class="stat-value" id="v-pps">—</div><div class="stat-sub">평균 PV / 세션</div></div>
+      <div class="stat-card"><div class="stat-label">이탈률</div><div class="stat-value" id="v-bounce">—</div><div class="stat-sub">1페이지만 본 세션 %</div></div>
       <div class="stat-card highlight"><div class="stat-label">교안 PDF 다운로드</div><div class="stat-value orange" id="v-pdf">—</div><div class="stat-sub" id="v-pdf-sub">오늘 0건</div></div>
+      <div class="stat-card highlight"><div class="stat-label">CTA 클릭</div><div class="stat-value orange" id="v-cta">—</div><div class="stat-sub" id="v-cta-sub">전체 버튼/링크</div></div>
+      <div class="stat-card highlight"><div class="stat-label">문의 클릭</div><div class="stat-value orange" id="v-contact">—</div><div class="stat-sub" id="v-contact-sub">전화·메일·문의버튼</div></div>
+      <div class="stat-card highlight"><div class="stat-label">회원가입 완료</div><div class="stat-value orange" id="v-signup">—</div><div class="stat-sub" id="v-signup-sub">signup_complete</div></div>
     </div>
 
     <div class="chart-card">
@@ -581,6 +586,38 @@
     <div class="chart-card">
       <div class="chart-title">페이지별 방문</div>
       <div id="v-pages"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+    </div>
+
+    <div class="vis-grid-2">
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">랜딩 페이지 TOP (세션 첫 페이지)</div>
+        <div id="v-landing"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">종료 페이지 TOP (세션 마지막 페이지)</div>
+        <div id="v-exit"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:16px;">
+      <div class="chart-title">이벤트 집계 (event_name 별)</div>
+      <div id="v-events"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+    </div>
+
+    <div class="vis-grid-2">
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">CTA 클릭 TOP (button_click / data-track)</div>
+        <div id="v-cta-top"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-title">스크롤 깊이 도달</div>
+        <div id="v-scroll"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:16px;">
+      <div class="chart-title">UTM 캠페인 성과</div>
+      <div id="v-utm"><div class="loading" style="padding:24px 0;">불러오는 중...</div></div>
     </div>
   </div>
 </div>
@@ -1370,25 +1407,47 @@
            <p style="margin-top:8px;font-size:13px;line-height:1.7;">Supabase SQL Editor에서 아래 쿼리를 실행하세요:</p>
            <pre style="text-align:left;background:#0A0A0A;border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;overflow:auto;margin-top:12px;">CREATE TABLE pageviews (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  created_at timestamptz DEFAULT now() NOT NULL,
+  created_at  timestamptz DEFAULT now() NOT NULL,
   page text, referrer text, device text,
   browser text, os text,
-  session_id text, visitor_id text, is_new boolean DEFAULT false
+  session_id text, visitor_id text, is_new boolean DEFAULT false,
+  screen text, language text,
+  utm_source text, utm_medium text, utm_campaign text,
+  landing_page text,
+  event_name text, event_props jsonb
 );
+CREATE INDEX ON pageviews (created_at DESC);
+CREATE INDEX ON pageviews (event_name);
+CREATE INDEX ON pageviews (session_id);
 ALTER TABLE pageviews ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "public_insert" ON pageviews FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (true);</pre></div>`;
+CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (true);</pre>
+           <p style="margin-top:14px;font-size:13px;line-height:1.7;">이미 pageviews 테이블이 있다면 아래 ALTER 쿼리만 실행하세요 (기존 데이터 보존):</p>
+           <pre style="text-align:left;background:#0A0A0A;border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;overflow:auto;margin-top:12px;">ALTER TABLE pageviews
+  ADD COLUMN IF NOT EXISTS screen       text,
+  ADD COLUMN IF NOT EXISTS language     text,
+  ADD COLUMN IF NOT EXISTS utm_source   text,
+  ADD COLUMN IF NOT EXISTS utm_medium   text,
+  ADD COLUMN IF NOT EXISTS utm_campaign text,
+  ADD COLUMN IF NOT EXISTS landing_page text,
+  ADD COLUMN IF NOT EXISTS event_name   text,
+  ADD COLUMN IF NOT EXISTS event_props  jsonb;
+CREATE INDEX IF NOT EXISTS pageviews_event_name_idx ON pageviews (event_name);
+CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</pre></div>`;
       } else {
         console.error('[visitors]', error);
       }
       return;
     }
 
-    const pvs = data || [];
+    const allRows = data || [];
+    // Split rows: legacy "/event/*" virtual pageviews are treated as events too.
+    const pvs    = allRows.filter(r => !r.event_name && !(r.page || '').startsWith('/event/'));
+    const events = allRows.filter(r => r.event_name || (r.page || '').startsWith('/event/'));
     visitorPvs = pvs;
     const todayKey = dayKey(new Date());
 
-    // Unique visitor sets
+    // Unique visitor sets (real page views only)
     const allVids   = new Set(pvs.map(r => r.visitor_id));
     const todayPvs  = pvs.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
     const todayVids = new Set(todayPvs.map(r => r.visitor_id));
@@ -1408,9 +1467,32 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     );
 
     // Stat cards
-    // PDF download events
-    const pdfRows      = pvs.filter(r => r.page === '/event/pdf-download');
-    const pdfToday     = pdfRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+    // PDF downloads: count new event_name='pdf_download' + legacy /event/pdf-download
+    const pdfRows = events.filter(r =>
+      r.event_name === 'pdf_download' || r.page === '/event/pdf-download');
+    const pdfToday = pdfRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+
+    // Sessions & per-session metrics (for bounce + pages-per-session)
+    const sessionPvCount = new Map();
+    pvs.forEach(r => {
+      if (!r.session_id) return;
+      sessionPvCount.set(r.session_id, (sessionPvCount.get(r.session_id) || 0) + 1);
+    });
+    const totalSessions = sessionPvCount.size;
+    const singlePvSessions = Array.from(sessionPvCount.values()).filter(n => n === 1).length;
+    const bounceRate = totalSessions ? Math.round(singlePvSessions / totalSessions * 100) : 0;
+    const avgPagesPerSession = totalSessions ? (pvs.length / totalSessions).toFixed(2) : '0';
+
+    // Conversion event counts
+    const ctaRows     = events.filter(r => r.event_name === 'button_click' || r.event_name === 'cta_click');
+    const contactRows = events.filter(r =>
+      r.event_name === 'tel_click' || r.event_name === 'email_click' ||
+      r.event_name === 'contact_click' || r.event_name === 'contact_submit' ||
+      r.event_name === 'kakao_click' || r.event_name === 'b2b_inquiry_submit');
+    const signupRows  = events.filter(r => r.event_name === 'signup_complete');
+    const ctaToday    = ctaRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+    const contactToday= contactRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+    const signupToday = signupRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
 
     document.getElementById('v-total').textContent   = allVids.size.toLocaleString('ko-KR') + '명';
     document.getElementById('v-today').textContent   = todayVids.size.toLocaleString('ko-KR') + '명';
@@ -1419,8 +1501,16 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     document.getElementById('v-return').textContent  = Math.max(0, retVids).toLocaleString('ko-KR') + '명';
     document.getElementById('v-pv').textContent      = pvs.length.toLocaleString('ko-KR');
     document.getElementById('v-avg').textContent     = avg14.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-pps').textContent     = avgPagesPerSession;
+    document.getElementById('v-bounce').textContent  = bounceRate + '%';
     document.getElementById('v-pdf').textContent     = pdfRows.length.toLocaleString('ko-KR') + '건';
     document.getElementById('v-pdf-sub').textContent = '오늘 ' + pdfToday.length + '건';
+    document.getElementById('v-cta').textContent     = ctaRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-cta-sub').textContent = '오늘 ' + ctaToday.length + '건';
+    document.getElementById('v-contact').textContent = contactRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-contact-sub').textContent = '오늘 ' + contactToday.length + '건';
+    document.getElementById('v-signup').textContent  = signupRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-signup-sub').textContent = '오늘 ' + signupToday.length + '건';
 
     // Daily chart
     const dailyData = days14Keys.map(dk => ({
@@ -1500,6 +1590,99 @@ CREATE POLICY "auth_select"  ON pageviews FOR SELECT TO authenticated USING (tru
     pvs.forEach(r => { const k = r.page || '/'; pgMap.set(k, (pgMap.get(k) || 0) + 1); });
     const pgs = Array.from(pgMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 12);
     document.getElementById('v-pages').innerHTML = makeBarRows(pgs, pgs[0]?.[1] || 1, 'var(--orange)');
+
+    // Landing pages — use landing_page column when present, else first PV per session
+    const landingMap = new Map();
+    const sessionFirstPv = new Map();  // session_id → earliest PV row
+    pvs.forEach(r => {
+      if (!r.session_id) return;
+      const prev = sessionFirstPv.get(r.session_id);
+      if (!prev || new Date(r.created_at) < new Date(prev.created_at)) {
+        sessionFirstPv.set(r.session_id, r);
+      }
+    });
+    sessionFirstPv.forEach(r => {
+      const lp = r.landing_page || r.page || '/';
+      landingMap.set(lp, (landingMap.get(lp) || 0) + 1);
+    });
+    const landings = Array.from(landingMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    document.getElementById('v-landing').innerHTML =
+      makeBarRows(landings.map(([k, v]) => [k.length > 28 ? k.slice(0, 28) + '…' : k, v]),
+                  landings[0]?.[1] || 1, 'var(--orange)');
+
+    // Exit pages — last PV per session
+    const sessionLastPv = new Map();
+    pvs.forEach(r => {
+      if (!r.session_id) return;
+      const prev = sessionLastPv.get(r.session_id);
+      if (!prev || new Date(r.created_at) > new Date(prev.created_at)) {
+        sessionLastPv.set(r.session_id, r);
+      }
+    });
+    const exitMap = new Map();
+    sessionLastPv.forEach(r => {
+      const k = r.page || '/';
+      exitMap.set(k, (exitMap.get(k) || 0) + 1);
+    });
+    const exits = Array.from(exitMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    document.getElementById('v-exit').innerHTML =
+      makeBarRows(exits.map(([k, v]) => [k.length > 28 ? k.slice(0, 28) + '…' : k, v]),
+                  exits[0]?.[1] || 1, '#4CD964');
+
+    // Event aggregation
+    const evMap = new Map();
+    events.forEach(r => {
+      const k = r.event_name || (r.page || '').replace(/^\/event\//, '') || 'unknown';
+      evMap.set(k, (evMap.get(k) || 0) + 1);
+    });
+    const evRows = Array.from(evMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20);
+    document.getElementById('v-events').innerHTML = evRows.length
+      ? makeBarRows(evRows, evRows[0]?.[1] || 1, 'var(--orange)')
+      : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">이벤트 기록이 아직 없습니다.</div>';
+
+    // CTA TOP — group by data-track label (event_props.label) when available
+    const ctaMap = new Map();
+    events.filter(r => r.event_name === 'button_click' || r.event_name === 'cta_click')
+      .forEach(r => {
+        let lbl = r.event_name;
+        try {
+          const p = typeof r.event_props === 'string' ? JSON.parse(r.event_props) : r.event_props;
+          if (p && p.label) lbl = p.label;
+          else if (p && p.href) lbl = p.href;
+        } catch (e) {}
+        ctaMap.set(lbl, (ctaMap.get(lbl) || 0) + 1);
+      });
+    const ctaTop = Array.from(ctaMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    document.getElementById('v-cta-top').innerHTML = ctaTop.length
+      ? makeBarRows(ctaTop.map(([k, v]) => [k.length > 30 ? k.slice(0, 30) + '…' : k, v]),
+                    ctaTop[0]?.[1] || 1, 'var(--orange)')
+      : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">data-track 속성이 붙은 버튼/링크 클릭이 없습니다.</div>';
+
+    // Scroll depth
+    const scrollMap = { 25: 0, 50: 0, 75: 0, 100: 0 };
+    events.filter(r => r.event_name === 'scroll_depth').forEach(r => {
+      try {
+        const p = typeof r.event_props === 'string' ? JSON.parse(r.event_props) : r.event_props;
+        if (p && scrollMap[p.percent] !== undefined) scrollMap[p.percent]++;
+      } catch (e) {}
+    });
+    const scrollEntries = [['25%', scrollMap[25]], ['50%', scrollMap[50]], ['75%', scrollMap[75]], ['100%', scrollMap[100]]];
+    const maxScroll = Math.max(1, ...scrollEntries.map(x => x[1]));
+    document.getElementById('v-scroll').innerHTML =
+      (scrollEntries.some(x => x[1] > 0))
+        ? makeBarRows(scrollEntries, maxScroll, '#007AFF')
+        : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">아직 스크롤 데이터가 없습니다.</div>';
+
+    // UTM performance
+    const utmMap = new Map();
+    pvs.filter(r => r.utm_source).forEach(r => {
+      const k = [r.utm_source, r.utm_medium, r.utm_campaign].filter(Boolean).join(' / ');
+      utmMap.set(k, (utmMap.get(k) || 0) + 1);
+    });
+    const utmRows = Array.from(utmMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    document.getElementById('v-utm').innerHTML = utmRows.length
+      ? makeBarRows(utmRows, utmRows[0]?.[1] || 1, 'var(--orange)')
+      : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">UTM 파라미터가 붙은 방문이 없습니다. (예: ?utm_source=instagram&utm_campaign=summer)</div>';
   }
   document.getElementById('btn-refresh-visitors').addEventListener('click', () => { tabsLoaded.visitors = false; loadVisitors(); });
   document.getElementById('v-date-picker')?.addEventListener('change', e => renderDateDetail(e.target.value));

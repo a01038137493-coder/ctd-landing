@@ -783,9 +783,11 @@
   CTDCart.attachNavCount();
   CTDAuth.attachNav();
 
-  // PDF 다운로드 클릭 추적
+  // PDF 다운로드 클릭 추적 (legacy 가상경로 + 신규 event_name 둘 다 기록)
   document.querySelector('a[download]')?.addEventListener('click', function () {
-    if (window.CTDTrack) CTDTrack.event('/event/pdf-download');
+    if (!window.CTDTrack) return;
+    CTDTrack.event('/event/pdf-download');  // 기존 차트 호환
+    CTDTrack.event('pdf_download', { source: 'inspire_hero', file: 'inspire-2027.pdf' });
   });
 
   function toggleNav() {

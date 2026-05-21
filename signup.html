@@ -224,9 +224,11 @@
             phone: phone || null,
           });
         } catch(e) {}
+        if (window.CTDTrack) CTDTrack.event('signup_complete', { mode: 'instant' });
         location.href = '/';
       } else {
         // Email confirmation required
+        if (window.CTDTrack) CTDTrack.event('signup_complete', { mode: 'email_confirm' });
         document.getElementById('signup-form').style.display = 'none';
         document.getElementById('success-email').textContent = email;
         document.getElementById('success-confirm').style.display = 'block';

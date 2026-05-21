@@ -359,7 +359,13 @@
         total: CTDCart.total(),
       };
       const saved = await CTDProducts.createOrder(order);
+      const orderTotal = order.total;
       CTDCart.clear();
+      if (window.CTDTrack) CTDTrack.event('purchase_complete', {
+        order_id: saved.id || null,
+        total: orderTotal,
+        item_count: items.length,
+      });
       document.getElementById('success-id').textContent = '주문번호: ' + (saved.id || '').toString().slice(0, 12);
       document.getElementById('success').classList.add('show');
     } catch (err) {

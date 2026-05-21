@@ -514,7 +514,7 @@
   <div class="nav-right">
     <span class="nav-badge">학원장 전용</span>
     <a href="/ambassador" class="nav-link-subtle" style="font-size:13px;color:var(--orange);font-weight:600;margin-right:4px;">앰베서더 프로젝트 →</a>
-    <button onclick="openInquiry()" class="nav-cta" style="cursor:pointer;">교재 문의 →</button>
+    <button onclick="openInquiry()" class="nav-cta" style="cursor:pointer;" data-track="cta_click" data-track-props='{"label":"교재 문의 (nav)"}'>교재 문의 →</button>
   </div>
 </nav>
 
@@ -984,6 +984,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase-config.js"></script>
+<script src="/js/track.js"></script>
 
 <!-- KAKAO FLOAT -->
 <a href="http://pf.kakao.com/_ixfTsX" target="_blank" class="kakao-btn" aria-label="카카오 상담">
@@ -1098,7 +1099,12 @@
       }
     } catch(e) { console.error('[inquiry telegram]', e); }
 
-    // 3. 성공 화면
+    // 3. 트래킹
+    if (window.CTDTrack) CTDTrack.event('b2b_inquiry_submit', {
+      academy: academy, quantity: qty || null,
+    });
+
+    // 4. 성공 화면
     document.getElementById('inqForm').style.display = 'none';
     document.getElementById('inqSuccess').style.display = 'block';
   }

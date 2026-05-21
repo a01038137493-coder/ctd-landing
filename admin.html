@@ -291,6 +291,28 @@
     /* ── VISITOR STATS ── */
     .vis-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     @media (max-width: 900px) { .vis-grid-2 { grid-template-columns: 1fr; } }
+    .v-period-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 18px; padding: 10px 12px;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+      flex-wrap: wrap;
+    }
+    .v-period-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .v-period-btn {
+      background: transparent; border: 1px solid transparent; color: var(--txt-2);
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .v-period-btn:hover { background: var(--panel-2); color: #fff; }
+    .v-period-btn.active { background: var(--orange); color: #fff; }
+    .v-period-custom { display: flex; align-items: center; gap: 6px; }
+    .v-period-custom .input { padding: 7px 10px; font-size: 13px; width: 140px; }
+    @media (max-width: 700px) {
+      .v-period-bar { flex-direction: column; align-items: stretch; }
+      .v-period-custom { justify-content: stretch; }
+      .v-period-custom .input { flex: 1; width: auto; }
+    }
     .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .bar-row-label { font-size: 12px; color: var(--txt-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .bar-row-track { flex: 1; background: var(--panel-2); border-radius: 3px; overflow: hidden; height: 8px; }
@@ -511,42 +533,47 @@
 <div class="tab-panel" id="tab-visitors">
   <div class="dashboard">
     <div class="dashboard-head">
-      <div class="dashboard-title">방문자 통계 <small style="color:var(--txt-3); font-size:12px; font-weight:600; margin-left:8px;">페이지뷰 기반</small></div>
+      <div class="dashboard-title">방문자 통계 <small style="color:var(--txt-3); font-size:12px; font-weight:600; margin-left:8px;" id="v-range-label">최근 30일</small></div>
       <button class="btn btn-ghost" id="btn-refresh-visitors">새로고침</button>
     </div>
 
+    <!-- PERIOD SELECTOR -->
+    <div class="v-period-bar">
+      <div class="v-period-tabs">
+        <button class="v-period-btn" data-period="today">오늘</button>
+        <button class="v-period-btn" data-period="7d">7일</button>
+        <button class="v-period-btn active" data-period="30d">30일</button>
+        <button class="v-period-btn" data-period="90d">90일</button>
+        <button class="v-period-btn" data-period="all">전체</button>
+        <button class="v-period-btn" data-period="custom">사용자지정</button>
+      </div>
+      <div class="v-period-custom" id="v-period-custom" style="display:none;">
+        <input type="date" id="v-range-start" class="input" />
+        <span style="color:var(--txt-3);font-size:12px;">~</span>
+        <input type="date" id="v-range-end" class="input" />
+        <button class="btn btn-primary" id="v-range-apply" style="padding:8px 16px;font-size:13px;">적용</button>
+      </div>
+    </div>
+
     <div class="stat-grid">
-      <div class="stat-card highlight"><div class="stat-label">총 방문자</div><div class="stat-value orange" id="v-total">—</div><div class="stat-sub">고유 방문자 누적</div></div>
-      <div class="stat-card highlight"><div class="stat-label">오늘 방문자</div><div class="stat-value orange" id="v-today">—</div><div class="stat-sub" id="v-today-sub">오늘 기준</div></div>
-      <div class="stat-card"><div class="stat-label">신규 방문자</div><div class="stat-value" id="v-new">—</div><div class="stat-sub">첫 방문</div></div>
-      <div class="stat-card"><div class="stat-label">재방문자</div><div class="stat-value" id="v-return">—</div><div class="stat-sub">재방문</div></div>
-      <div class="stat-card"><div class="stat-label">총 페이지뷰</div><div class="stat-value" id="v-pv">—</div><div class="stat-sub">모든 기록</div></div>
-      <div class="stat-card"><div class="stat-label">일평균 방문자</div><div class="stat-value" id="v-avg">—</div><div class="stat-sub">최근 14일</div></div>
+      <div class="stat-card highlight"><div class="stat-label">총 방문자</div><div class="stat-value orange" id="v-total">—</div><div class="stat-sub">전체 누적 (필터 무관)</div></div>
+      <div class="stat-card highlight"><div class="stat-label">기간 방문자</div><div class="stat-value orange" id="v-today">—</div><div class="stat-sub" id="v-today-sub">선택 기간</div></div>
+      <div class="stat-card"><div class="stat-label">신규 방문자</div><div class="stat-value" id="v-new">—</div><div class="stat-sub">기간 내 첫 방문</div></div>
+      <div class="stat-card"><div class="stat-label">재방문자</div><div class="stat-value" id="v-return">—</div><div class="stat-sub">기간 내 재방문</div></div>
+      <div class="stat-card"><div class="stat-label">페이지뷰</div><div class="stat-value" id="v-pv">—</div><div class="stat-sub">기간 합계</div></div>
+      <div class="stat-card"><div class="stat-label">일평균 방문자</div><div class="stat-value" id="v-avg">—</div><div class="stat-sub" id="v-avg-sub">기간 평균</div></div>
       <div class="stat-card"><div class="stat-label">세션당 페이지</div><div class="stat-value" id="v-pps">—</div><div class="stat-sub">평균 PV / 세션</div></div>
       <div class="stat-card"><div class="stat-label">이탈률</div><div class="stat-value" id="v-bounce">—</div><div class="stat-sub">1페이지만 본 세션 %</div></div>
-      <div class="stat-card highlight"><div class="stat-label">교안 PDF 다운로드</div><div class="stat-value orange" id="v-pdf">—</div><div class="stat-sub" id="v-pdf-sub">오늘 0건</div></div>
+      <div class="stat-card highlight"><div class="stat-label">교안 PDF 다운로드</div><div class="stat-value orange" id="v-pdf">—</div><div class="stat-sub" id="v-pdf-sub">기간 0건</div></div>
       <div class="stat-card highlight"><div class="stat-label">CTA 클릭</div><div class="stat-value orange" id="v-cta">—</div><div class="stat-sub" id="v-cta-sub">전체 버튼/링크</div></div>
       <div class="stat-card highlight"><div class="stat-label">문의 클릭</div><div class="stat-value orange" id="v-contact">—</div><div class="stat-sub" id="v-contact-sub">전화·메일·문의버튼</div></div>
       <div class="stat-card highlight"><div class="stat-label">회원가입 완료</div><div class="stat-value orange" id="v-signup">—</div><div class="stat-sub" id="v-signup-sub">signup_complete</div></div>
     </div>
 
     <div class="chart-card">
-      <div class="chart-title">최근 14일 방문자 추이</div>
+      <div class="chart-title" id="v-chart-daily-title">최근 30일 방문자 추이</div>
       <div class="chart-bars" id="v-chart-daily"></div>
       <div class="chart-x" id="v-chart-daily-x"></div>
-    </div>
-
-    <div class="chart-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;">
-        <div class="chart-title" style="margin-bottom:0;">날짜별 방문 상세</div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <button class="btn btn-ghost" id="v-date-prev" style="padding:7px 12px;font-size:16px;line-height:1;">‹</button>
-          <input type="date" id="v-date-picker" class="input" style="width:150px;padding:7px 10px;font-size:13px;" />
-          <button class="btn btn-ghost" id="v-date-next" style="padding:7px 12px;font-size:16px;line-height:1;">›</button>
-        </div>
-      </div>
-      <div id="v-date-summary" style="margin-bottom:14px;"></div>
-      <div id="v-date-detail"></div>
     </div>
 
     <div class="vis-grid-2">
@@ -1346,39 +1373,52 @@
   document.getElementById('btn-refresh-customers').addEventListener('click', () => { tabsLoaded.customers = true; loadCustomers(); });
 
   // ── VISITORS ────────────────────────────────────────────────────
-  let visitorPvs = [];
+  // Filter state — cached raw rows + currently selected date range
+  let _visitorRows = null;             // { pvs, events, allVids } cached after fetch
+  let _vPeriod     = { kind: '30d', start: null, end: null };
 
-  function renderDateDetail(dk) {
-    const picker = document.getElementById('v-date-picker');
-    if (picker && picker.value !== dk) picker.value = dk;
-    const dayPvs = visitorPvs.filter(r => (r.created_at || '').slice(0, 10) === dk);
-    const uniqV = new Set(dayPvs.map(r => r.visitor_id)).size;
-    const summaryEl = document.getElementById('v-date-summary');
-    const detailEl  = document.getElementById('v-date-detail');
-    if (!summaryEl || !detailEl) return;
-    summaryEl.innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <span style="font-size:13px;color:var(--txt-2);">방문자 <strong style="color:#fff;">${uniqV}명</strong></span>
-      <span style="font-size:13px;color:var(--txt-2);">페이지뷰 <strong style="color:#fff;">${dayPvs.length}건</strong></span>
-    </div>`;
-    if (!dayPvs.length) {
-      detailEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--txt-3);font-size:13px;">이 날 방문 기록이 없습니다</div>';
-      return;
+  function vPeriodLabel(kind, start, end) {
+    if (kind === 'today') return '오늘';
+    if (kind === '7d')    return '최근 7일';
+    if (kind === '30d')   return '최근 30일';
+    if (kind === '90d')   return '최근 90일';
+    if (kind === 'all')   return '전체 기간';
+    if (kind === 'custom') {
+      if (start && end) return start + ' ~ ' + end;
+      return '사용자지정';
     }
-    const sorted = dayPvs.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    detailEl.innerHTML = `<table class="data-table"><thead><tr>
-      <th style="width:72px;">시간</th><th>페이지</th>
-      <th style="width:80px;">기기</th><th style="width:92px;">브라우저</th>
-      <th style="width:160px;">유입경로</th>
-    </tr></thead><tbody>${sorted.map(r => {
-      const t = r.created_at ? new Date(r.created_at).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) : '';
-      return `<tr>
-        <td class="cell-muted">${t}</td>
-        <td class="cell-truncate">${escapeHtml(r.page || '/')}</td>
-        <td class="cell-muted">${escapeHtml(r.device || '-')}</td>
-        <td class="cell-muted">${escapeHtml(r.browser || '-')}</td>
-        <td class="cell-muted cell-truncate">${escapeHtml(r.referrer || '직접')}</td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
+    return '';
+  }
+
+  // Compute start/end Date objects (inclusive day boundaries) for the period
+  function vPeriodRange(p) {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const endOfToday = new Date(today); endOfToday.setHours(23, 59, 59, 999);
+    if (p.kind === 'today') return { from: today, to: endOfToday };
+    if (p.kind === '7d')  { const d = new Date(today); d.setDate(d.getDate() - 6);  return { from: d, to: endOfToday }; }
+    if (p.kind === '30d') { const d = new Date(today); d.setDate(d.getDate() - 29); return { from: d, to: endOfToday }; }
+    if (p.kind === '90d') { const d = new Date(today); d.setDate(d.getDate() - 89); return { from: d, to: endOfToday }; }
+    if (p.kind === 'all') return { from: null, to: null };
+    if (p.kind === 'custom') {
+      const f = p.start ? new Date(p.start + 'T00:00:00') : null;
+      const t = p.end   ? new Date(p.end   + 'T23:59:59') : null;
+      return { from: f, to: t };
+    }
+    return { from: null, to: null };
+  }
+
+  function setVisitorPeriod(kind, opts) {
+    _vPeriod.kind = kind;
+    if (kind === 'custom' && opts) {
+      _vPeriod.start = opts.start || null;
+      _vPeriod.end   = opts.end   || null;
+    }
+    document.querySelectorAll('.v-period-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.period === kind);
+    });
+    document.getElementById('v-period-custom').style.display = (kind === 'custom') ? 'flex' : 'none';
+    document.getElementById('v-range-label').textContent = vPeriodLabel(kind, _vPeriod.start, _vPeriod.end);
+    if (_visitorRows) renderVisitors();
   }
 
   function makeBarRows(entries, maxVal, color) {
@@ -1441,38 +1481,65 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
     }
 
     const allRows = data || [];
-    // Split rows: legacy "/event/*" virtual pageviews are treated as events too.
-    const pvs    = allRows.filter(r => !r.event_name && !(r.page || '').startsWith('/event/'));
-    const events = allRows.filter(r => r.event_name || (r.page || '').startsWith('/event/'));
-    visitorPvs = pvs;
-    const todayKey = dayKey(new Date());
+    // Split rows once: legacy "/event/*" virtual pageviews count as events too.
+    const pvsAll    = allRows.filter(r => !r.event_name && !(r.page || '').startsWith('/event/'));
+    const eventsAll = allRows.filter(r => r.event_name || (r.page || '').startsWith('/event/'));
+    _visitorRows = { pvsAll, eventsAll, allVidsAll: new Set(pvsAll.map(r => r.visitor_id)) };
+    renderVisitors();
+  }
 
-    // Unique visitor sets (real page views only)
-    const allVids   = new Set(pvs.map(r => r.visitor_id));
-    const todayPvs  = pvs.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
-    const todayVids = new Set(todayPvs.map(r => r.visitor_id));
+  function renderVisitors() {
+    if (!_visitorRows) return;
+    const { pvsAll, eventsAll, allVidsAll } = _visitorRows;
+    const { from, to } = vPeriodRange(_vPeriod);
+    const inRange = (r) => {
+      if (!from && !to) return true;
+      const t = new Date(r.created_at).getTime();
+      if (from && t < from.getTime()) return false;
+      if (to   && t > to.getTime())   return false;
+      return true;
+    };
+    const pvs    = pvsAll.filter(inRange);
+    const events = eventsAll.filter(inRange);
+
+    // Range header label
+    document.getElementById('v-range-label').textContent =
+      vPeriodLabel(_vPeriod.kind, _vPeriod.start, _vPeriod.end);
+
+    // Visitor sets (filtered)
+    const rangeVids = new Set(pvs.map(r => r.visitor_id));
     const newVids   = new Set(pvs.filter(r => r.is_new).map(r => r.visitor_id));
-    const retVids   = allVids.size - newVids.size;
+    const retVids   = Math.max(0, rangeVids.size - newVids.size);
 
-    // 14-day avg
-    const days14Keys = [];
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
-      days14Keys.push(dayKey(d));
+    // Period-aware daily series for chart + daily average
+    // Use real day boundaries even for "all" (start at earliest record day)
+    let dayFrom = from, dayTo = to;
+    if (!dayFrom || !dayTo) {
+      const ts = pvsAll.map(r => new Date(r.created_at).getTime()).filter(n => !isNaN(n));
+      if (!ts.length) { dayFrom = new Date(); dayTo = new Date(); }
+      else {
+        dayFrom = new Date(Math.min(...ts)); dayFrom.setHours(0,0,0,0);
+        dayTo   = new Date(Math.max(...ts)); dayTo.setHours(23,59,59,999);
+      }
     }
-    const avg14 = Math.round(
-      days14Keys.reduce((s, dk) => {
-        return s + new Set(pvs.filter(r => (r.created_at || '').slice(0, 10) === dk).map(r => r.visitor_id)).size;
-      }, 0) / 14
-    );
+    const dayKeys = [];
+    const cur = new Date(dayFrom); cur.setHours(0,0,0,0);
+    const end = new Date(dayTo);   end.setHours(0,0,0,0);
+    while (cur <= end && dayKeys.length < 365) {
+      dayKeys.push(dayKey(cur));
+      cur.setDate(cur.getDate() + 1);
+    }
+    const dailyData = dayKeys.map(dk => ({
+      key: dk,
+      count: new Set(pvs.filter(r => (r.created_at || '').slice(0, 10) === dk).map(r => r.visitor_id)).size
+    }));
+    const dailyAvg = dailyData.length ? Math.round(dailyData.reduce((s, x) => s + x.count, 0) / dailyData.length) : 0;
 
-    // Stat cards
-    // PDF downloads: count new event_name='pdf_download' + legacy /event/pdf-download
+    // PDF downloads
     const pdfRows = events.filter(r =>
       r.event_name === 'pdf_download' || r.page === '/event/pdf-download');
-    const pdfToday = pdfRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
 
-    // Sessions & per-session metrics (for bounce + pages-per-session)
+    // Sessions metrics (within range)
     const sessionPvCount = new Map();
     pvs.forEach(r => {
       if (!r.session_id) return;
@@ -1489,50 +1556,48 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
       r.event_name === 'tel_click' || r.event_name === 'email_click' ||
       r.event_name === 'contact_click' || r.event_name === 'contact_submit' ||
       r.event_name === 'kakao_click' || r.event_name === 'b2b_inquiry_submit');
-    const signupRows  = events.filter(r => r.event_name === 'signup_complete');
-    const ctaToday    = ctaRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
-    const contactToday= contactRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
-    const signupToday = signupRows.filter(r => (r.created_at || '').slice(0, 10) === todayKey);
+    const signupRows = events.filter(r => r.event_name === 'signup_complete');
 
-    document.getElementById('v-total').textContent   = allVids.size.toLocaleString('ko-KR') + '명';
-    document.getElementById('v-today').textContent   = todayVids.size.toLocaleString('ko-KR') + '명';
-    document.getElementById('v-today-sub').textContent = '페이지뷰 ' + todayPvs.length + '건';
-    document.getElementById('v-new').textContent     = newVids.size.toLocaleString('ko-KR') + '명';
-    document.getElementById('v-return').textContent  = Math.max(0, retVids).toLocaleString('ko-KR') + '명';
-    document.getElementById('v-pv').textContent      = pvs.length.toLocaleString('ko-KR');
-    document.getElementById('v-avg').textContent     = avg14.toLocaleString('ko-KR') + '명';
-    document.getElementById('v-pps').textContent     = avgPagesPerSession;
-    document.getElementById('v-bounce').textContent  = bounceRate + '%';
-    document.getElementById('v-pdf').textContent     = pdfRows.length.toLocaleString('ko-KR') + '건';
-    document.getElementById('v-pdf-sub').textContent = '오늘 ' + pdfToday.length + '건';
-    document.getElementById('v-cta').textContent     = ctaRows.length.toLocaleString('ko-KR') + '건';
-    document.getElementById('v-cta-sub').textContent = '오늘 ' + ctaToday.length + '건';
-    document.getElementById('v-contact').textContent = contactRows.length.toLocaleString('ko-KR') + '건';
-    document.getElementById('v-contact-sub').textContent = '오늘 ' + contactToday.length + '건';
-    document.getElementById('v-signup').textContent  = signupRows.length.toLocaleString('ko-KR') + '건';
-    document.getElementById('v-signup-sub').textContent = '오늘 ' + signupToday.length + '건';
+    // ── Stat cards ──
+    document.getElementById('v-total').textContent       = allVidsAll.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-today').textContent       = rangeVids.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-today-sub').textContent   = '페이지뷰 ' + pvs.length + '건';
+    document.getElementById('v-new').textContent         = newVids.size.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-return').textContent      = retVids.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-pv').textContent          = pvs.length.toLocaleString('ko-KR');
+    document.getElementById('v-avg').textContent         = dailyAvg.toLocaleString('ko-KR') + '명';
+    document.getElementById('v-avg-sub').textContent     = dayKeys.length + '일 평균';
+    document.getElementById('v-pps').textContent         = avgPagesPerSession;
+    document.getElementById('v-bounce').textContent      = bounceRate + '%';
+    document.getElementById('v-pdf').textContent         = pdfRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-pdf-sub').textContent     = '기간 ' + pdfRows.length + '건';
+    document.getElementById('v-cta').textContent         = ctaRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-cta-sub').textContent     = '기간 ' + ctaRows.length + '건';
+    document.getElementById('v-contact').textContent     = contactRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-contact-sub').textContent = '기간 ' + contactRows.length + '건';
+    document.getElementById('v-signup').textContent      = signupRows.length.toLocaleString('ko-KR') + '건';
+    document.getElementById('v-signup-sub').textContent  = '기간 ' + signupRows.length + '건';
 
-    // Daily chart
-    const dailyData = days14Keys.map(dk => ({
-      key: dk,
-      count: new Set(pvs.filter(r => (r.created_at || '').slice(0, 10) === dk).map(r => r.visitor_id)).size
-    }));
+    // ── Daily chart ──
     const maxD = Math.max(1, ...dailyData.map(x => x.count));
+    document.getElementById('v-chart-daily-title').textContent =
+      vPeriodLabel(_vPeriod.kind, _vPeriod.start, _vPeriod.end) + ' 방문자 추이';
     document.getElementById('v-chart-daily').innerHTML = dailyData.map(x => `
-      <div class="chart-bar" style="height:${Math.max(2, (x.count/maxD)*100)}%;cursor:pointer;" onclick="renderDateDetail('${x.key}')">
+      <div class="chart-bar" style="height:${Math.max(2, (x.count/maxD)*100)}%;">
         <span class="chart-bar-tip">${x.key.slice(5)} · ${x.count}명</span>
       </div>`).join('');
+    // Show X-axis labels sparsely so they don't collide on long ranges
+    const labelStep = Math.max(1, Math.ceil(dailyData.length / 14));
     document.getElementById('v-chart-daily-x').innerHTML = dailyData.map((x, i) =>
-      `<div class="chart-x-label">${i % 2 === 0 ? x.key.slice(5) : ''}</div>`).join('');
-    renderDateDetail(todayKey);
+      `<div class="chart-x-label">${i % labelStep === 0 ? x.key.slice(5) : ''}</div>`).join('');
 
-    // Referrers
+    // ── Referrers ──
     const refMap = new Map();
     pvs.forEach(r => { const k = r.referrer || '직접'; refMap.set(k, (refMap.get(k) || 0) + 1); });
     const refs = Array.from(refMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8);
     document.getElementById('v-referrers').innerHTML = makeBarRows(refs, refs[0]?.[1] || 1, 'var(--orange)');
 
-    // Devices
+    // ── Devices ──
     const devMap = new Map();
     pvs.forEach(r => { const k = r.device || 'desktop'; devMap.set(k, (devMap.get(k) || 0) + 1); });
     const devTotal = pvs.length || 1;
@@ -1550,19 +1615,19 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
         </div>`).join('')
       : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">데이터 없음</div>';
 
-    // Browsers
+    // ── Browsers ──
     const brMap = new Map();
     pvs.forEach(r => { const k = r.browser || 'Other'; brMap.set(k, (brMap.get(k) || 0) + 1); });
     const brs = Array.from(brMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
     document.getElementById('v-browsers').innerHTML = makeBarRows(brs, brs[0]?.[1] || 1, 'var(--orange)');
 
-    // OS
+    // ── OS ──
     const osMap = new Map();
     pvs.forEach(r => { const k = r.os || 'Other'; osMap.set(k, (osMap.get(k) || 0) + 1); });
     const oss = Array.from(osMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6);
     document.getElementById('v-os').innerHTML = makeBarRows(oss, oss[0]?.[1] || 1, '#4CD964');
 
-    // Hourly distribution
+    // ── Hourly distribution ──
     const hourly = new Array(24).fill(0);
     pvs.forEach(r => { if (r.created_at) hourly[new Date(r.created_at).getHours()]++; });
     const maxH = Math.max(1, ...hourly);
@@ -1573,7 +1638,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
     document.getElementById('v-chart-hourly-x').innerHTML = hourly.map((_, h) =>
       `<div class="chart-x-label">${h % 6 === 0 ? h + '시' : ''}</div>`).join('');
 
-    // Day-of-week distribution
+    // ── Day-of-week distribution ──
     const DOW = ['일', '월', '화', '수', '목', '금', '토'];
     const dow = new Array(7).fill(0);
     pvs.forEach(r => { if (r.created_at) dow[new Date(r.created_at).getDay()]++; });
@@ -1585,15 +1650,15 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
     document.getElementById('v-chart-dow-x').innerHTML = DOW.map(d =>
       `<div class="chart-x-label">${d}</div>`).join('');
 
-    // Top pages
+    // ── Top pages ──
     const pgMap = new Map();
     pvs.forEach(r => { const k = r.page || '/'; pgMap.set(k, (pgMap.get(k) || 0) + 1); });
     const pgs = Array.from(pgMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 12);
     document.getElementById('v-pages').innerHTML = makeBarRows(pgs, pgs[0]?.[1] || 1, 'var(--orange)');
 
-    // Landing pages — use landing_page column when present, else first PV per session
+    // ── Landing pages ──
     const landingMap = new Map();
-    const sessionFirstPv = new Map();  // session_id → earliest PV row
+    const sessionFirstPv = new Map();
     pvs.forEach(r => {
       if (!r.session_id) return;
       const prev = sessionFirstPv.get(r.session_id);
@@ -1610,7 +1675,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
       makeBarRows(landings.map(([k, v]) => [k.length > 28 ? k.slice(0, 28) + '…' : k, v]),
                   landings[0]?.[1] || 1, 'var(--orange)');
 
-    // Exit pages — last PV per session
+    // ── Exit pages ──
     const sessionLastPv = new Map();
     pvs.forEach(r => {
       if (!r.session_id) return;
@@ -1629,7 +1694,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
       makeBarRows(exits.map(([k, v]) => [k.length > 28 ? k.slice(0, 28) + '…' : k, v]),
                   exits[0]?.[1] || 1, '#4CD964');
 
-    // Event aggregation
+    // ── Event aggregation ──
     const evMap = new Map();
     events.forEach(r => {
       const k = r.event_name || (r.page || '').replace(/^\/event\//, '') || 'unknown';
@@ -1640,7 +1705,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
       ? makeBarRows(evRows, evRows[0]?.[1] || 1, 'var(--orange)')
       : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">이벤트 기록이 아직 없습니다.</div>';
 
-    // CTA TOP — group by data-track label (event_props.label) when available
+    // ── CTA TOP ──
     const ctaMap = new Map();
     events.filter(r => r.event_name === 'button_click' || r.event_name === 'cta_click')
       .forEach(r => {
@@ -1658,7 +1723,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
                     ctaTop[0]?.[1] || 1, 'var(--orange)')
       : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">data-track 속성이 붙은 버튼/링크 클릭이 없습니다.</div>';
 
-    // Scroll depth
+    // ── Scroll depth ──
     const scrollMap = { 25: 0, 50: 0, 75: 0, 100: 0 };
     events.filter(r => r.event_name === 'scroll_depth').forEach(r => {
       try {
@@ -1673,7 +1738,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
         ? makeBarRows(scrollEntries, maxScroll, '#007AFF')
         : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">아직 스크롤 데이터가 없습니다.</div>';
 
-    // UTM performance
+    // ── UTM performance ──
     const utmMap = new Map();
     pvs.filter(r => r.utm_source).forEach(r => {
       const k = [r.utm_source, r.utm_medium, r.utm_campaign].filter(Boolean).join(' / ');
@@ -1684,19 +1749,30 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
       ? makeBarRows(utmRows, utmRows[0]?.[1] || 1, 'var(--orange)')
       : '<div style="color:var(--txt-3);font-size:13px;text-align:center;padding:20px 0;">UTM 파라미터가 붙은 방문이 없습니다. (예: ?utm_source=instagram&utm_campaign=summer)</div>';
   }
-  document.getElementById('btn-refresh-visitors').addEventListener('click', () => { tabsLoaded.visitors = false; loadVisitors(); });
-  document.getElementById('v-date-picker')?.addEventListener('change', e => renderDateDetail(e.target.value));
-  document.getElementById('v-date-prev')?.addEventListener('click', () => {
-    const p = document.getElementById('v-date-picker');
-    if (!p?.value) return;
-    const d = new Date(p.value); d.setDate(d.getDate() - 1);
-    renderDateDetail(d.toISOString().slice(0, 10));
+
+  // Period button wiring
+  document.querySelectorAll('.v-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.period;
+      if (k === 'custom') {
+        // Show inputs; user clicks 적용 to apply
+        setVisitorPeriod('custom', { start: _vPeriod.start, end: _vPeriod.end });
+      } else {
+        setVisitorPeriod(k);
+      }
+    });
   });
-  document.getElementById('v-date-next')?.addEventListener('click', () => {
-    const p = document.getElementById('v-date-picker');
-    if (!p?.value) return;
-    const d = new Date(p.value); d.setDate(d.getDate() + 1);
-    renderDateDetail(d.toISOString().slice(0, 10));
+  document.getElementById('v-range-apply').addEventListener('click', () => {
+    const s = document.getElementById('v-range-start').value;
+    const e = document.getElementById('v-range-end').value;
+    if (!s || !e) { alert('시작일과 종료일을 모두 선택해주세요.'); return; }
+    if (s > e)    { alert('시작일이 종료일보다 늦습니다.'); return; }
+    setVisitorPeriod('custom', { start: s, end: e });
+  });
+  document.getElementById('btn-refresh-visitors').addEventListener('click', () => {
+    tabsLoaded.visitors = false;
+    _visitorRows = null;
+    loadVisitors();
   });
 
   // ── INQUIRIES ────────────────────────────────────────────────────

@@ -1594,7 +1594,8 @@
       b.classList.toggle('active', b.dataset.period === kind);
     });
     document.getElementById('v-period-custom').style.display = (kind === 'custom') ? 'flex' : 'none';
-    document.getElementById('v-range-label').textContent = vPeriodLabel(kind, _vPeriod.start, _vPeriod.end);
+    const rangeLabel = document.getElementById('v-range-label');
+    if (rangeLabel) rangeLabel.textContent = vPeriodLabel(kind, _vPeriod.start, _vPeriod.end);
     if (_visitorRows) renderVisitors();
   }
 

@@ -114,9 +114,58 @@
     .logout-btn { display: block; margin-top: 48px; text-align: center; font-size: 13px; color: var(--txt-3); background: none; border: none; cursor: pointer; padding: 8px; }
     .logout-btn:hover { color: #fff; }
 
+    /* Order detail modal */
+    .order-detail-modal {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .order-detail-modal.open { display: flex; }
+    .order-detail-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; max-width: 800px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      animation: slideUp .2s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .order-detail-head {
+      padding: 28px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .order-detail-title { font-size: 18px; font-weight: 900; }
+    .order-detail-close {
+      background: transparent; border: none; color: rgba(255,255,255,.6);
+      cursor: pointer; font-size: 24px; padding: 0; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .15s ease;
+    }
+    .order-detail-close:hover { color: #fff; }
+    .order-detail-body { padding: 28px; }
+    .order-detail-section { margin-bottom: 28px; }
+    .order-detail-section-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.6); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .order-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .order-detail-grid { grid-template-columns: 1fr; } }
+    .order-detail-item-label { font-size: 11px; color: rgba(255,255,255,.4); margin-bottom: 4px; }
+    .order-detail-item-value { font-size: 14px; font-weight: 600; color: #fff; }
+    .order-items-table {
+      width: 100%; border-collapse: collapse;
+      background: rgba(255,255,255,.02); border-radius: 8px; overflow: hidden;
+    }
+    .order-items-table th {
+      text-align: left; padding: 12px;
+      font-size: 11px; font-weight: 800; color: rgba(255,255,255,.6);
+      background: rgba(0,0,0,.3); border-bottom: 1px solid var(--border);
+      letter-spacing: .5px;
+    }
+    .order-items-table td {
+      padding: 12px; font-size: 13px; color: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+    .order-items-table tr:last-child td { border-bottom: none; }
+
     /* Kakao float */
-    .kakao-btn{position:fixed;bottom:28px;right:28px;z-index:999;width:52px;height:52px;border-radius:50%;background:#FEE500;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s;text-decoration:none;}
-    .kakao-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.35);}.mobile-nav.is-open ~ .kakao-btn{display:none!important;}
+    .kakao-btn{position:fixed;bottom:28px;right:28px;z-index:999;width:52px;height:52px;border-radius:50%;background:#FEE500;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s;text-decoration:none;}.mobile-nav.is-open~.kakao-btn{display:none!important;}.mobile-nav.is-open ~ .kakao-btn{display:none!important;}
   </style>
 </head>
 <body>
@@ -142,6 +191,17 @@
 <main class="my-wrap" id="main-wrap">
   <div class="loading" id="loading">불러오는 중...</div>
 </main>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="order-detail-modal" id="order-detail-modal">
+  <div class="order-detail-box">
+    <div class="order-detail-head">
+      <div class="order-detail-title" id="detail-title">주문 상세</div>
+      <button class="order-detail-close" id="detail-close">✕</button>
+    </div>
+    <div class="order-detail-body" id="detail-body"></div>
+  </div>
+</div>
 
 <a class="kakao-btn" href="http://pf.kakao.com/_ixfTsX" target="_blank" rel="noopener">
   <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#391B1B" d="M12 3C7.03 3 3 6.36 3 10.5c0 2.62 1.67 4.92 4.19 6.29l-.87 3.21 3.72-2.35C10.6 17.88 11.3 18 12 18c4.97 0 9-3.36 9-7.5S16.97 3 12 3z"/></svg>
@@ -187,6 +247,8 @@
            d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
   }
 
+  let allOrders = [];
+
   function renderOrders(orders) {
     if (!orders.length) {
       return `<div class="empty-state">
@@ -199,7 +261,7 @@
       const items = Array.isArray(o.items) ? o.items : [];
       const statusKey = o.status || 'pending';
       return `
-        <div class="order-card">
+        <div class="order-card" data-order-id="${escapeHtml(o.id)}" style="cursor:pointer;">
           <div class="order-card-head">
             <div>
               <div class="order-date">${formatDate(o.created_at)}</div>
@@ -225,6 +287,100 @@
     }).join('')}</div>`;
   }
 
+  function showOrderDetail(order) {
+    const items = Array.isArray(order.items) ? order.items : [];
+    const itemsHtml = items.length
+      ? `<table class="order-items-table">
+          <thead><tr><th>상품명</th><th style="text-align:right;width:60px;">수량</th><th style="text-align:right;width:100px;">단가</th><th style="text-align:right;width:100px;">소계</th></tr></thead>
+          <tbody>
+            ${items.map(it => `
+              <tr>
+                <td>${escapeHtml(it.name || '상품')}</td>
+                <td style="text-align:right;">${it.qty || 1}개</td>
+                <td style="text-align:right;">${CTDProducts.formatPrice(it.price || 0)}</td>
+                <td style="text-align:right;font-weight:700;">${CTDProducts.formatPrice((it.price || 0) * (it.qty || 1))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`
+      : '<div style="color:rgba(255,255,255,.4);text-align:center;padding:20px;">상품 정보가 없습니다.</div>';
+
+    const statusLabel = STATUS_KO[order.status] || order.status || '미정';
+    const detailBody = document.getElementById('detail-body');
+    const detailTitle = document.getElementById('detail-title');
+
+    detailTitle.textContent = `주문 상세`;
+    detailBody.innerHTML = `
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">기본 정보</div>
+        <div class="order-detail-grid">
+          <div>
+            <div class="order-detail-item-label">주문 ID</div>
+            <div class="order-detail-item-value" style="font-family:'SF Mono',monospace;font-size:12px;color:rgba(255,255,255,.6);">${escapeHtml(order.id)}</div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">주문 일시</div>
+            <div class="order-detail-item-value">${formatDate(order.created_at)}</div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">상태</div>
+            <div class="order-detail-item-value"><span class="order-status ${STATUS_CLS[order.status] || 'pending'}">${statusLabel}</span></div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">합계</div>
+            <div class="order-detail-item-value" style="color:#FF7A00;font-weight:900;">${CTDProducts.formatPrice(order.total || 0)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">배송 정보</div>
+        <div class="order-detail-grid">
+          <div>
+            <div class="order-detail-item-label">고객명</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_name || '-')}</div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">연락처</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_phone || '-')}</div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">이메일</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_email || '-')}</div>
+          </div>
+        </div>
+        <div style="margin-bottom:0;">
+          <div class="order-detail-item-label">배송 주소</div>
+          <div class="order-detail-item-value">${escapeHtml(order.customer_address || '-')}</div>
+        </div>
+        ${order.memo ? `<div style="margin-top:16px;">
+          <div class="order-detail-item-label">배송 요청사항</div>
+          <div class="order-detail-item-value">${escapeHtml(order.memo)}</div>
+        </div>` : ''}
+      </div>
+
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">주문 상품 (${items.length}건)</div>
+        ${itemsHtml}
+      </div>
+    `;
+
+    const modal = document.getElementById('order-detail-modal');
+    modal.classList.add('open');
+  }
+
+  // 모달 닫기
+  const modal = document.getElementById('order-detail-modal');
+  const detailClose = document.getElementById('detail-close');
+
+  detailClose.addEventListener('click', () => {
+    modal.classList.remove('open');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('open');
+  });
+
   (async function() {
     const session = await CTDAuth.getSession();
     if (!session) {
@@ -248,6 +404,8 @@
       if (!error) orders = data || [];
     } catch(e) {}
 
+    allOrders = orders;
+
     const wrap = document.getElementById('main-wrap');
     wrap.innerHTML = `
       <div class="profile-card">
@@ -268,6 +426,15 @@
 
       <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
     `;
+
+    // 주문 카드 클릭 이벤트
+    wrap.querySelectorAll('.order-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const orderId = card.dataset.orderId;
+        const order = allOrders.find(o => o.id === orderId);
+        if (order) showOrderDetail(order);
+      });
+    });
   })();
 
   async function handleLogout() {

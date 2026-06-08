@@ -75,10 +75,15 @@
     .order-date { font-size: 12px; color: var(--txt-3); font-weight: 600; }
     .order-id { font-size: 11px; color: var(--txt-3); font-family: 'SF Mono', Menlo, monospace; }
     .order-status { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; letter-spacing: .4px; white-space: nowrap; }
+    .order-status.payment_pending  { background: rgba(255,193,7,.12); color: #ffc107; }
+    .order-status.payment_completed { background: rgba(76,217,100,.12); color: #4cd964; }
+    .order-status.preparing { background: rgba(0,122,255,.12); color: #007aff; }
+    .order-status.shipping  { background: rgba(0,122,255,.12); color: #007aff; }
+    .order-status.delivered { background: rgba(76,217,100,.12); color: #4cd964; }
+    .order-status.cancelled { background: rgba(255,77,79,.12); color: #ff4d4f; }
     .order-status.pending  { background: rgba(255,193,7,.12); color: #ffc107; }
     .order-status.confirmed { background: rgba(76,217,100,.12); color: #4cd964; }
     .order-status.shipped  { background: rgba(0,122,255,.12); color: #007aff; }
-    .order-status.cancelled { background: rgba(255,77,79,.12); color: #ff4d4f; }
 
     .order-items { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
     .order-item { display: flex; align-items: center; gap: 12px; }
@@ -150,8 +155,28 @@
 <script>
   CTDAuth.attachNav();
 
-  const STATUS_KO = { pending: '배송 대기', confirmed: '주문 확정', shipped: '배송 중', cancelled: '취소됨' };
-  const STATUS_CLS = { pending: 'pending', confirmed: 'confirmed', shipped: 'shipped', cancelled: 'cancelled' };
+  const STATUS_KO = {
+    payment_pending: '결제대기',
+    payment_completed: '결제완료',
+    preparing: '상품준비중',
+    shipping: '배송중',
+    delivered: '배송완료',
+    cancelled: '주문취소',
+    pending: '배송 대기',
+    confirmed: '주문 확정',
+    shipped: '배송 중'
+  };
+  const STATUS_CLS = {
+    payment_pending: 'payment_pending',
+    payment_completed: 'payment_completed',
+    preparing: 'preparing',
+    shipping: 'shipping',
+    delivered: 'delivered',
+    cancelled: 'cancelled',
+    pending: 'pending',
+    confirmed: 'confirmed',
+    shipped: 'shipped'
+  };
 
   function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 

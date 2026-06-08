@@ -407,34 +407,54 @@
     allOrders = orders;
 
     const wrap = document.getElementById('main-wrap');
-    wrap.innerHTML = `
-      <div class="profile-card">
-        <div class="profile-avatar">${escapeHtml(initial)}</div>
-        <div class="profile-info">
-          <div class="profile-name">${escapeHtml(displayName)}</div>
-          <div class="profile-email">${escapeHtml(user.email)}</div>
-          ${meta.phone ? `<div class="profile-phone">${escapeHtml(meta.phone)}</div>` : ''}
-          <span class="profile-badge">회원</span>
+
+    function renderAndAttachEvents() {
+      wrap.innerHTML = `
+        <div class="profile-card">
+          <div class="profile-avatar">${escapeHtml(initial)}</div>
+          <div class="profile-info">
+            <div class="profile-name">${escapeHtml(displayName)}</div>
+            <div class="profile-email">${escapeHtml(user.email)}</div>
+            ${meta.phone ? `<div class="profile-phone">${escapeHtml(meta.phone)}</div>` : ''}
+            <span class="profile-badge">회원</span>
+          </div>
         </div>
-      </div>
 
-      <div class="section-head">
-        <div class="section-title">주문 내역</div>
-        <div class="section-count">총 ${orders.length}건</div>
-      </div>
-      ${renderOrders(orders)}
+        <div class="section-head">
+          <div class="section-title">주문 내역</div>
+          <div class="section-count">총 ${allOrders.length}건</div>
+        </div>
+        ${renderOrders(allOrders)}
 
-      <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
-    `;
+        <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+      `;
 
-    // 주문 카드 클릭 이벤트
-    wrap.querySelectorAll('.order-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const orderId = card.dataset.orderId;
-        const order = allOrders.find(o => o.id === orderId);
-        if (order) showOrderDetail(order);
+      // 주문 카드 클릭 이벤트
+      wrap.querySelectorAll('.order-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const orderId = card.dataset.orderId;
+          const order = allOrders.find(o => o.id === orderId);
+          if (order) showOrderDetail(order);
+        });
       });
-    });
+    }
+
+    renderAndAttachEvents();
+
+    // Realtime 구독 — 주문 상태 변경 감지
+    const subscription = CTDProducts.client()
+      .from('orders')
+      .on('*', payload => {
+        const { new: newOrder, old: oldOrder } = payload;
+        if (newOrder && newOrder.customer_email === user.email) {
+          const idx = allOrders.findIndex(o => o.id === newOrder.id);
+          if (idx >= 0) {
+            allOrders[idx] = newOrder;
+            renderAndAttachEvents();
+          }
+        }
+      })
+      .subscribe();
   })();
 
   async function handleLogout() {

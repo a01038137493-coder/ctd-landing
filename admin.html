@@ -737,10 +737,11 @@
             <th>수량</th>
             <th>문의내용</th>
             <th>상태</th>
+            <th style="width:48px;"></th>
           </tr>
         </thead>
         <tbody id="inq-tbody">
-          <tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">불러오는 중...</td></tr>
+          <tr><td colspan="8" style="text-align:center;color:var(--txt-3);padding:40px;">불러오는 중...</td></tr>
         </tbody>
       </table>
     </div>
@@ -1978,7 +1979,7 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
     const rows = filter ? _inquiries.filter(i => i.status === filter) : _inquiries;
     const tbody = document.getElementById('inq-tbody');
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--txt-3);padding:40px;">문의가 없습니다.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--txt-3);padding:40px;">문의가 없습니다.</td></tr>';
       return;
     }
     const statusLabel = { new: '신규', read: '확인', replied: '답변완료' };
@@ -1999,8 +2000,31 @@ CREATE INDEX IF NOT EXISTS pageviews_session_id_idx ON pageviews (session_id);</
             <option value="replied"  ${r.status==='replied'?'selected':''}>답변완료</option>
           </select>
         </td>
+        <td>
+          <button class="icon-btn danger delete-inq-btn" data-id="${escapeHtml(r.id)}" title="삭제">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </td>
       </tr>`;
     }).join('');
+
+    // 문의 삭제
+    tbody.querySelectorAll('.delete-inq-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('이 문의를 삭제할까요?')) return;
+        const id = btn.dataset.id;
+        try {
+          const { error } = await CTDProducts.client().from('b2b_inquiries').delete().eq('id', id);
+          if (error) throw error;
+          toast('삭제됨');
+          _inquiries = _inquiries.filter(i => i.id !== id);
+          updateInqBadge();
+          renderInquiries();
+        } catch (err) {
+          alert('삭제 실패: ' + (err.message || err));
+        }
+      });
+    });
   }
 
   async function updateInqStatus(id, status) {

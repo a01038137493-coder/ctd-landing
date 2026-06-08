@@ -379,6 +379,7 @@
         memo: memo || null,
         items,
         total: CTDCart.total(),
+        status: 'payment_pending',
       };
       const saved = await CTDProducts.createOrder(order);
       const orderTotal = order.total;

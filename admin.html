@@ -127,10 +127,15 @@
       display: inline-block; font-size: 10px; font-weight: 800;
       padding: 4px 10px; border-radius: 4px; letter-spacing: .5px;
     }
+    .cell-status.payment_pending { background: rgba(255,193,7,.15); color: #ffc107; }
+    .cell-status.payment_completed { background: rgba(76,217,100,.15); color: #4cd964; }
+    .cell-status.preparing { background: rgba(0,122,255,.15); color: #007aff; }
+    .cell-status.shipping { background: rgba(0,122,255,.15); color: #007aff; }
+    .cell-status.delivered { background: rgba(76,217,100,.15); color: #4cd964; }
+    .cell-status.cancelled { background: rgba(255,77,79,.15); color: #ff4d4f; }
     .cell-status.pending { background: rgba(255,193,7,.15); color: #ffc107; }
     .cell-status.confirmed { background: rgba(76,217,100,.15); color: #4cd964; }
     .cell-status.shipped { background: rgba(0,122,255,.15); color: #007aff; }
-    .cell-status.cancelled { background: rgba(255,77,79,.15); color: #ff4d4f; }
     .status-select {
       background: #0A0A0A; border: 1px solid var(--border-2);
       color: #fff; padding: 6px 10px; border-radius: 5px;
@@ -1255,7 +1260,17 @@
   document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
 
   // ── ORDERS ───────────────────────────────────────────────────────
-  const STATUS_LABELS = { pending: '대기', confirmed: '확정', shipped: '발송됨', cancelled: '취소' };
+  const STATUS_LABELS = {
+    payment_pending: '결제대기',
+    payment_completed: '결제완료',
+    preparing: '상품준비중',
+    shipping: '배송중',
+    delivered: '배송완료',
+    cancelled: '주문취소',
+    pending: '대기',
+    confirmed: '확정',
+    shipped: '발송됨'
+  };
   let allOrders = [];
 
   async function loadOrders() {
@@ -1277,11 +1292,13 @@
         <td style="text-align:right; color:var(--txt-2);" class="cell-muted">${itemCount}건</td>
         <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(o.total)}</td>
         <td>
-          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status || 'pending'}" onclick="event.stopPropagation();">
-            <option value="pending"${o.status === 'pending' ? ' selected' : ''}>대기</option>
-            <option value="confirmed"${o.status === 'confirmed' ? ' selected' : ''}>확정</option>
-            <option value="shipped"${o.status === 'shipped' ? ' selected' : ''}>발송됨</option>
-            <option value="cancelled"${o.status === 'cancelled' ? ' selected' : ''}>취소</option>
+          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status || 'payment_pending'}" onclick="event.stopPropagation();">
+            <option value="payment_pending"${o.status === 'payment_pending' ? ' selected' : ''}>결제대기</option>
+            <option value="payment_completed"${o.status === 'payment_completed' ? ' selected' : ''}>결제완료</option>
+            <option value="preparing"${o.status === 'preparing' ? ' selected' : ''}>상품준비중</option>
+            <option value="shipping"${o.status === 'shipping' ? ' selected' : ''}>배송중</option>
+            <option value="delivered"${o.status === 'delivered' ? ' selected' : ''}>배송완료</option>
+            <option value="cancelled"${o.status === 'cancelled' ? ' selected' : ''}>주문취소</option>
           </select>
         </td>
         <td>

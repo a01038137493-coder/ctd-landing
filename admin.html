@@ -137,6 +137,57 @@
       font-size: 12px; font-family: inherit; cursor: pointer;
     }
     .status-select:focus { outline: none; border-color: var(--orange); }
+    .order-row { cursor: pointer; transition: background .15s ease; }
+    .order-row:hover td { background: rgba(255,255,255,.04); }
+    .order-detail-modal {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .order-detail-modal.open { display: flex; }
+    .order-detail-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; max-width: 800px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      animation: slideUp .2s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .order-detail-head {
+      padding: 28px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .order-detail-title { font-size: 18px; font-weight: 900; }
+    .order-detail-close {
+      background: transparent; border: none; color: var(--txt-2);
+      cursor: pointer; font-size: 24px; padding: 0; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .15s ease;
+    }
+    .order-detail-close:hover { color: #fff; }
+    .order-detail-body { padding: 28px; }
+    .order-detail-section { margin-bottom: 28px; }
+    .order-detail-section-title { font-size: 13px; font-weight: 800; color: var(--txt-2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .order-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .order-detail-grid { grid-template-columns: 1fr; } }
+    .order-detail-item { }
+    .order-detail-item-label { font-size: 11px; color: var(--txt-3); margin-bottom: 4px; }
+    .order-detail-item-value { font-size: 14px; font-weight: 600; color: #fff; }
+    .order-items-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--panel-2); border-radius: 8px; overflow: hidden;
+    }
+    .order-items-table th {
+      text-align: left; padding: 12px;
+      font-size: 11px; font-weight: 800; color: var(--txt-2);
+      background: #0A0A0A; border-bottom: 1px solid var(--border);
+      letter-spacing: .5px;
+    }
+    .order-items-table td {
+      padding: 12px; font-size: 13px; color: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+    .order-items-table tr:last-child td { border-bottom: none; }
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 9px 16px; border-radius: 6px;
@@ -507,10 +558,21 @@
       </div>
     </div>
     <table class="data-table">
-      <thead><tr><th style="width:130px;">주문일</th><th style="width:120px;">고객</th><th style="width:130px;">연락처</th><th>주소</th><th style="text-align:right; width:120px;">금액</th><th style="width:140px;">상태</th><th style="width:48px;"></th></tr></thead>
+      <thead><tr><th style="width:130px;">주문일</th><th style="width:120px;">고객</th><th style="width:130px;">연락처</th><th>주소</th><th style="text-align:right; width:100px;">상품</th><th style="text-align:right; width:120px;">금액</th><th style="width:140px;">상태</th><th style="width:48px;"></th></tr></thead>
       <tbody id="orders-body"></tbody>
     </table>
     <div id="orders-empty" class="empty-state" style="display:none;"><strong>주문이 없습니다</strong>아직 들어온 주문이 없습니다.</div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="order-detail-modal" id="order-detail-modal">
+  <div class="order-detail-box">
+    <div class="order-detail-head">
+      <div class="order-detail-title" id="detail-title">주문 상세</div>
+      <button class="order-detail-close" id="detail-close">✕</button>
+    </div>
+    <div class="order-detail-body" id="detail-body"></div>
   </div>
 </div>
 
@@ -1193,22 +1255,28 @@
 
   // ── ORDERS ───────────────────────────────────────────────────────
   const STATUS_LABELS = { pending: '대기', confirmed: '확정', shipped: '발송됨', cancelled: '취소' };
+  let allOrders = [];
+
   async function loadOrders() {
     const orders = await fetchAllOrders();
+    allOrders = orders;
     document.getElementById('orders-count').textContent = `(${orders.length})`;
     const body = document.getElementById('orders-body');
     const empty = document.getElementById('orders-empty');
     if (!orders.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
-    body.innerHTML = orders.map(o => `
-      <tr data-id="${escapeHtml(o.id)}">
+    body.innerHTML = orders.map(o => {
+      const itemCount = Array.isArray(o.items) ? o.items.length : 0;
+      return `
+      <tr class="order-row" data-id="${escapeHtml(o.id)}" style="cursor:pointer;">
         <td class="cell-muted">${formatDate(o.created_at)}</td>
         <td>${escapeHtml(o.customer_name)}</td>
         <td class="cell-muted">${escapeHtml(o.customer_phone)}</td>
         <td class="cell-truncate cell-muted" title="${escapeHtml(o.customer_address)}">${escapeHtml(o.customer_address)}</td>
+        <td style="text-align:right; color:var(--txt-2);" class="cell-muted">${itemCount}건</td>
         <td style="text-align:right;" class="cell-money">${CTDProducts.formatPrice(o.total)}</td>
         <td>
-          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status || 'pending'}">
+          <select class="status-select" data-order-id="${escapeHtml(o.id)}" data-current="${o.status || 'pending'}" onclick="event.stopPropagation();">
             <option value="pending"${o.status === 'pending' ? ' selected' : ''}>대기</option>
             <option value="confirmed"${o.status === 'confirmed' ? ' selected' : ''}>확정</option>
             <option value="shipped"${o.status === 'shipped' ? ' selected' : ''}>발송됨</option>
@@ -1216,12 +1284,22 @@
           </select>
         </td>
         <td>
-          <button class="icon-btn danger delete-order-btn" data-id="${escapeHtml(o.id)}" title="삭제">
+          <button class="icon-btn danger delete-order-btn" data-id="${escapeHtml(o.id)}" title="삭제" onclick="event.stopPropagation();">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           </button>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
+
+    // 주문 행 클릭 — 상세 보기
+    body.querySelectorAll('.order-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.id;
+        const order = allOrders.find(o => o.id === id);
+        if (order) showOrderDetail(order);
+      });
+    });
 
     // 상태 변경
     body.querySelectorAll('.status-select').forEach(sel => {
@@ -1258,6 +1336,99 @@
         }
       });
     });
+  }
+
+  // ── ORDER DETAIL ──────────────────────────────────────────────────
+  const modal = document.getElementById('order-detail-modal');
+  const detailClose = document.getElementById('detail-close');
+
+  detailClose.addEventListener('click', () => {
+    modal.classList.remove('open');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('open');
+  });
+
+  function showOrderDetail(order) {
+    const items = Array.isArray(order.items) ? order.items : [];
+    const itemsHtml = items.length
+      ? `<table class="order-items-table">
+          <thead><tr><th>상품명</th><th style="text-align:right;width:60px;">수량</th><th style="text-align:right;width:100px;">단가</th><th style="text-align:right;width:100px;">소계</th></tr></thead>
+          <tbody>
+            ${items.map(it => `
+              <tr>
+                <td>${escapeHtml(it.name || '상품')}</td>
+                <td style="text-align:right;">${it.qty || 1}개</td>
+                <td style="text-align:right;">${CTDProducts.formatPrice(it.price || 0)}</td>
+                <td style="text-align:right;font-weight:700;">${CTDProducts.formatPrice((it.price || 0) * (it.qty || 1))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`
+      : '<div style="color:var(--txt-3);text-align:center;padding:20px;">상품 정보가 없습니다.</div>';
+
+    const statusLabel = { pending: '대기', confirmed: '확정', shipped: '발송됨', cancelled: '취소' }[order.status] || order.status || '미정';
+    const detailBody = document.getElementById('detail-body');
+    const detailTitle = document.getElementById('detail-title');
+
+    detailTitle.textContent = `주문 상세 · ${order.customer_name || '(미입력)'}`;
+    detailBody.innerHTML = `
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">기본 정보</div>
+        <div class="order-detail-grid">
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">주문 ID</div>
+            <div class="order-detail-item-value" style="font-family:'SF Mono',monospace;font-size:12px;color:var(--txt-2);">${escapeHtml(order.id)}</div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">주문 일시</div>
+            <div class="order-detail-item-value">${formatDate(order.created_at)}</div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">상태</div>
+            <div class="order-detail-item-value"><span class="cell-status ${order.status || 'pending'}">${statusLabel}</span></div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">합계</div>
+            <div class="order-detail-item-value" style="color:var(--orange);font-weight:900;">${CTDProducts.formatPrice(order.total || 0)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">고객 정보</div>
+        <div class="order-detail-grid">
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">고객명</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_name || '-')}</div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">연락처</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_phone || '-')}</div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">이메일</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_email || '-')}</div>
+          </div>
+          <div class="order-detail-item">
+            <div class="order-detail-item-label">우편번호</div>
+            <div class="order-detail-item-value">${escapeHtml(order.customer_zip || '-')}</div>
+          </div>
+        </div>
+        <div class="order-detail-item" style="margin-bottom:0;">
+          <div class="order-detail-item-label">배송 주소</div>
+          <div class="order-detail-item-value">${escapeHtml(order.customer_address || '-')}</div>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
+        <div class="order-detail-section-title">주문 상품 (${items.length}건)</div>
+        ${itemsHtml}
+      </div>
+    `;
+
+    modal.classList.add('open');
   }
 
   document.getElementById('btn-refresh-orders').addEventListener('click', () => { tabsLoaded.orders = false; loadOrders(); });

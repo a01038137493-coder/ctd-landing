@@ -220,8 +220,16 @@
           <input class="input addr-detail" id="f-address2" placeholder="상세 주소 (동, 호수 등)" maxlength="80" />
         </div>
         <div class="co-field">
-          <label class="co-field-label">주문 메모</label>
-          <textarea class="textarea" id="f-memo" maxlength="300" placeholder="배송 요청사항 등"></textarea>
+          <label class="co-field-label">배송 요청사항</label>
+          <select class="input" id="f-memo" style="cursor:pointer;">
+            <option value="">선택해주세요</option>
+            <option value="문 앞에 놔주세요">문 앞에 놔주세요</option>
+            <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+            <option value="택배함에 넣어주세요">택배함에 넣어주세요</option>
+            <option value="배송 전에 먼저 연락주세요">배송 전에 먼저 연락주세요</option>
+            <option value="직접입력">직접입력</option>
+          </select>
+          <textarea class="textarea" id="f-memo-custom" maxlength="300" placeholder="요청사항을 입력해주세요" style="display:none;margin-top:8px;"></textarea>
         </div>
       </form>
     </section>
@@ -334,6 +342,18 @@
     document.getElementById('total-amount').textContent = CTDProducts.formatPrice(sub);
   }
 
+  // ── 배송 요청사항 토글 ────────────────────────────────────────────────────
+  document.getElementById('f-memo').addEventListener('change', (e) => {
+    const customBox = document.getElementById('f-memo-custom');
+    if (e.target.value === '직접입력') {
+      customBox.style.display = '';
+      customBox.focus();
+    } else {
+      customBox.style.display = 'none';
+      customBox.value = '';
+    }
+  });
+
   // ── 주문 제출 ─────────────────────────────────────────────────────────────
   document.getElementById('btn-place').addEventListener('click', async () => {
     const items = CTDCart.load();
@@ -341,7 +361,9 @@
     const f = (id) => document.getElementById(id).value.trim();
     const name = f('f-name'), phone = f('f-phone');
     const address1 = f('f-address1'), address2 = f('f-address2'), zipcode = f('f-zipcode');
-    const email = f('f-email'), memo = f('f-memo');
+    const email = f('f-email');
+    const memoSelect = f('f-memo');
+    const memo = memoSelect === '직접입력' ? f('f-memo-custom') : memoSelect;
     const address = [zipcode, address1, address2].filter(Boolean).join(' ');
     if (!name) { alert('이름을 입력해주세요.'); document.getElementById('f-name').focus(); return; }
     if (!phone) { alert('연락처를 입력해주세요.'); document.getElementById('f-phone').focus(); return; }

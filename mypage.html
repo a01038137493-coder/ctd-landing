@@ -360,6 +360,24 @@
       </div>
 
       <div class="order-detail-section">
+        <div class="order-detail-section-title">입금 정보</div>
+        <div class="order-detail-grid">
+          <div>
+            <div class="order-detail-item-label">입금 금액</div>
+            <div class="order-detail-item-value" style="color:#FF7A00;font-weight:900;">${CTDProducts.formatPrice(order.total || 0)}</div>
+          </div>
+          <div>
+            <div class="order-detail-item-label">입금 상태</div>
+            <div class="order-detail-item-value"><span class="order-status ${STATUS_CLS[order.status] || 'pending'}">${statusLabel}</span></div>
+          </div>
+        </div>
+        <div style="margin-bottom:0;">
+          <div class="order-detail-item-label">입금 계좌</div>
+          <div class="order-detail-item-value">토스뱅크 1002-5949-2801 (예금주: 김현철)</div>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
         <div class="order-detail-section-title">주문 상품 (${items.length}건)</div>
         ${itemsHtml}
       </div>

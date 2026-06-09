@@ -377,6 +377,7 @@
     if (!phone) { alert('연락처를 입력해주세요.'); document.getElementById('f-phone').focus(); return; }
     if (!address1) { alert('주소 찾기를 눌러 주소를 선택해주세요.'); return; }
     if (!payment) { alert('결제 방법을 선택해주세요.'); document.getElementById('f-payment').focus(); return; }
+    const memoWithPayment = payment ? `[${payment}] ${memo}` : memo;
     const btn = document.getElementById('btn-place');
     btn.disabled = true; btn.textContent = '처리 중...';
     try {
@@ -385,8 +386,7 @@
         customer_phone: phone,
         customer_email: email || null,
         customer_address: address,
-        memo: memo || null,
-        payment_method: payment,
+        memo: memoWithPayment || null,
         items,
         total: CTDCart.total(),
         status: 'payment_pending',

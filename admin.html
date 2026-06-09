@@ -527,6 +527,23 @@
       <button class="btn btn-ghost" id="btn-refresh-stats">새로고침</button>
     </div>
 
+    <!-- DATE RANGE FILTER -->
+    <div class="v-period-bar" style="margin-bottom:24px;">
+      <div class="v-period-tabs">
+        <button class="v-period-btn active" data-period="all">전체</button>
+        <button class="v-period-btn" data-period="30d">최근 30일</button>
+        <button class="v-period-btn" data-period="7d">최근 7일</button>
+        <button class="v-period-btn" data-period="today">오늘</button>
+        <button class="v-period-btn" data-period="custom">사용자지정</button>
+      </div>
+      <div class="v-period-custom" id="stats-period-custom" style="display:none;">
+        <input type="date" id="stats-range-start" class="input" />
+        <span style="color:var(--txt-3);font-size:12px;">~</span>
+        <input type="date" id="stats-range-end" class="input" />
+        <button class="btn btn-primary" id="stats-range-apply" style="padding:8px 16px;font-size:13px;">적용</button>
+      </div>
+    </div>
+
     <div class="stat-grid" id="stat-cards">
       <div class="stat-card highlight"><div class="stat-label">오늘 주문</div><div class="stat-value orange" id="stat-today">—</div><div class="stat-sub" id="stat-today-sub">로딩 중...</div></div>
       <div class="stat-card highlight"><div class="stat-label">이번 달 매출</div><div class="stat-value orange" id="stat-month">—</div><div class="stat-sub" id="stat-month-sub">로딩 중...</div></div>
@@ -1174,14 +1191,49 @@
   }
 
   // ── STATS ────────────────────────────────────────────────────────
+  let statsFilterStart = null;
+  let statsFilterEnd = null;
+  let statsFilterPeriod = 'all';
+
+  function getStatsDateRange() {
+    if (statsFilterStart && statsFilterEnd) {
+      return { start: new Date(statsFilterStart), end: new Date(statsFilterEnd) };
+    }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const end = new Date(today); end.setHours(23, 59, 59, 999);
+
+    switch (statsFilterPeriod) {
+      case 'today':
+        return { start: new Date(today), end };
+      case '7d':
+        const start7 = new Date(today); start7.setDate(start7.getDate() - 7);
+        return { start: start7, end };
+      case '30d':
+        const start30 = new Date(today); start30.setDate(start30.getDate() - 30);
+        return { start: start30, end };
+      case 'all':
+      default:
+        return { start: new Date('2000-01-01'), end };
+    }
+  }
+
+  function filterOrdersByDateRange(orders, range) {
+    return orders.filter(o => {
+      const orderDate = new Date(o.created_at || '');
+      return orderDate >= range.start && orderDate <= range.end;
+    });
+  }
+
   async function loadStats() {
     const orders = await fetchAllOrders();
+    const range = getStatsDateRange();
+    const filteredOrders = filterOrdersByDateRange(orders, range);
 
     const todayKey = dayKey(new Date());
     const monthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
 
-    const todayOrders = orders.filter(o => (o.created_at || '').slice(0, 10) === todayKey);
-    const monthOrders = orders.filter(o => (o.created_at || '').slice(0, 7) === monthKey);
+    const todayOrders = filteredOrders.filter(o => (o.created_at || '').slice(0, 10) === todayKey);
+    const monthOrders = filteredOrders.filter(o => (o.created_at || '').slice(0, 7) === monthKey);
 
     document.getElementById('stat-today').textContent = todayOrders.length + '건';
     document.getElementById('stat-today-sub').textContent = '매출 ' + CTDProducts.formatPrice(todayOrders.reduce((s,o) => s+(o.total||0), 0));
@@ -1189,9 +1241,9 @@
     document.getElementById('stat-month-sub').textContent = monthOrders.length + '건 주문';
 
     // Cards
-    const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
-    const phones = new Set(orders.map(o => o.customer_phone).filter(Boolean));
+    const totalOrders = filteredOrders.length;
+    const totalRevenue = filteredOrders.reduce((s, o) => s + (o.total || 0), 0);
+    const phones = new Set(filteredOrders.map(o => o.customer_phone).filter(Boolean));
     const customers = phones.size;
     const aov = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
     document.getElementById('stat-orders').textContent = totalOrders.toLocaleString('ko-KR') + '건';
@@ -1199,13 +1251,14 @@
     document.getElementById('stat-customers').textContent = customers.toLocaleString('ko-KR') + '명';
     document.getElementById('stat-aov').textContent = CTDProducts.formatPrice(aov);
 
-    // Daily chart — last 14 days
+    // Daily chart — based on date range
     const days = [];
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+    const dayCount = Math.min(31, Math.max(1, Math.ceil((range.end - range.start) / (1000 * 60 * 60 * 24))));
+    for (let i = dayCount - 1; i >= 0; i--) {
+      const d = new Date(range.end); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
       days.push({ d, key: dayKey(d), count: 0 });
     }
-    orders.forEach(o => {
+    filteredOrders.forEach(o => {
       const key = (o.created_at || '').slice(0, 10);
       const slot = days.find(x => x.key === key);
       if (slot) slot.count += 1;
@@ -1217,12 +1270,12 @@
       </div>
     `).join('');
     document.getElementById('chart-x').innerHTML = days.map((x, i) =>
-      `<div class="chart-x-label">${i % 2 === 0 ? formatDay(x.d.toISOString()) : ''}</div>`
+      `<div class="chart-x-label">${i % Math.max(1, Math.floor(dayCount / 8)) === 0 ? formatDay(x.d.toISOString()) : ''}</div>`
     ).join('');
 
     // Top products (by occurrence in items[])
     const productAgg = new Map(); // id → { name, count, revenue }
-    orders.forEach(o => {
+    filteredOrders.forEach(o => {
       const items = Array.isArray(o.items) ? o.items : [];
       items.forEach(it => {
         const k = it.id || it.name || '';
@@ -1246,6 +1299,33 @@
       : `<tr><td colspan="4" style="text-align:center; padding:36px 0; color:var(--txt-3);">데이터가 아직 없습니다.</td></tr>`;
   }
   document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
+
+  // Stats date range filter
+  document.querySelectorAll('#tab-stats .v-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#tab-stats .v-period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      statsFilterPeriod = btn.dataset.period;
+      statsFilterStart = null;
+      statsFilterEnd = null;
+      if (btn.dataset.period === 'custom') {
+        document.getElementById('stats-period-custom').style.display = 'flex';
+      } else {
+        document.getElementById('stats-period-custom').style.display = 'none';
+        loadStats();
+      }
+    });
+  });
+
+  document.getElementById('stats-range-apply').addEventListener('click', () => {
+    const start = document.getElementById('stats-range-start').value;
+    const end = document.getElementById('stats-range-end').value;
+    if (!start || !end) { alert('시작 및 종료 날짜를 선택하세요.'); return; }
+    if (start > end) { alert('시작 날짜가 종료 날짜보다 클 수 없습니다.'); return; }
+    statsFilterStart = start;
+    statsFilterEnd = end;
+    loadStats();
+  });
 
   // ── ORDERS ───────────────────────────────────────────────────────
   const STATUS_LABELS = {

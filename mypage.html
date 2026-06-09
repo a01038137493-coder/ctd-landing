@@ -309,6 +309,9 @@
     const detailBody = document.getElementById('detail-body');
     const detailTitle = document.getElementById('detail-title');
 
+    const memo = order.memo || '';
+    const cleanMemo = memo.replace(/^\[.*?\]\s*/, '');
+
     detailTitle.textContent = `주문 상세`;
     detailBody.innerHTML = `
       <div class="order-detail-section">
@@ -353,9 +356,9 @@
           <div class="order-detail-item-label">배송 주소</div>
           <div class="order-detail-item-value">${escapeHtml(order.customer_address || '-')}</div>
         </div>
-        ${order.memo ? `<div style="margin-top:16px;">
+        ${cleanMemo ? `<div style="margin-top:16px;">
           <div class="order-detail-item-label">배송 요청사항</div>
-          <div class="order-detail-item-value">${escapeHtml(order.memo)}</div>
+          <div class="order-detail-item-value">${escapeHtml(cleanMemo)}</div>
         </div>` : ''}
       </div>
 

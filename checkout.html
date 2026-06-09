@@ -231,6 +231,13 @@
           </select>
           <textarea class="textarea" id="f-memo-custom" maxlength="300" placeholder="요청사항을 입력해주세요" style="display:none;margin-top:8px;"></textarea>
         </div>
+        <div class="co-field">
+          <label class="co-field-label">결제 방법 <span class="req">*</span></label>
+          <select class="input" id="f-payment" style="cursor:pointer;" required>
+            <option value="">선택해주세요</option>
+            <option value="무통장입금">무통장입금</option>
+          </select>
+        </div>
       </form>
     </section>
   </div>
@@ -251,7 +258,7 @@
   <div class="co-success-box">
     <div class="co-success-icon">✓</div>
     <div class="co-success-title">주문이 접수되었습니다</div>
-    <div class="co-success-sub">담당자가 빠른 시일 내에 연락드리겠습니다.<br>입력하신 연락처로 결제 안내가 발송됩니다.</div>
+    <div class="co-success-sub">담당자가 빠른 시일 내에 연락드리겠습니다.<br>입력하신 연락처로 결제 안내가 발송됩니다.<br><br><strong style="color: #fff;">토스뱅크 1002-5949-2801</strong></div>
     <div class="co-success-id" id="success-id"></div>
     <div class="co-success-btns">
       <a href="/shop.html" class="ghost">계속 쇼핑하기</a>
@@ -364,10 +371,12 @@
     const email = f('f-email');
     const memoSelect = f('f-memo');
     const memo = memoSelect === '직접입력' ? f('f-memo-custom') : memoSelect;
+    const payment = f('f-payment');
     const address = [zipcode, address1, address2].filter(Boolean).join(' ');
     if (!name) { alert('이름을 입력해주세요.'); document.getElementById('f-name').focus(); return; }
     if (!phone) { alert('연락처를 입력해주세요.'); document.getElementById('f-phone').focus(); return; }
     if (!address1) { alert('주소 찾기를 눌러 주소를 선택해주세요.'); return; }
+    if (!payment) { alert('결제 방법을 선택해주세요.'); document.getElementById('f-payment').focus(); return; }
     const btn = document.getElementById('btn-place');
     btn.disabled = true; btn.textContent = '처리 중...';
     try {
@@ -377,6 +386,7 @@
         customer_email: email || null,
         customer_address: address,
         memo: memo || null,
+        payment_method: payment,
         items,
         total: CTDCart.total(),
         status: 'payment_pending',
